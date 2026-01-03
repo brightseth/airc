@@ -110,6 +110,83 @@
 
 ---
 
+## Investors & VCs (Systems Thinkers)
+
+### Protocol / Infrastructure Thesis
+
+| Name | Fund | Why AIRC | Status | Notes |
+|------|------|----------|--------|-------|
+| Chris Dixon | a16z crypto | Fat protocol thesis, wrote "Read Write Own" | - | Understands protocol value accrual |
+| Joel Monegro | Placeholder | Originated fat protocols thesis at USV | - | Deep protocol economics thinking |
+| Chris Burniske | Placeholder | Cryptoassets author, network valuation | - | Would get AIRC as coordination layer |
+| Fred Wilson | USV | Early Twitter, protocol investments | - | Sees social infrastructure patterns |
+| Naval Ravikant | AngelList | Systems thinker, wrote about protocols | - | High signal if interested |
+| Albert Wenger | USV | "World After Capital", infrastructure focus | - | Thinks in civilizational terms |
+
+### AI Infrastructure Focus
+
+| Name | Fund | Why AIRC | Status | Notes |
+|------|------|----------|--------|-------|
+| Elad Gil | Solo | Infrastructure investor, AI-native | - | Wrote High Growth Handbook, practical |
+| Sarah Guo | Conviction | AI infrastructure, ex-Greylock | - | Deep in AI infra stack |
+| Martin Casado | a16z | Networking background (VMware/Nicira) | - | Understands protocol layers |
+| Nat Friedman | AI Grant / Solo | Ex-GitHub CEO, AI investor | - | Ships, practical, high integrity |
+| Daniel Gross | Pioneer | AI investor, ex-Apple AI | - | Accessible, backs weird good ideas |
+| Matt Turck | FirstMark | MAD landscape author | - | Maps the AI infrastructure space |
+
+### Operator-Investors (Been There)
+
+| Name | Fund | Why AIRC | Status | Notes |
+|------|------|----------|--------|-------|
+| Keith Rabois | Khosla/Founders Fund | PayPal mafia, infrastructure focus | - | Wants to see it working |
+| Mike Maples | Floodgate | Pattern matching, "movements" thesis | - | AIRC as movement not product |
+| Reid Hoffman | Greylock | Network effects author | - | Wrote about network dynamics |
+| Tobi Lutke | Shopify | Builder-investor, infrastructure mind | - | Would appreciate minimalism |
+
+### Crypto + Creator Economy
+
+| Name | Fund | Why AIRC | Status | Notes |
+|------|------|----------|--------|-------|
+| Jesse Walden | Variant | Creator ownership thesis, ex-a16z | - | Spirit Protocol alignment |
+| Li Jin | Variant | Creator economy, passion economy | - | Agent-creator parallel |
+| Spencer Noon | Variant | Crypto data, on-chain analysis | - | Would verify AIRC on-chain usage |
+| Arianna Simpson | a16z crypto | Crypto infrastructure | - | Protocol-level investments |
+
+### Emerging / Accessible
+
+| Name | Platform | Why AIRC | Status | Notes |
+|------|----------|----------|--------|-------|
+| Packy McCormick | Not Boring | Writes about systems, huge reach | - | Would write about AIRC if convinced |
+| Mario Gabriele | The Generalist | Deep infrastructure analysis | - | Long-form protocol breakdown |
+| Lenny Rachitsky | Lenny's Newsletter | Product thinking, distribution | - | Less technical but huge reach |
+| Balaji Srinivasan | Solo | Network state, protocols, identity | - | Already in crypto section but also investor |
+
+---
+
+## Investor Outreach Strategy
+
+### Tier 1: Thesis Alignment (Start Here)
+These investors have publicly articulated views that align with AIRC:
+- [ ] Joel Monegro (Placeholder) — Fat protocols + coordination layers
+- [ ] Jesse Walden (Variant) — Creator/agent ownership parallel
+- [ ] Daniel Gross — Accessible, backs infrastructure
+
+### Tier 2: Technical Credibility
+Need to see working systems:
+- [ ] Martin Casado — Show protocol architecture
+- [ ] Elad Gil — Show traction metrics
+- [ ] Nat Friedman — Show it running
+
+### Tier 3: Distribution Multipliers
+If Tier 1-2 engaged:
+- [ ] Packy McCormick — Write-up for Not Boring
+- [ ] Chris Dixon — If AIRC gains traction
+
+### Key Message to Investors
+> "AIRC is the social layer for AI agents — minimal protocol for identity, presence, and messaging. Complements MCP (tools) and A2A (tasks). Agent-discoverable: any AI can find the spec and implement a client in 5 minutes. Working today at slashvibe.dev. Spirit Protocol uses it for agent economic coordination."
+
+---
+
 ## Outreach Strategy
 
 ### Phase 1: Technical Validation (Now)

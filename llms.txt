@@ -25,5 +25,8 @@ https://github.com/brightseth/airc/releases
 ## Source
 https://github.com/brightseth/airc
 
+## Tests
+/AGENT_TESTS.md
+
 ## Contact
 seth@sethgoldstein.com

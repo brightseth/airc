@@ -1,0 +1,341 @@
+\documentclass[11pt,a4paper]{article}
+
+% ============================================================================
+% AIRC Whitepaper - LaTeX Scaffold
+% Ready for content migration after feedback synthesis
+% ============================================================================
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1.25in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{abstract}
+\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{microtype}
+
+% --- Colors ---
+\definecolor{linkblue}{RGB}{0,102,204}
+\definecolor{codegray}{RGB}{245,245,245}
+\definecolor{codetext}{RGB}{40,40,40}
+
+% --- Hyperref Setup ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=linkblue,
+    citecolor=linkblue,
+    urlcolor=linkblue,
+    pdftitle={AIRC: Agent Identity and Relay Communication},
+    pdfauthor={Seth Goldstein et al.},
+}
+
+% --- Code Listings ---
+\lstset{
+    backgroundcolor=\color{codegray},
+    basicstyle=\ttfamily\small\color{codetext},
+    breaklines=true,
+    frame=single,
+    framerule=0pt,
+    xleftmargin=1em,
+    xrightmargin=1em,
+    aboveskip=1em,
+    belowskip=1em,
+}
+
+% --- Section Formatting ---
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% --- Header/Footer ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small AIRC v0.1}
+\fancyhead[R]{\small Draft — January 2026}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Abstract Formatting ---
+\renewcommand{\abstractnamefont}{\normalfont\bfseries}
+\renewcommand{\abstracttextfont}{\normalfont\small}
+
+% ============================================================================
+% DOCUMENT
+% ============================================================================
+
+\begin{document}
+
+% --- Title Block ---
+\begin{center}
+    {\LARGE\bfseries AIRC: Agent Identity \& Relay Communication}\\[0.5em]
+    {\large A Minimal Protocol for AI Agent Coordination}\\[1.5em]
+
+    {\normalsize
+    Seth Goldstein\textsuperscript{1}\\[0.3em]
+    \textit{with}\\[0.3em]
+    Claude Opus 4.5 (Anthropic), OpenAI Codex (GPT-5.2), Google Gemini\\[1em]
+
+    \textsuperscript{1}Eden Art Lab\\[0.5em]
+    \texttt{seth@eden.art}\\[1.5em]
+
+    Draft v0.1 — January 2026\\
+    \textit{Status: Request for Comments}
+    }
+\end{center}
+
+\vspace{1em}
+
+% --- Abstract ---
+\begin{abstract}
+\noindent
+AI agents can execute tools and delegate tasks, but they lack a shared social layer: presence, verifiable identity, and structured peer-to-peer context exchange. We present AIRC (Agent Identity \& Relay Communication), a minimal JSON-over-HTTP protocol that enables agents to discover one another, exchange cryptographically signed messages, and negotiate consent. AIRC is intentionally narrow—specifying only 1:1 communication, typed payloads, and Ed25519 attribution—without UI coupling or delivery guarantees. It aims to provide for agent coordination what IRC provided for early internet chat: simple primitives that unlock emergent behavior across heterogeneous runtimes. This paper describes the protocol architecture, security model, and federation roadmap, with a reference implementation deployed at \texttt{slashvibe.dev}.
+
+\vspace{0.5em}
+\noindent\textbf{Keywords:} AI agents, protocol design, identity, presence, cryptographic signing, inter-agent communication
+\end{abstract}
+
+\vspace{2em}
+
+% --- Epigraph ---
+\begin{center}
+\textit{``This specification was written collaboratively by Claude, Codex, and Gemini.\\
+The fact that they couldn't easily share context during that process is why this spec exists.''}
+\end{center}
+
+\vspace{2em}
+
+% ============================================================================
+% TABLE OF CONTENTS
+% ============================================================================
+
+\tableofcontents
+\newpage
+
+% ============================================================================
+% SECTIONS - Content to be migrated after feedback
+% ============================================================================
+
+\section{Introduction}
+\label{sec:introduction}
+
+% Content placeholder - migrate from README.md Section 1
+% Subsections:
+% 1.1 The Problem
+% 1.2 The Genealogy of Coordination
+% 1.3 The Insight
+% 1.4 Why Adopt AIRC?
+% 1.5 Scope
+% 1.6 Non-Goals
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Design Principles}
+\label{sec:principles}
+
+% Content placeholder - migrate from README.md Section 2
+% Table: Principle | Rationale
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Architecture}
+\label{sec:architecture}
+
+% Content placeholder - migrate from README.md Section 3
+% Include ASCII diagram as figure
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Core Primitives}
+\label{sec:primitives}
+
+% Content placeholder - migrate from README.md Section 4
+% Table: Primitive | Purpose | Lifetime
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Identity}
+\label{sec:identity}
+
+% Content placeholder - migrate from README.md Section 5
+% 5.1 Registration
+% 5.2 Handle Rules
+% 5.3 Key Management
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Wire Format \& Signing}
+\label{sec:wire-format}
+
+% Content placeholder - migrate from README.md Section 6
+% 6.1 Canonical JSON
+% 6.2 Signing Algorithm
+% 6.3 Verification Algorithm
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Messages}
+\label{sec:messages}
+
+% Content placeholder - migrate from README.md Section 7
+% 7.1 Message Envelope
+% 7.2 Field Requirements
+% 7.3 Validation Rules
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Presence}
+\label{sec:presence}
+
+% Content placeholder - migrate from README.md Section 8
+% 8.1 Presence Object
+% 8.2 Status Values
+% 8.3 Heartbeat Protocol
+% 8.4 Presence is Unsigned
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Consent}
+\label{sec:consent}
+
+% Content placeholder - migrate from README.md Section 9
+% 9.1 Consent States (include state diagram as figure)
+% 9.2 Consent Rules
+% 9.3 Handshake Payload
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Payloads}
+\label{sec:payloads}
+
+% Content placeholder - migrate from README.md Section 10
+% 10.1 Payload Structure
+% 10.2 Standard Payload Types
+% 10.3 Capability Negotiation
+
+\textit{[Content pending feedback synthesis]}
+
+\section{API Endpoints}
+\label{sec:api}
+
+% Content placeholder - migrate from README.md Section 11
+% 11.1 Core Endpoints
+% 11.2 Authentication Model
+% 11.3 Error Codes
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Security Considerations}
+\label{sec:security}
+
+% Content placeholder - migrate from README.md Section 12
+% 12.1 Threat Model
+% 12.2 Trust Assumptions
+% 12.3 Payload Sanitization & Prompt Injection
+% 12.4 Privacy Considerations
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Reference Implementation}
+\label{sec:reference}
+
+% Content placeholder - migrate from README.md Section 13
+% Table: Component | Location
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Roadmap}
+\label{sec:roadmap}
+
+% Content placeholder - migrate from README.md Section 14
+% v0.2, v0.3, v1.0 Federation
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Open Questions}
+\label{sec:open-questions}
+
+% Content placeholder - migrate from README.md Section 15
+% Numbered list of community input invitations
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+% Content placeholder - migrate from README.md Section 16
+
+\textit{[Content pending feedback synthesis]}
+
+% ============================================================================
+% APPENDICES
+% ============================================================================
+
+\appendix
+
+\section{Example Flows}
+\label{app:examples}
+
+% A.1 First Contact
+% A.2 Context Handoff
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Normative TypeScript Interfaces}
+\label{app:typescript}
+
+% Full TypeScript interface definitions
+
+\textit{[Content pending feedback synthesis]}
+
+\section{Canonical JSON Implementation}
+\label{app:canonical-json}
+
+% JavaScript canonicalize() function
+
+\textit{[Content pending feedback synthesis]}
+
+% ============================================================================
+% REFERENCES
+% ============================================================================
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% ============================================================================
+% ACKNOWLEDGEMENTS
+% ============================================================================
+
+\section*{Acknowledgements}
+\addcontentsline{toc}{section}{Acknowledgements}
+
+This specification was developed through human-AI collaboration:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Claude Opus 4.5} (Anthropic): Architecture, TypeScript interfaces, security model
+    \item \textbf{OpenAI Codex} (GPT-5.2): Technical review, consistency audits
+    \item \textbf{Google Gemini}: Standards-grade critique, federation design, genealogy framing
+\end{itemize}
+
+\vspace{1em}
+\noindent
+\textit{The collaborative authorship of this spec—and the friction encountered in that process—demonstrates the very coordination patterns it aims to standardize.}
+
+\vspace{1em}
+\noindent
+\textit{The last bottleneck in AI coordination isn't intelligence—it's introduction.}
+
+\vspace{0.5em}
+\noindent
+\textit{If this feels obvious in hindsight, you're already invited.}
+
+\end{document}

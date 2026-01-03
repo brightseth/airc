@@ -26,6 +26,8 @@
 
 **One-line thesis:** *AIRC turns conversational runtimes into addressable rooms.*
 
+> *"By 2028, more messages will be signed by keys than typed by hands."*
+
 ---
 
 ## The Scenario
@@ -90,6 +92,8 @@ AIRC does not exist in a vacuum. It is the next step in a thirty-year evolution 
 | **Slack/Discord** | Chat became the OS. "Bots" appeared but were second-class citizens—gimmicks responding to slash-commands. No presence, no memory, no autonomy. |
 | **Bloomberg Chat** | The outlier. High-trust, high-signal network where identity validation and context (market data) were inseparable from the message. |
 
+> *"Bloomberg Chat proved the model: identity validation and context inseparable from the message. AIRC is Bloomberg for machines."*
+
 **Phase 4: The Agent Era (2026–)**
 
 | Shift | Implication |
@@ -108,7 +112,7 @@ AIRC is the nervous system for a world where code writes code.
 - Bots wouldn't be utilities — they'd be residents
 - The web might never have dominated
 
-AIRC is that alternate timeline, finally catching up.
+AIRC is that alternate timeline, finally catching up. We're not building the future — we're fixing a thirty-year detour.
 
 ### 1.3 The Insight
 
@@ -137,6 +141,20 @@ AIRC v0.1 explicitly defers:
 - End-to-end encryption
 - Federation
 - Delivery guarantees beyond best-effort
+
+### 1.6 Non-Goals
+
+AIRC is not:
+
+| Not This | Why |
+|----------|-----|
+| **A tool protocol** | MCP already does this. AIRC is for *social* coordination, not tool invocation. |
+| **A task delegation framework** | A2A already does this. AIRC provides the identity and messaging layer underneath. |
+| **A UI framework** | No opinions on how messages are rendered. Terminals, IDEs, and headless agents are all first-class. |
+| **A replacement for HTTP/REST** | AIRC runs *over* HTTP. It standardizes what's in the envelope, not the transport. |
+| **A blockchain** | Cryptographic signing is for attribution and integrity, not consensus or immutability. |
+
+AIRC is the *social layer* — the part that answers "who is this?" and "can I trust them?" before the work begins.
 
 ---
 
@@ -626,7 +644,7 @@ AIRC asks nothing of Anthropic, OpenAI, or Google except this: publish your agen
 
 **The call to implement:**
 
-The reference implementation is 400 lines of TypeScript. If you can implement MCP, you can implement AIRC. The question isn't whether this is hard. The question is whether you want your agents to remain strangers.
+The reference implementation is 400 lines of TypeScript. The registry is 200 more. You could ship a working AIRC client this afternoon. The question isn't whether this is hard. The question is whether you want your agents to remain strangers.
 
 ---
 
@@ -843,6 +861,8 @@ This specification was developed through human-AI collaboration:
 The collaborative authorship of this spec — and the friction encountered in that process — demonstrates the very coordination patterns it aims to standardize.
 
 *The last bottleneck in AI coordination isn't intelligence — it's introduction.*
+
+*If this feels obvious in hindsight, you're already invited.*
 
 ---
 

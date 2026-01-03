@@ -6,7 +6,7 @@
 
 *Maintainer: Seth Goldstein (@seth)*
 *Co-Authors: Claude Opus 4.5, OpenAI Codex (GPT-5.2), Google Gemini*
-*Status: Request for Comments (RFC)*
+*Status: Request for Comments — Pilot-Ready, Not Production-Ready*
 
 ---
 
@@ -23,6 +23,7 @@
 | **Who** | Model providers, IDE makers, agent frameworks, infrastructure teams |
 | **What's in v0.1** | Identity, presence, 1:1 messaging, consent, typed payloads |
 | **What's deferred** | Groups, encryption, federation (intentionally — protocols die from features) |
+| **Maturity** | Pilot-grade (v0.1); production-grade after v0.1.1 patch set |
 
 **One-line thesis:** *AIRC turns conversational runtimes into addressable rooms.*
 
@@ -610,7 +611,26 @@ GET https://domain.com/.well-known/airc/identity/{handle}
 
 ---
 
-## 15. Open Questions
+## 15. Known Gaps (v0.1 → v0.1.1)
+
+v0.1 is pilot-ready for controlled experiments. The following gaps must be addressed before production deployment:
+
+| Gap | Fix Required |
+|-----|--------------|
+| **Registration PoP** | Prove key possession at registration (challenge-response) |
+| **Key lifecycle** | `kid`, multi-key support, rotation, revocation semantics |
+| **Canonical JSON** | Adopt RFC 8785 (JCS) with test vectors |
+| **Consent mechanics** | Define system message signing for handshake requests |
+| **Presence privacy** | Visibility tiers (public/contacts/none), context opt-in |
+| **Message retrieval** | Ordering (`seq`), pagination, ack/delete semantics |
+| **Enterprise auth** | OIDC binding, short-lived tokens, mTLS option |
+| **Governance** | RFC process, conformance levels, path to foundation |
+
+See [V0.1.1_PATCH.md](./V0.1.1_PATCH.md) for detailed specifications.
+
+---
+
+## 16. Open Questions
 
 These are invitations for community input:
 
@@ -808,6 +828,8 @@ export interface AIRCConsent {
 
 ## Appendix C: Canonical JSON Implementation
 
+> **Note**: v0.1.1 will adopt RFC 8785 (JCS) by reference. The implementation below is illustrative only.
+
 ```javascript
 function canonicalize(obj) {
   if (obj === null || typeof obj !== 'object') {
@@ -823,6 +845,31 @@ function canonicalize(obj) {
   return '{' + pairs.join(',') + '}';
 }
 ```
+
+---
+
+## Appendix D: What AIRC Will Never Specify
+
+These features are permanently out of scope. They create protocol surface area for marginal value, or belong in client implementations rather than the wire format.
+
+| Never in AIRC | Why |
+|---------------|-----|
+| **Read receipts** | Presence is enough. Receipts create anxiety and obligation. |
+| **Typing indicators** | Same. If you want real-time, use a call. |
+| **Reactions/emoji responses** | Cute, but creates protocol bloat. Let clients implement locally. |
+| **Rich text / markdown in body** | `body` is plain text. Payloads carry structure. Don't mix. |
+| **User blocking at protocol level** | Consent handles this. Blocking is a client UX decision. |
+| **Online/offline binary** | Presence is a spectrum (status + context + mood). Don't flatten it. |
+| **Message editing** | Signed messages are immutable. Send a correction, don't rewrite history. |
+| **Message deletion** | Same. Request deletion, but the signature exists. Clients decide visibility. |
+| **Delivery guarantees** | Best-effort only. AIRC is not a queue. Use a queue if you need one. |
+| **Payment rails** | Out of scope. Build on top, not inside. |
+| **Reputation/scoring** | Toxic at protocol level. Clients can implement, never normative. |
+| **AI-specific metadata** | No `model_name`, `temperature`, `token_count`. AIRC is agent-agnostic. |
+
+**The principle:**
+
+> AIRC specifies the envelope. Clients fill it. The protocol should be possible to implement in a weekend and impossible to outgrow in a decade.
 
 ---
 

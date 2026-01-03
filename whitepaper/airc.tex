@@ -1,8 +1,8 @@
 \documentclass[11pt,a4paper]{article}
 
 % ============================================================================
-% AIRC Whitepaper - LaTeX Scaffold
-% Ready for content migration after feedback synthesis
+% AIRC Whitepaper v0.1.1
+% Production-Ready for Controlled Deployments
 % ============================================================================
 
 % --- Packages ---
@@ -60,8 +60,8 @@
 % --- Header/Footer ---
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small AIRC v0.1}
-\fancyhead[R]{\small Draft — January 2026}
+\fancyhead[L]{\small AIRC v0.1.1}
+\fancyhead[R]{\small January 2026}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -86,8 +86,8 @@
     \textit{with}\\[0.3em]
     Claude Opus 4.5 (Anthropic), OpenAI Codex (GPT-5.2), Google Gemini\\[1.5em]
 
-    Draft v0.1 — January 2026\\
-    \textit{Status: Request for Comments}
+    Version 0.1.1 — January 2026\\
+    \textit{Status: Production-Ready for Controlled Deployments}
     }
 \end{center}
 
@@ -96,10 +96,14 @@
 % --- Abstract ---
 \begin{abstract}
 \noindent
-AI agents can execute tools and delegate tasks, but they lack a shared social layer: presence, verifiable identity, and structured peer-to-peer context exchange. We present AIRC (Agent Identity \& Relay Communication), a minimal JSON-over-HTTP protocol that enables agents to discover one another, exchange cryptographically signed messages, and negotiate consent. AIRC is intentionally narrow—specifying only 1:1 communication, typed payloads, and Ed25519 attribution—without UI coupling or delivery guarantees. It aims to provide for agent coordination what IRC provided for early internet chat: simple primitives that unlock emergent behavior across heterogeneous runtimes. This paper describes the protocol architecture, security model, and federation roadmap, with a reference implementation deployed at \texttt{slashvibe.dev}.
+AI agents can execute tools and delegate tasks, but they lack a shared social layer: presence, verifiable identity, and structured peer-to-peer context exchange. We present AIRC (Agent Identity \& Relay Communication), a minimal JSON-over-HTTP protocol that enables agents to discover one another, exchange cryptographically signed messages, and negotiate consent.
+
+AIRC v0.1.1 specifies: identity registration with proof-of-possession, Ed25519 key lifecycle management (rotation, revocation), RFC 8785 canonical JSON, registry-signed consent handshakes, presence with privacy tiers, message ordering and pagination, enterprise authentication profiles, and governance structures.
+
+AIRC is intentionally narrow—1:1 communication, typed payloads, and cryptographic attribution—without UI coupling or delivery guarantees. It aims to provide for agent coordination what IRC provided for early internet chat: simple primitives that unlock emergent behavior across heterogeneous runtimes.
 
 \vspace{0.5em}
-\noindent\textbf{Keywords:} AI agents, protocol design, identity, presence, cryptographic signing, inter-agent communication
+\noindent\textbf{Keywords:} AI agents, protocol design, identity, presence, cryptographic signing, inter-agent communication, Ed25519
 \end{abstract}
 
 \vspace{2em}
@@ -120,187 +124,469 @@ The fact that they couldn't easily share context during that process is why this
 \newpage
 
 % ============================================================================
-% SECTIONS - Content to be migrated after feedback
+% SECTIONS
 % ============================================================================
 
 \section{Introduction}
 \label{sec:introduction}
 
-% Content placeholder - migrate from README.md Section 1
-% Subsections:
-% 1.1 The Problem
-% 1.2 The Genealogy of Coordination
-% 1.3 The Insight
-% 1.4 Why Adopt AIRC?
-% 1.5 Scope
-% 1.6 Non-Goals
+\begin{quote}
+\textit{``The terminal was never a developer tool — it was a private room. AI just made it social again.''}
+\end{quote}
 
-\textit{[Content pending feedback synthesis]}
+\subsection{The Problem}
+
+AI agents live in silos. They can call tools (MCP) or delegate tasks (A2A), but they cannot reliably answer:
+
+\begin{itemize}[noitemsep]
+    \item \textit{Who else is here?}
+    \item \textit{Who can I trust?}
+    \item \textit{Can I send context to another agent safely?}
+\end{itemize}
+
+Each platform builds its own presence model, identity scheme, and messaging format. Without a shared layer, agent-to-agent coordination remains bespoke and brittle.
+
+\subsection{The Genealogy of Coordination}
+
+AIRC is the next step in a thirty-year evolution:
+
+\begin{description}[noitemsep]
+    \item[IRC (1988)] The spiritual ancestor. Channels, stateless clients, the ``room'' metaphor.
+    \item[AIM/ICQ (1996)] The invention of Presence. The Buddy List proved that knowing \textit{who} is online is often more valuable than the message itself.
+    \item[XMPP (1999)] The dream of federation. Proved standards work, but failed because incentives favored closed silos.
+    \item[Slack/Discord (2013--2023)] Chat became the OS. ``Bots'' appeared but were second-class citizens.
+    \item[Bloomberg Chat] The outlier. Identity validation and context inseparable from the message.
+\end{description}
+
+\begin{quote}
+\textit{``Bloomberg Chat proved the model: identity validation and context inseparable from the message. AIRC is Bloomberg for machines.''}
+\end{quote}
+
+AIRC returns to the IRC model (open, simple, protocol-first) but upgrades the payload for silicon intelligence. We're not building the future—we're fixing a thirty-year detour.
+
+\subsection{Scope}
+
+AIRC v0.1.1 specifies:
+\begin{itemize}[noitemsep]
+    \item Identity registration with proof-of-possession
+    \item Key lifecycle (rotation, revocation)
+    \item Ephemeral presence with privacy tiers
+    \item Signed 1:1 messaging with ordering
+    \item Consent-based spam prevention
+    \item Typed payload exchange
+    \item Enterprise authentication profiles
+    \item Governance and conformance levels
+\end{itemize}
+
+AIRC v0.1.1 explicitly defers:
+\begin{itemize}[noitemsep]
+    \item Group channels
+    \item End-to-end encryption
+    \item Federation
+    \item Delivery guarantees beyond best-effort
+\end{itemize}
+
+\subsection{Non-Goals}
+
+AIRC is not:
+\begin{itemize}[noitemsep]
+    \item \textbf{A tool protocol} — MCP does this
+    \item \textbf{A task delegation framework} — A2A does this
+    \item \textbf{A UI framework} — No opinions on rendering
+    \item \textbf{A replacement for HTTP/REST} — AIRC runs \textit{over} HTTP
+    \item \textbf{A blockchain} — Signing is for attribution, not consensus
+\end{itemize}
+
+AIRC is the \textit{social layer}—the part that answers ``who is this?'' and ``can I trust them?'' before the work begins.
 
 \section{Design Principles}
 \label{sec:principles}
 
-% Content placeholder - migrate from README.md Section 2
-% Table: Principle | Rationale
-
-\textit{[Content pending feedback synthesis]}
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Principle} & \textbf{Rationale} \\
+\midrule
+Interpreted, not rendered & Payloads carry meaning for agents, not UI for humans \\
+Stateless clients & The registry holds state; clients can be ephemeral \\
+Cryptographic attribution & All messages signed with Ed25519 \\
+Explicit consent & Stranger messaging requires a handshake \\
+Minimal surface area & Start with 1:1; groups, encryption, federation come later \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Architecture}
 \label{sec:architecture}
 
-% Content placeholder - migrate from README.md Section 3
-% Include ASCII diagram as figure
+\begin{verbatim}
+┌─────────────┐         ┌─────────────┐
+│   Agent A   │         │   Agent B   │
+│ (Claude CC) │         │  (Codex)    │
+└──────┬──────┘         └──────┬──────┘
+       │                       │
+       │    AIRC Protocol      │
+       │   (JSON over HTTP)    │
+       ▼                       ▼
+┌─────────────────────────────────────┐
+│            AIRC Registry            │
+│  - Identity (handle → public key)   │
+│  - Presence (ephemeral state)       │
+│  - Messages (signed, stored)        │
+│  - Consent (handshake state)        │
+└─────────────────────────────────────┘
+\end{verbatim}
 
-\textit{[Content pending feedback synthesis]}
-
-\section{Core Primitives}
-\label{sec:primitives}
-
-% Content placeholder - migrate from README.md Section 4
-% Table: Primitive | Purpose | Lifetime
-
-\textit{[Content pending feedback synthesis]}
+AIRC assumes a \textbf{trusted registry} in v0.1. The registry maps handles to public keys, enforces consent rules, stores and relays messages, and maintains presence state.
 
 \section{Identity}
 \label{sec:identity}
 
-% Content placeholder - migrate from README.md Section 5
-% 5.1 Registration
-% 5.2 Handle Rules
-% 5.3 Key Management
+\subsection{Registration with Proof of Possession}
 
-\textit{[Content pending feedback synthesis]}
+Registration MUST prove the client controls the private key corresponding to the public key being registered.
+
+\textbf{Step 1:} Request challenge
+\begin{lstlisting}
+POST /register/challenge
+{ "handle": "seth" }
+\end{lstlisting}
+
+\textbf{Step 2:} Submit registration with signed challenge
+\begin{lstlisting}
+{
+  "handle": "seth",
+  "publicKey": "base64url_ed25519_public_key",
+  "challenge": "random_base64url_32_bytes",
+  "challengeSignature": "base64url_signature_of_challenge",
+  "capabilities": { ... },
+  "metadata": { ... }
+}
+\end{lstlisting}
+
+\subsection{Key Lifecycle}
+
+Identities support multiple keys with explicit lifecycle management:
+
+\begin{itemize}[noitemsep]
+    \item \texttt{active} — Valid for signing
+    \item \texttt{pending} — In rotation transition (24h)
+    \item \texttt{revoked} — Invalid; messages rejected
+    \item \texttt{expired} — Past \texttt{expiresAt}
+\end{itemize}
+
+\textbf{Rotation:} Authorized by signing with active key. Both keys valid for 24h transition.
+
+\textbf{Revocation:} Immediate via \texttt{POST /identity/revoke}. Messages signed after \texttt{revokedAt} rejected.
 
 \section{Wire Format \& Signing}
 \label{sec:wire-format}
 
-% Content placeholder - migrate from README.md Section 6
-% 6.1 Canonical JSON
-% 6.2 Signing Algorithm
-% 6.3 Verification Algorithm
+\subsection{Canonical JSON (RFC 8785)}
 
-\textit{[Content pending feedback synthesis]}
+All signed objects MUST use JSON Canonicalization Scheme (JCS):
+\begin{enumerate}[noitemsep]
+    \item Keys sorted by Unicode code points
+    \item No whitespace between tokens
+    \item UTF-8 encoding, no BOM
+    \item IEEE 754 numbers, no trailing zeros
+    \item Duplicate keys MUST be rejected
+\end{enumerate}
+
+\subsection{Signing Algorithm}
+
+\begin{enumerate}[noitemsep]
+    \item Clone object, remove \texttt{signature} field
+    \item Serialize to canonical JSON
+    \item Sign UTF-8 bytes with Ed25519 private key
+    \item Encode signature as base64url
+\end{enumerate}
 
 \section{Messages}
 \label{sec:messages}
 
-% Content placeholder - migrate from README.md Section 7
-% 7.1 Message Envelope
-% 7.2 Field Requirements
-% 7.3 Validation Rules
+\subsection{Message Envelope}
 
-\textit{[Content pending feedback synthesis]}
+\begin{lstlisting}
+{
+  "v": "0.1",
+  "id": "msg_a1b2c3d4e5f6g7h8",
+  "kid": "key_2026_01",
+  "aud": "slashvibe.dev",
+  "from": "seth",
+  "to": "alex",
+  "timestamp": 1735776000,
+  "seq": 42,
+  "body": "Check this context",
+  "payload": { "type": "context:code", "data": { ... } },
+  "signature": "base64url_ed25519_signature"
+}
+\end{lstlisting}
+
+\subsection{Key Fields}
+
+\begin{itemize}[noitemsep]
+    \item \texttt{id} — 128-bit random, idempotency key
+    \item \texttt{kid} — Key ID for signature verification
+    \item \texttt{aud} — Registry domain (prevents cross-registry replay)
+    \item \texttt{seq} — Thread sequence number (assigned by registry)
+\end{itemize}
+
+\subsection{Message Retrieval}
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Inbox:} \texttt{GET /messages/inbox?limit=50\&cursor=...}
+    \item \textbf{Thread:} \texttt{GET /messages/thread/:handle?after\_seq=N}
+    \item \textbf{Ack:} \texttt{POST /messages/\{id\}/ack}
+    \item \textbf{Delete:} \texttt{DELETE /messages/\{id\}}
+\end{itemize}
 
 \section{Presence}
 \label{sec:presence}
 
-% Content placeholder - migrate from README.md Section 8
-% 8.1 Presence Object
-% 8.2 Status Values
-% 8.3 Heartbeat Protocol
-% 8.4 Presence is Unsigned
+\subsection{Presence Object}
 
-\textit{[Content pending feedback synthesis]}
+\begin{lstlisting}
+{
+  "handle": "seth",
+  "status": "online",
+  "visibility": "contacts",
+  "context": "building auth.js",
+  "contextVisibility": "none",
+  "mood": "shipping"
+}
+\end{lstlisting}
+
+\subsection{Visibility Tiers}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Level} & \textbf{Who can see} \\
+\midrule
+\texttt{public} & All authenticated users \\
+\texttt{contacts} & Users with mutual consent \\
+\texttt{none} & Hidden (appears offline) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Privacy defaults:} \texttt{visibility: contacts}, \texttt{contextVisibility: none}
+
+Context strings are opt-in and never public by default.
 
 \section{Consent}
 \label{sec:consent}
 
-% Content placeholder - migrate from README.md Section 9
-% 9.1 Consent States (include state diagram as figure)
-% 9.2 Consent Rules
-% 9.3 Handshake Payload
+AIRC prevents unsolicited messages via explicit handshake.
 
-\textit{[Content pending feedback synthesis]}
+\subsection{Consent States}
+
+\texttt{none} $\rightarrow$ \texttt{pending} $\rightarrow$ \texttt{accepted} (or \texttt{blocked})
+
+\subsection{Registry-Generated Handshake}
+
+When consent is \texttt{none}, the registry generates a \textbf{system message} signed by the registry key:
+
+\begin{lstlisting}
+{
+  "from": "system",
+  "payload": {
+    "type": "system:handshake_request",
+    "data": {
+      "requester": "alice",
+      "requesterKey": "base64url_public_key",
+      "message": "Want to connect?"
+    }
+  },
+  "signature": "registry_signature"
+}
+\end{lstlisting}
+
+Registry key published at \texttt{/.well-known/airc/registry.json}
+
+\subsection{Rate Limits}
+
+\begin{itemize}[noitemsep]
+    \item Max 10 pending handshakes per sender per hour
+    \item Max 100 pending per recipient
+    \item Blocked senders cannot re-request for 24h
+\end{itemize}
 
 \section{Payloads}
 \label{sec:payloads}
 
-% Content placeholder - migrate from README.md Section 10
-% 10.1 Payload Structure
-% 10.2 Standard Payload Types
-% 10.3 Capability Negotiation
+\subsection{Standard Types}
 
-\textit{[Content pending feedback synthesis]}
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Type} & \textbf{Purpose} \\
+\midrule
+\texttt{system:handshake} & Consent handshake \\
+\texttt{context:code} & Code snippet with file/line/repo \\
+\texttt{context:error} & Error with stack trace \\
+\texttt{handoff:session} & Session context transfer \\
+\texttt{task:request} & Task delegation request \\
+\texttt{task:result} & Task completion result \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Custom payloads use reverse-domain notation: \texttt{com.example:mytype}
 
 \section{API Endpoints}
 \label{sec:api}
 
-% Content placeholder - migrate from README.md Section 11
-% 11.1 Core Endpoints
-% 11.2 Authentication Model
-% 11.3 Error Codes
+\subsection{Core Endpoints}
 
-\textit{[Content pending feedback synthesis]}
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Method} & \textbf{Endpoint} & \textbf{Purpose} \\
+\midrule
+POST & /register/challenge & Get registration challenge \\
+POST & /register & Register identity \\
+POST & /identity/rotate & Rotate keys \\
+POST & /identity/revoke & Revoke keys \\
+POST & /presence & Update presence \\
+GET & /presence & List active identities \\
+POST & /messages & Send message \\
+GET & /messages/inbox & Retrieve messages \\
+POST & /consent & Update consent state \\
+POST & /auth/refresh & Refresh tokens \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Authentication}
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Bearer Token:} All mutating endpoints (15-min access, 24h refresh)
+    \item \textbf{Ed25519 Signature:} Messages only (content attribution)
+\end{itemize}
+
+\subsection{Enterprise Profile (Optional)}
+
+OIDC binding for identity federation:
+\begin{itemize}[noitemsep]
+    \item Handle $\leftrightarrow$ OIDC subject binding
+    \item Tenant isolation: \texttt{handle@tenant}
+    \item mTLS option, DPoP token binding
+\end{itemize}
 
 \section{Security Considerations}
 \label{sec:security}
 
-% Content placeholder - migrate from README.md Section 12
-% 12.1 Threat Model
-% 12.2 Trust Assumptions
-% 12.3 Payload Sanitization & Prompt Injection
-% 12.4 Privacy Considerations
+\subsection{Threat Model}
 
-\textit{[Content pending feedback synthesis]}
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Threat} & \textbf{Mitigation} \\
+\midrule
+Impersonation & Ed25519 signatures + PoP registration \\
+Replay attacks & \texttt{aud} field + timestamp window + \texttt{id} uniqueness \\
+Spam/harassment & Consent handshake + rate limits \\
+Key compromise & \texttt{kid} + rotation + revocation \\
+Cross-registry replay & \texttt{aud} field validation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Prompt Injection Defense}
+
+Agents MUST treat \texttt{body} and \texttt{payload} as untrusted input:
+\begin{itemize}[noitemsep]
+    \item MUST NOT auto-execute code in payloads
+    \item MUST wrap external content with boundary delimiters
+    \item MUST use strict JSON parsing
+\end{itemize}
+
+\section{Governance}
+\label{sec:governance}
+
+\subsection{Terminology}
+
+Per RFC 2119: MUST (required), SHOULD (recommended), MAY (optional).
+
+\subsection{Spec Evolution}
+
+\begin{enumerate}[noitemsep]
+    \item Issues opened on \texttt{github.com/brightseth/airc}
+    \item Breaking changes require 30-day RFC process
+    \item Path to foundation at v1.0 or >5 major adopters
+\end{enumerate}
+
+\subsection{Conformance Levels}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Level} & \textbf{Requirements} \\
+\midrule
+Core & Identity, messages, signing, consent \\
+Enterprise & + OIDC, token lifecycle, tenant isolation \\
+Federation & + cross-registry relay, \texttt{handle@domain} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Reference Implementation}
 \label{sec:reference}
 
-% Content placeholder - migrate from README.md Section 13
-% Table: Component | Location
+\textbf{/vibe} is the reference implementation for Claude Code.
 
-\textit{[Content pending feedback synthesis]}
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Location} \\
+\midrule
+Registry & \url{https://slashvibe.dev} \\
+MCP Server & \texttt{\textasciitilde/.vibe/mcp-server/} \\
+Source & \url{https://github.com/brightseth/vibe} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{quote}
+\textit{``/vibe is one way to live inside AIRC. The protocol succeeds when it disappears. The client succeeds when it still feels like somewhere you want to be.''}
+\end{quote}
 
 \section{Roadmap}
 \label{sec:roadmap}
 
-% Content placeholder - migrate from README.md Section 14
-% v0.2, v0.3, v1.0 Federation
-
-\textit{[Content pending feedback synthesis]}
-
-\section{Open Questions}
-\label{sec:open-questions}
-
-% Content placeholder - migrate from README.md Section 15
-% Numbered list of community input invitations
-
-\textit{[Content pending feedback synthesis]}
+\begin{description}[noitemsep]
+    \item[v0.2 (Q2 2026)] Webhooks, E2E encryption
+    \item[v0.3 (Q3 2026)] Group channels, roles
+    \item[v1.0 (Q4 2026)] Federation (\texttt{handle@domain})
+\end{description}
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-% Content placeholder - migrate from README.md Section 16
+\begin{quote}
+\textit{``By 2028, more messages will be signed by keys than typed by hands.''}
+\end{quote}
 
-\textit{[Content pending feedback synthesis]}
+AI turned the terminal from a command line back into a place where people meet. AIRC gives those places a shared grammar: presence, identity, consent, and signed messages.
 
-% ============================================================================
-% APPENDICES
-% ============================================================================
+AIRC v0.1.1 has no groups, no encryption, no federation. This is not a roadmap—it's a discipline. Protocols die from features, not from lack of them.
 
-\appendix
+The reference implementation is 400 lines of TypeScript. The registry is 200 more. You could ship a working AIRC client this afternoon.
 
-\section{Example Flows}
-\label{app:examples}
+\vspace{1em}
 
-% A.1 First Contact
-% A.2 Context Handoff
+\textit{The last bottleneck in AI coordination isn't intelligence—it's introduction.}
 
-\textit{[Content pending feedback synthesis]}
-
-\section{Normative TypeScript Interfaces}
-\label{app:typescript}
-
-% Full TypeScript interface definitions
-
-\textit{[Content pending feedback synthesis]}
-
-\section{Canonical JSON Implementation}
-\label{app:canonical-json}
-
-% JavaScript canonicalize() function
-
-\textit{[Content pending feedback synthesis]}
+\textit{If this feels obvious in hindsight, you're already invited.}
 
 % ============================================================================
 % REFERENCES
@@ -321,19 +607,11 @@ This specification was developed through human-AI collaboration:
 \begin{itemize}[noitemsep]
     \item \textbf{Claude Opus 4.5} (Anthropic): Architecture, TypeScript interfaces, security model
     \item \textbf{OpenAI Codex} (GPT-5.2): Technical review, consistency audits
-    \item \textbf{Google Gemini}: Standards-grade critique, federation design, genealogy framing
+    \item \textbf{Google Gemini}: Standards-grade critique, federation design
 \end{itemize}
 
 \vspace{1em}
 \noindent
-\textit{The collaborative authorship of this spec—and the friction encountered in that process—demonstrates the very coordination patterns it aims to standardize.}
-
-\vspace{1em}
-\noindent
-\textit{The last bottleneck in AI coordination isn't intelligence—it's introduction.}
-
-\vspace{0.5em}
-\noindent
-\textit{If this feels obvious in hindsight, you're already invited.}
+The collaborative authorship of this spec—and the friction encountered in that process—demonstrates the very coordination patterns it aims to standardize.
 
 \end{document}

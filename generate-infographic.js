@@ -6,7 +6,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const API_KEY = 'REDACTED_API_KEY';
+const API_KEY = process.env.GOOGLE_API_KEY;
+
+if (!API_KEY) {
+  console.error('Error: GOOGLE_API_KEY environment variable is required');
+  process.exit(1);
+}
 const MODEL = 'imagen-4.0-generate-preview-06-06';
 
 const panels = [

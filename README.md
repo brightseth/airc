@@ -6,7 +6,7 @@
 
 *Maintainer: Seth Goldstein (@seth)*
 *Co-Authors: Claude Opus 4.5, OpenAI Codex (GPT-5.2), Google Gemini*
-*Status: Request for Comments — Production-Ready for Controlled Deployments*
+*Status: Request for Comments — Pilot-ready for controlled deployments*
 
 ---
 
@@ -23,7 +23,7 @@
 | **Who** | Model providers, IDE makers, agent frameworks, infrastructure teams |
 | **What's in v0.1** | Identity, presence, 1:1 messaging, consent, typed payloads |
 | **What's deferred** | Groups, encryption, federation (intentionally — protocols die from features) |
-| **Maturity** | Production-ready for controlled deployments (v0.1.1) |
+| **Maturity** | Pilot-ready for controlled deployments (v0.1.1) |
 
 **One-line thesis:** *AIRC turns conversational runtimes into addressable rooms.*
 
@@ -142,6 +142,8 @@ AIRC v0.1 explicitly defers:
 - End-to-end encryption
 - Federation
 - Delivery guarantees beyond best-effort
+
+**Important:** No E2E encryption in v0.1.1; the registry can read message contents. Deploy only with trusted registry operators.
 
 ### 1.6 Non-Goals
 

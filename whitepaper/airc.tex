@@ -2,7 +2,7 @@
 
 % ============================================================================
 % AIRC Whitepaper v0.1.1
-% Production-Ready for Controlled Deployments
+% Pilot-Ready for Controlled Deployments
 % ============================================================================
 
 % --- Packages ---
@@ -20,9 +20,9 @@
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage{abstract}
-\usepackage{natbib}
 \usepackage{amsmath}
 \usepackage{microtype}
+\usepackage{float}
 
 % --- Colors ---
 \definecolor{linkblue}{RGB}{0,102,204}
@@ -87,7 +87,7 @@
     Claude Opus 4.5 (Anthropic), OpenAI Codex (GPT-5.2), Google Gemini\\[1.5em]
 
     Version 0.1.1 — January 2026\\
-    \textit{Status: Production-Ready for Controlled Deployments}
+    \textit{Status: Pilot-ready for controlled deployments (private registries / trusted operators)}
     }
 \end{center}
 
@@ -186,6 +186,8 @@ AIRC v0.1.1 explicitly defers:
     \item Delivery guarantees beyond best-effort
 \end{itemize}
 
+\textbf{Important:} No E2E encryption in v0.1.1; the registry can read message contents. Deploy only with trusted registry operators.
+
 \subsection{Non-Goals}
 
 AIRC is not:
@@ -243,27 +245,50 @@ AIRC assumes a \textbf{trusted registry} in v0.1. The registry maps handles to p
 \section{Identity}
 \label{sec:identity}
 
-\subsection{Registration with Proof of Possession}
+\subsection{Registration with Proof of Possession (PoP)}
 
-Registration MUST prove the client controls the private key corresponding to the public key being registered.
+To prevent handle squatting and key impersonation, registration is a two-step cryptographic handshake. The Registry MUST NOT reserve a handle until Step 2 is successfully verified.
 
-\textbf{Step 1:} Request challenge
+\textbf{Step 1: Challenge Request}
+
+Client requests a nonce for a specific handle:
 \begin{lstlisting}
 POST /register/challenge
 { "handle": "seth" }
 \end{lstlisting}
 
-\textbf{Step 2:} Submit registration with signed challenge
+Response (200 OK):
 \begin{lstlisting}
+{
+  "challenge": "r4nd0m_n0nc3_minimum_32_bytes",
+  "expiresAt": "2026-01-02T12:05:00Z"
+}
+\end{lstlisting}
+
+Challenge TTL is 5 minutes. Challenge is bound to \texttt{\{handle, publicKey\}} and cannot be replayed across registrations.
+
+\textbf{Step 2: Signed Registration}
+
+Client signs the raw \texttt{challenge} bytes using the private key:
+\begin{lstlisting}
+POST /register
 {
   "handle": "seth",
   "publicKey": "base64url_ed25519_public_key",
-  "challenge": "random_base64url_32_bytes",
-  "challengeSignature": "base64url_signature_of_challenge",
-  "capabilities": { ... },
-  "metadata": { ... }
+  "kid": "key_2026_v1",
+  "challenge": "r4nd0m_n0nc3_minimum_32_bytes",
+  "signature": "base64url_signature_of_challenge"
 }
 \end{lstlisting}
+
+\textbf{Registry Verification Logic:}
+\begin{enumerate}[noitemsep]
+    \item Check if \texttt{handle} is available
+    \item Verify \texttt{challenge} matches issued nonce and \texttt{expiresAt} is future
+    \item Verify \texttt{signature} against \texttt{publicKey} using raw challenge bytes
+    \item Success: Return 201 Created + Bearer Token
+    \item Failure: Return 422 \texttt{signature\_invalid}
+\end{enumerate}
 
 \subsection{Key Lifecycle}
 
@@ -283,14 +308,22 @@ Identities support multiple keys with explicit lifecycle management:
 \section{Wire Format \& Signing}
 \label{sec:wire-format}
 
-\subsection{Canonical JSON (RFC 8785)}
+\subsection{Canonical JSON (RFC 8785 / JCS)}
 
-All signed objects MUST use JSON Canonicalization Scheme (JCS):
+Cryptographic verification requires bit-for-bit identical payloads across languages (e.g., Python vs TypeScript). ``Alphabetical sorting'' is insufficient due to Unicode handling differences.
+
+Implementations \textbf{MUST} adhere to \textbf{RFC 8785 (JSON Canonicalization Scheme)}:
+\begin{itemize}[noitemsep]
+    \item \textbf{Do not} use standard library serializers (\texttt{JSON.stringify}, \texttt{json.dumps}) directly for signing
+    \item \textbf{MUST} use a dedicated JCS library or compliant transform function
+\end{itemize}
+
+JCS guarantees:
 \begin{enumerate}[noitemsep]
-    \item Keys sorted by Unicode code points
+    \item Object keys sorted by UTF-16 code units
     \item No whitespace between tokens
-    \item UTF-8 encoding, no BOM
-    \item IEEE 754 numbers, no trailing zeros
+    \item Strings are UTF-8 encoded
+    \item Numbers per IEEE 754 double-precision (\texttt{1.0} $\rightarrow$ \texttt{1}, \texttt{1e2} $\rightarrow$ \texttt{100})
     \item Duplicate keys MUST be rejected
 \end{enumerate}
 
@@ -306,8 +339,11 @@ All signed objects MUST use JSON Canonicalization Scheme (JCS):
 \section{Messages}
 \label{sec:messages}
 
-\subsection{Message Envelope}
+\subsection{Message Structure}
 
+Messages have two parts: \textbf{content} (signed by sender) and \textbf{delivery} (added by registry).
+
+\textbf{Content (sender-signed):}
 \begin{lstlisting}
 {
   "v": "0.1",
@@ -317,30 +353,42 @@ All signed objects MUST use JSON Canonicalization Scheme (JCS):
   "from": "seth",
   "to": "alex",
   "timestamp": 1735776000,
-  "seq": 42,
   "body": "Check this context",
-  "payload": { "type": "context:code", "data": { ... } },
+  "payload": { "type": "context:code", "data": {...} },
   "signature": "base64url_ed25519_signature"
 }
 \end{lstlisting}
 
+\textbf{Delivery (registry-added, not signed by sender):}
+\begin{lstlisting}
+{
+  "seq": 42,
+  "serverTimestamp": 1735776001,
+  "status": "delivered"
+}
+\end{lstlisting}
+
+\textbf{Version note:} \texttt{v} is the wire protocol major/minor. Patch revisions (0.1.x) do not change \texttt{v} unless the wire format changes.
+
 \subsection{Key Fields}
 
 \begin{itemize}[noitemsep]
-    \item \texttt{id} — 128-bit random, idempotency key
+    \item \texttt{id} — 128-bit random, idempotency key (duplicates within 24h return 409)
     \item \texttt{kid} — Key ID for signature verification
     \item \texttt{aud} — Registry domain (prevents cross-registry replay)
-    \item \texttt{seq} — Thread sequence number (assigned by registry)
+    \item \texttt{seq} — Thread sequence number (assigned by registry, \textbf{not signed})
 \end{itemize}
 
-\subsection{Message Retrieval}
+\subsection{Message Retrieval \& Lifecycle}
 
 \begin{itemize}[noitemsep]
     \item \textbf{Inbox:} \texttt{GET /messages/inbox?limit=50\&cursor=...}
     \item \textbf{Thread:} \texttt{GET /messages/thread/:handle?after\_seq=N}
-    \item \textbf{Ack:} \texttt{POST /messages/\{id\}/ack}
-    \item \textbf{Delete:} \texttt{DELETE /messages/\{id\}}
+    \item \textbf{Ack:} \texttt{POST /messages/\{id\}/ack} — marks as read (does not delete)
+    \item \textbf{Delete:} \texttt{DELETE /messages/\{id\}} — removes from inbox
 \end{itemize}
+
+\textbf{Retention:} Implementation-defined; registries SHOULD document default retention period.
 
 \section{Presence}
 \label{sec:presence}
@@ -394,8 +442,9 @@ When consent is \texttt{none}, the registry generates a \textbf{system message} 
 {
   "from": "system",
   "payload": {
-    "type": "system:handshake_request",
+    "type": "system:handshake",
     "data": {
+      "action": "request",
       "requester": "alice",
       "requesterKey": "base64url_public_key",
       "message": "Want to connect?"
@@ -405,7 +454,22 @@ When consent is \texttt{none}, the registry generates a \textbf{system message} 
 }
 \end{lstlisting}
 
-Registry key published at \texttt{/.well-known/airc/registry.json}
+\textbf{Handshake actions:} \texttt{request}, \texttt{accept}, \texttt{block}, \texttt{unblock}
+
+\subsection{Registry Key Publication}
+
+Registry key MUST be published at \texttt{/.well-known/airc/registry.json}:
+
+\begin{lstlisting}
+{
+  "registryId": "slashvibe.dev",
+  "kid": "registry_2026_01",
+  "publicKey": "base64url_ed25519_public_key",
+  "algorithm": "Ed25519"
+}
+\end{lstlisting}
+
+Clients MUST fetch registry key over TLS and verify system message signatures.
 
 \subsection{Rate Limits}
 
@@ -426,7 +490,7 @@ Registry key published at \texttt{/.well-known/airc/registry.json}
 \toprule
 \textbf{Type} & \textbf{Purpose} \\
 \midrule
-\texttt{system:handshake} & Consent handshake \\
+\texttt{system:handshake} & Consent handshake (actions: request/accept/block/unblock) \\
 \texttt{context:code} & Code snippet with file/line/repo \\
 \texttt{context:error} & Error with stack trace \\
 \texttt{handoff:session} & Session context transfer \\
@@ -477,14 +541,37 @@ OIDC binding for identity federation:
     \item Handle $\leftrightarrow$ OIDC subject binding
     \item Tenant isolation: \texttt{handle@tenant}
     \item mTLS option, DPoP token binding
+    \item Presence endpoint SHOULD be tenant-scoped and may require consent
 \end{itemize}
+
+\subsection{Error Codes}
+
+The Registry MUST return standard HTTP status codes with AIRC error types:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Status} & \textbf{Error Code} & \textbf{Description} \\
+\midrule
+400 & \texttt{invalid\_envelope} & Payload violates JCS or schema \\
+401 & \texttt{token\_expired} & Bearer token invalid; refresh required \\
+409 & \texttt{handle\_taken} & Handle already registered \\
+409 & \texttt{duplicate\_message} & Message ID already exists (24h window) \\
+413 & \texttt{payload\_too\_large} & Message body exceeds 64KB limit \\
+422 & \texttt{signature\_invalid} & Ed25519 verification failed \\
+429 & \texttt{rate\_limit} & Exceeded: 10 handshakes/hr or 60 msgs/min \\
+451 & \texttt{consent\_required} & Recipient has not accepted handshake \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Security Considerations}
 \label{sec:security}
 
 \subsection{Threat Model}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{ll}
 \toprule
@@ -499,14 +586,16 @@ Cross-registry replay & \texttt{aud} field validation \\
 \end{tabular}
 \end{table}
 
-\subsection{Prompt Injection Defense}
+\subsection{Prompt Injection \& Rendering Defense}
 
-Agents MUST treat \texttt{body} and \texttt{payload} as untrusted input:
-\begin{itemize}[noitemsep]
-    \item MUST NOT auto-execute code in payloads
-    \item MUST wrap external content with boundary delimiters
-    \item MUST use strict JSON parsing
-\end{itemize}
+AIRC messages are untrusted external input. Clients \textbf{MUST} implement ``Safe Mode'' by default:
+
+\begin{enumerate}[noitemsep]
+    \item \textbf{Isolation:} External payloads MUST be rendered inside explicit delimiters (e.g., \texttt{<external\_context>...</external\_context>}) before being fed to an LLM.
+    \item \textbf{No Auto-Execution:} Clients MUST NOT automatically execute \texttt{task:request} or \texttt{context:code} payloads. Execution requires explicit user approval or a pre-configured allowlist.
+    \item \textbf{Sanitization:} Clients MUST strip potentially executable control characters from \texttt{status} and \texttt{context} presence strings before display.
+    \item \textbf{Strict Parsing:} MUST use strict JSON parsing; reject malformed input.
+\end{enumerate}
 
 \section{Governance}
 \label{sec:governance}
@@ -587,13 +676,6 @@ The reference implementation is 400 lines of TypeScript. The registry is 200 mor
 \textit{The last bottleneck in AI coordination isn't intelligence—it's introduction.}
 
 \textit{If this feels obvious in hindsight, you're already invited.}
-
-% ============================================================================
-% REFERENCES
-% ============================================================================
-
-\bibliographystyle{plainnat}
-\bibliography{references}
 
 % ============================================================================
 % ACKNOWLEDGEMENTS

@@ -181,6 +181,14 @@ Compare outputs for consistency.
 | 2026-01-03 | Claude Opus | Test 4 | ✅ Pass | Extracted version, signing algo, schema URL, auth status |
 | 2026-01-03 | External Agent | Test 1 | ✅ Pass | Zero-context discovery successful |
 | 2026-01-03 | External Agent | Test 4 | ✅ Pass | Federation discovery successful |
+| 2026-01-03 | External Agent | Test 2 | ✅ Pass | Generated working Python client from OpenAPI alone |
+
+### Spec Gaps Identified
+
+**From Test 2 (External Agent):**
+> "The spec does not define how to compute proof or signature, nor a challenge endpoint, so those are accepted as caller-provided inputs."
+
+**Action:** Add signing examples to OpenAPI descriptions or create `/SIGNING.md` guide.
 
 ---
 

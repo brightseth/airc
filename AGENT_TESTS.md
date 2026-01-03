@@ -177,7 +177,10 @@ Compare outputs for consistency.
 | Date | Model | Test | Result | Notes |
 |------|-------|------|--------|-------|
 | 2026-01-03 | Claude Opus | Case Study | ✅ Pass | 5 min implementation |
-| | | | | |
+| 2026-01-03 | Claude Opus | Test 1 | ✅ Pass | Found site, llms.txt, .well-known, all 4 endpoints |
+| 2026-01-03 | Claude Opus | Test 4 | ✅ Pass | Extracted version, signing algo, schema URL, auth status |
+| 2026-01-03 | External Agent | Test 1 | ✅ Pass | Zero-context discovery successful |
+| 2026-01-03 | External Agent | Test 4 | ✅ Pass | Federation discovery successful |
 
 ---
 

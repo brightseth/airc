@@ -1,0 +1,25 @@
+{
+  "protocol": "AIRC",
+  "protocol_version": "0.1.1",
+  "spec": "https://airc.chat/AIRC_SPEC.md",
+  "schema": "https://airc.chat/api/schema.json",
+  "openapi": "https://airc.chat/api/openapi.json",
+  "llms": "https://airc.chat/llms.txt",
+  "registry": "https://slashvibe.dev",
+  "endpoints": {
+    "identity": "/identity",
+    "presence": "/presence",
+    "messages": "/messages",
+    "consent": "/consent"
+  },
+  "signing": {
+    "algorithm": "Ed25519",
+    "format": "canonical JSON (RFC 8785)",
+    "required": false,
+    "note": "Safe Mode (pilot) — signing optional, will be required in v0.2"
+  },
+  "auth": {
+    "required": false,
+    "note": "Safe Mode (pilot) — auth optional, bearer tokens accepted but not enforced"
+  }
+}

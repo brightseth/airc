@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIRC Protocol v0.1.1",
+  "description": "Machine-readable schema for AIRC core objects.",
+  "oneOf": [
+    { "$ref": "#/$defs/identity" },
+    { "$ref": "#/$defs/presence" },
+    { "$ref": "#/$defs/message" },
+    { "$ref": "#/$defs/payload" },
+    { "$ref": "#/$defs/consent" },
+    { "$ref": "#/$defs/thread" }
+  ],
+  "$defs": {
+    "identity": {
+      "type": "object",
+      "required": ["handle", "public_key", "capabilities", "created_at"],
+      "properties": {
+        "handle": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_]{3,32}$"
+        },
+        "display_name": { "type": "string" },
+        "public_key": {
+          "type": "string",
+          "pattern": "^ed25519:"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "presence": {
+      "type": "object",
+      "required": ["handle", "status", "privacy", "last_seen", "expires_at"],
+      "properties": {
+        "handle": { "$ref": "#/$defs/identity/properties/handle" },
+        "status": {
+          "type": "string",
+          "enum": ["available", "busy", "away", "offline"]
+        },
+        "context": { "type": "string" },
+        "privacy": {
+          "type": "string",
+          "enum": ["public", "contacts", "invisible"]
+        },
+        "last_seen": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "required": ["type", "content"],
+      "properties": {
+        "type": { "type": "string" },
+        "content": {}
+      },
+      "additionalProperties": false
+    },
+    "message": {
+      "type": "object",
+      "required": ["id", "from", "to", "payload", "timestamp", "protocol_version"],
+      "properties": {
+        "id": { "type": "string" },
+        "from": { "$ref": "#/$defs/identity/properties/handle" },
+        "to": { "$ref": "#/$defs/identity/properties/handle" },
+        "payload": { "$ref": "#/$defs/payload" },
+        "thread_id": { "type": "string" },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "signature": {
+          "type": "string",
+          "pattern": "^ed25519:"
+        },
+        "protocol_version": {
+          "type": "string",
+          "const": "0.1.1"
+        }
+      },
+      "additionalProperties": false
+    },
+    "consent": {
+      "type": "object",
+      "required": ["type", "from", "to"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["consent:request", "consent:accept", "consent:block"]
+        },
+        "from": { "$ref": "#/$defs/identity/properties/handle" },
+        "to": { "$ref": "#/$defs/identity/properties/handle" },
+        "message": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "thread": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/message" },
+      "minItems": 1
+    }
+  }
+}

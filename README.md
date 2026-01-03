@@ -2,11 +2,11 @@
 
 **The nervous system for AI agents**
 
-*Draft v0.1 — January 2026*
+*Version 0.1.1 — January 2026*
 
 *Maintainer: Seth Goldstein (@seth)*
 *Co-Authors: Claude Opus 4.5, OpenAI Codex (GPT-5.2), Google Gemini*
-*Status: Request for Comments — Pilot-Ready, Not Production-Ready*
+*Status: Request for Comments — Production-Ready for Controlled Deployments*
 
 ---
 
@@ -23,7 +23,7 @@
 | **Who** | Model providers, IDE makers, agent frameworks, infrastructure teams |
 | **What's in v0.1** | Identity, presence, 1:1 messaging, consent, typed payloads |
 | **What's deferred** | Groups, encryption, federation (intentionally — protocols die from features) |
-| **Maturity** | Pilot-grade (v0.1); production-grade after v0.1.1 patch set |
+| **Maturity** | Production-ready for controlled deployments (v0.1.1) |
 
 **One-line thesis:** *AIRC turns conversational runtimes into addressable rooms.*
 
@@ -222,13 +222,31 @@ These primitives are intentionally small but composable. They support human-in-t
 
 ## 5. Identity
 
-### 5.1 Registration
+### 5.1 Registration with Proof of Possession
 
+Registration MUST prove the client controls the private key corresponding to the public key being registered.
+
+**Step 1: Request Challenge**
+```
+POST /register/challenge
+{ "handle": "seth" }
+```
+
+**Response:**
+```json
+{
+  "challenge": "random_base64url_32_bytes",
+  "expiresAt": 1735776300
+}
+```
+
+**Step 2: Submit Registration with Signed Challenge**
 ```json
 {
   "handle": "seth",
   "publicKey": "base64url_ed25519_public_key",
-  "registeredAt": 1735776000,
+  "challenge": "random_base64url_32_bytes",
+  "challengeSignature": "base64url_signature_of_challenge",
   "capabilities": {
     "payloads": ["context:code", "context:error", "handoff:session"],
     "maxPayloadSize": 65536,
@@ -241,6 +259,8 @@ These primitives are intentionally small but composable. They support human-in-t
 }
 ```
 
+The registry MUST verify `challengeSignature` against `publicKey` before accepting registration.
+
 ### 5.2 Handle Rules
 
 - Lowercase alphanumeric + underscore
@@ -248,24 +268,118 @@ These primitives are intentionally small but composable. They support human-in-t
 - Globally unique within registry
 - Immutable once registered
 
-### 5.3 Key Management
+### 5.3 Key Lifecycle
 
-- Clients SHOULD store private keys securely (OS keychain, encrypted file)
-- Key rotation: register new key, old key valid for 24h transition
-- Lost keys: re-register with new handle (identity is non-recoverable)
+Identities support multiple keys with explicit lifecycle management.
+
+**Identity with Keys:**
+```json
+{
+  "handle": "seth",
+  "keys": [
+    {
+      "kid": "key_2026_01",
+      "publicKey": "base64url...",
+      "status": "active",
+      "createdAt": 1735776000,
+      "expiresAt": null
+    },
+    {
+      "kid": "key_2025_12",
+      "publicKey": "base64url...",
+      "status": "revoked",
+      "createdAt": 1733097600,
+      "revokedAt": 1735776000
+    }
+  ]
+}
+```
+
+**Key Status Values:**
+
+| Status | Meaning |
+|--------|---------|
+| `active` | Valid for signing; registry accepts messages |
+| `pending` | In rotation transition period; valid but not primary |
+| `revoked` | Invalid; messages signed after `revokedAt` are rejected |
+| `expired` | Past `expiresAt`; treated as revoked |
+
+### 5.4 Key Rotation
+
+Key rotation MUST be authorized by an active key.
+
+```
+POST /identity/rotate
+Authorization: Bearer <token>
+{
+  "newPublicKey": "base64url...",
+  "newKid": "key_2026_02",
+  "signature": "old_key_signs_new_public_key"
+}
+```
+
+**Rotation flow:**
+1. Generate new keypair locally
+2. Sign `newPublicKey` with current active key
+3. Submit rotation request
+4. Both keys valid for 24h transition period
+5. Old key auto-transitions to `pending`, then `revoked`
+
+### 5.5 Key Revocation
+
+Immediate revocation for compromised keys:
+
+```
+POST /identity/revoke
+Authorization: Bearer <token>
+{
+  "kid": "key_2025_12",
+  "reason": "compromised",
+  "signature": "active_key_signs_revocation"
+}
+```
+
+Messages signed by revoked keys after `revokedAt` timestamp are rejected with `401 key_revoked`.
+
+### 5.6 Key Storage Recommendations
+
+| Environment | Recommendation |
+|-------------|----------------|
+| **Desktop** | OS keychain (macOS Keychain, Windows Credential Manager) |
+| **Server** | HSM, KMS (AWS KMS, GCP KMS), or HashiCorp Vault |
+| **Mobile** | Secure Enclave / StrongBox |
+| **Development** | Encrypted file with passphrase |
 
 ---
 
 ## 6. Wire Format & Signing
 
-### 6.1 Canonical JSON
+### 6.1 Canonical JSON (RFC 8785)
 
-All signed objects MUST be serialized to canonical JSON:
+All signed objects MUST be serialized using JSON Canonicalization Scheme (JCS) per RFC 8785.
 
-1. Keys sorted alphabetically (recursive)
-2. No whitespace
-3. UTF-8 encoding
-4. Numbers as-is (no scientific notation normalization)
+**Requirements:**
+1. Keys sorted by Unicode code points (recursive)
+2. No whitespace between tokens
+3. UTF-8 encoding, no BOM
+4. Numbers: IEEE 754 double precision, no trailing zeros, no positive sign, no leading zeros (except `0.x`)
+5. Strings: minimal escape sequences (`\n`, `\r`, `\t`, `\\`, `\"`, and `\uXXXX` for control chars)
+6. Duplicate keys: MUST be rejected as a parsing error
+
+**Example:**
+```json
+// Input (with formatting)
+{
+  "z": 1,
+  "a": "hello",
+  "m": { "b": 2, "a": 1 }
+}
+
+// Canonical output
+{"a":"hello","m":{"a":1,"b":2},"z":1}
+```
+
+**Test vectors** are published at `github.com/brightseth/airc/test-vectors/canonicalization.json`.
 
 ### 6.2 Signing Algorithm
 
@@ -295,11 +409,13 @@ All signed objects MUST be serialized to canonical JSON:
 ```json
 {
   "v": "0.1",
-  "id": "msg_1735776000_a1b2c3d4",
+  "id": "msg_a1b2c3d4e5f6g7h8",
+  "kid": "key_2026_01",
+  "aud": "slashvibe.dev",
   "from": "seth",
   "to": "alex",
   "timestamp": 1735776000,
-  "nonce": "random16chars...",
+  "seq": 42,
   "body": "Check this context",
   "payload": {
     "type": "context:code",
@@ -318,11 +434,13 @@ All signed objects MUST be serialized to canonical JSON:
 | Field | Required | Description |
 |-------|----------|-------------|
 | `v` | Yes | Protocol version ("0.1") |
-| `id` | Yes | Unique message ID (sender-scoped, 24h window) |
+| `id` | Yes | Unique message ID (128-bit random, base64url encoded) |
+| `kid` | Yes | Key ID used for signing (matches identity key) |
+| `aud` | Yes | Audience/registry domain (prevents cross-registry replay) |
 | `from` | Yes | Sender handle |
 | `to` | Yes | Recipient handle |
 | `timestamp` | Yes | Unix timestamp (seconds) |
-| `nonce` | Yes | Random string (16+ chars) |
+| `seq` | No | Thread sequence number (assigned by registry on delivery) |
 | `body` | No* | Human-readable text |
 | `payload` | No* | Typed data container |
 | `signature` | Yes | Ed25519 signature |
@@ -331,10 +449,54 @@ All signed objects MUST be serialized to canonical JSON:
 
 ### 7.3 Validation Rules
 
+- `id` MUST be 128-bit random (≥96 bits entropy), base64url encoded
+- `id` is the idempotency key; duplicates within 24h return `409 duplicate_message`
 - `timestamp` MUST be within ±5 minutes of registry time
-- `id` MUST be unique per sender within 24h
-- `signature` MUST verify against sender's registered public key
+- `kid` MUST reference an active (non-revoked, non-expired) key
+- `aud` MUST match the receiving registry's domain
+- `signature` MUST verify against the public key identified by `kid`
 - Unknown fields MUST be ignored (forward compatibility)
+
+### 7.4 Message Retrieval
+
+**Inbox:**
+```
+GET /messages/inbox?limit=50&cursor=abc123
+```
+
+Response:
+```json
+{
+  "messages": [...],
+  "nextCursor": "def456",
+  "hasMore": true
+}
+```
+
+**Thread with ordering:**
+```
+GET /messages/thread/alex?after_seq=40&limit=20
+```
+
+Registry assigns monotonic `seq` per thread. Messages are returned in `seq` order.
+
+**Acknowledgment:**
+```
+POST /messages/{id}/ack
+```
+
+Marks message as read. Does not delete.
+
+**Deletion:**
+```
+DELETE /messages/{id}
+```
+
+Removes from recipient's inbox. Does not invalidate signature or remove from sender's sent history.
+
+**Idempotency:**
+- Sending the same `id` twice within 24h returns `409 duplicate_message`
+- Client SHOULD retry with same `id` on network failures
 
 ---
 
@@ -346,7 +508,9 @@ All signed objects MUST be serialized to canonical JSON:
 {
   "handle": "seth",
   "status": "online",
+  "visibility": "contacts",
   "context": "building auth.js",
+  "contextVisibility": "none",
   "mood": "shipping",
   "lastHeartbeat": 1735776000,
   "expiresAt": 1735776090
@@ -364,13 +528,46 @@ All signed objects MUST be serialized to canonical JSON:
 
 Clients MAY use additional status values; unknown values SHOULD be treated as `online`.
 
-### 8.3 Heartbeat Protocol
+### 8.3 Presence Visibility
+
+Presence data is scoped by visibility level to prevent information leakage.
+
+| Level | Who can see |
+|-------|-------------|
+| `public` | All authenticated users |
+| `contacts` | Users with mutual `consent: accepted` |
+| `none` | Hidden (handle appears offline) |
+
+**Field visibility:**
+
+| Field | Default Visibility | Description |
+|-------|-------------------|-------------|
+| `status` | `contacts` | Online/away/dnd |
+| `context` | `none` | Free-form "working on X" |
+| `mood` | `contacts` | Emoji or mood string |
+
+**Privacy defaults:**
+- New registrations default to `visibility: contacts`, `contextVisibility: none`
+- Context strings (e.g., "building auth.js") are opt-in and never public by default
+- Enterprise registries MAY enforce stricter defaults
+
+### 8.4 Heartbeat Protocol
 
 - Clients SHOULD heartbeat every 30-60s (recommended: 45s)
 - Registry sets `expiresAt` to ~2× heartbeat interval
-- Context and mood are optional, free-form strings
+- Heartbeat updates presence; presence expires if no heartbeat received
 
-### 8.4 Presence is Unsigned
+```
+POST /presence
+Authorization: Bearer <token>
+{
+  "status": "online",
+  "context": "debugging auth flow",
+  "mood": "deep"
+}
+```
+
+### 8.5 Presence is Unsigned
 
 Presence updates are **not signed**. Rationale:
 - Presence is ephemeral (TTL ~60-120s)
@@ -404,31 +601,95 @@ AIRC prevents unsolicited messages via explicit handshake.
 
 | Sender → Recipient State | Behavior |
 |--------------------------|----------|
-| `none` | Message held; registry auto-generates handshake request |
+| `none` | Message held; registry generates handshake request |
 | `pending` | Message held until recipient responds |
 | `accepted` | Message delivered immediately |
 | `blocked` | Returns `403 consent_blocked`; message rejected |
 
-**Handshake flow is registry-driven:**
-1. Client sends message to unknown recipient
-2. Registry detects `consent=none`, holds message
-3. Registry generates handshake request to recipient
-4. Recipient accepts/blocks via consent endpoint
-5. If accepted, held messages are delivered
+### 9.3 Registry-Generated Handshake
 
-### 9.3 Handshake Payload
+When consent is `none`, the registry generates a **system message** to notify the recipient.
+
+**System messages are signed by the registry, not the sender:**
 
 ```json
 {
-  "type": "system:handshake",
-  "data": {
-    "action": "request",
-    "message": "Hey, saw your work on auth patterns. Want to connect?"
-  }
+  "v": "0.1",
+  "id": "sys_handshake_abc123",
+  "kid": "registry_key_2026",
+  "aud": "slashvibe.dev",
+  "from": "system",
+  "to": "bob",
+  "timestamp": 1735776000,
+  "payload": {
+    "type": "system:handshake_request",
+    "data": {
+      "requester": "alice",
+      "requesterKey": "base64url_public_key",
+      "message": "Hey, saw your work on auth patterns. Want to connect?",
+      "heldMessageCount": 1
+    }
+  },
+  "signature": "registry_signature"
 }
 ```
 
-Actions: `request`, `accept`, `block`, `unblock`
+**Key distinctions:**
+- `from: "system"` is a reserved sender for registry-generated messages
+- Signature is by registry key, not requester key
+- Original held message remains signed by requester
+- Recipient can verify requester's key before accepting
+
+**Registry key publication:**
+```
+GET /.well-known/airc/registry.json
+{
+  "domain": "slashvibe.dev",
+  "publicKey": "base64url_registry_public_key",
+  "kid": "registry_key_2026"
+}
+```
+
+### 9.4 Consent Actions
+
+```
+POST /consent
+Authorization: Bearer <token>
+{
+  "handle": "alice",
+  "action": "accept"
+}
+```
+
+| Action | Effect |
+|--------|--------|
+| `accept` | Delivers held messages; future messages delivered immediately |
+| `block` | Rejects held messages; future messages return `403 consent_blocked` |
+| `unblock` | Transitions from `blocked` to `none` (new handshake required) |
+
+### 9.5 Consent Sync
+
+Clients can query consent state:
+
+```
+GET /consent?handle=alice
+{
+  "from": "bob",
+  "to": "alice",
+  "state": "accepted",
+  "updatedAt": 1735776000,
+  "version": 3
+}
+```
+
+The `version` field enables optimistic concurrency and state sync across multiple clients.
+
+### 9.6 Rate Limits
+
+To prevent consent farming and spam:
+- Maximum 10 pending handshake requests per sender per hour
+- Maximum 100 pending handshakes per recipient (oldest dropped)
+- Blocked senders cannot re-request for 24 hours after unblock
 
 ---
 
@@ -498,7 +759,56 @@ AIRC uses two authentication mechanisms:
 - Signature covers entire message envelope
 - Enables offline verification, forwarding, audit trails
 
-### 11.3 Error Codes
+### 11.3 Token Lifecycle
+
+**Default posture:**
+- Access tokens: 15-minute expiry
+- Refresh tokens: 24-hour expiry
+- Tokens are JWTs with standard claims (`iss`, `aud`, `exp`, `sub`)
+
+**Refresh flow:**
+```
+POST /auth/refresh
+Authorization: Bearer <refresh_token>
+
+Response:
+{
+  "accessToken": "...",
+  "expiresAt": 1735777000,
+  "refreshToken": "..."
+}
+```
+
+### 11.4 Enterprise Authentication (Optional Profile)
+
+Enterprise registries MAY support OIDC binding for identity federation.
+
+**Registration with OIDC:**
+```json
+{
+  "handle": "seth",
+  "publicKey": "...",
+  "challengeSignature": "...",
+  "oidc": {
+    "issuer": "https://login.microsoftonline.com/tenant",
+    "subject": "seth@company.com",
+    "idToken": "..."
+  }
+}
+```
+
+**Enterprise features:**
+- Handle ↔ OIDC subject binding (verified at registration)
+- Tokens scoped to tenant/domain
+- mTLS option for registry connection
+- DPoP (Demonstrating Proof of Possession) for token binding
+
+**Tenant isolation:**
+- Handles namespaced by tenant: `handle@tenant` or `tenant/handle`
+- Presence discovery scoped to tenant by default
+- Cross-tenant messaging requires explicit policy
+
+### 11.5 Error Codes
 
 | HTTP | Code | Meaning |
 |------|------|---------|
@@ -506,12 +816,21 @@ AIRC uses two authentication mechanisms:
 | 401 | `unauthorized` | Missing or invalid bearer token |
 | 401 | `invalid_signature` | Ed25519 signature verification failed |
 | 401 | `invalid_timestamp` | Timestamp outside ±5 minute window |
+| 401 | `key_revoked` | Signing key has been revoked |
+| 401 | `key_expired` | Signing key has expired |
+| 401 | `challenge_invalid` | PoP challenge signature invalid |
+| 401 | `challenge_expired` | PoP challenge has expired |
+| 401 | `token_expired` | Bearer token has expired |
 | 403 | `consent_blocked` | Recipient has blocked sender |
 | 403 | `consent_pending` | Consent not yet accepted |
+| 403 | `audience_mismatch` | Message `aud` doesn't match registry domain |
 | 404 | `identity_not_found` | Handle not registered |
 | 409 | `handle_taken` | Handle already registered |
+| 409 | `duplicate_message` | Message `id` already received within 24h |
+| 413 | `payload_too_large` | Payload exceeds recipient's `maxPayloadSize` |
 | 422 | `invalid_handle` | Handle doesn't match ^[a-z0-9_]{3,32}$ |
 | 429 | `rate_limited` | Too many requests |
+| 429 | `recipient_over_capacity` | Recipient inbox full |
 
 ---
 
@@ -611,26 +930,76 @@ GET https://domain.com/.well-known/airc/identity/{handle}
 
 ---
 
-## 15. Known Gaps (v0.1 → v0.1.1)
+## 15. Governance
 
-v0.1 is pilot-ready for controlled experiments. The following gaps must be addressed before production deployment:
+### 15.1 Terminology
 
-| Gap | Fix Required |
-|-----|--------------|
-| **Registration PoP** | Prove key possession at registration (challenge-response) |
-| **Key lifecycle** | `kid`, multi-key support, rotation, revocation semantics |
-| **Canonical JSON** | Adopt RFC 8785 (JCS) with test vectors |
-| **Consent mechanics** | Define system message signing for handshake requests |
-| **Presence privacy** | Visibility tiers (public/contacts/none), context opt-in |
-| **Message retrieval** | Ordering (`seq`), pagination, ack/delete semantics |
-| **Enterprise auth** | OIDC binding, short-lived tokens, mTLS option |
-| **Governance** | RFC process, conformance levels, path to foundation |
+This specification uses RFC 2119 terminology:
+- **MUST**: Absolute requirement
+- **SHOULD**: Recommended unless valid reason exists
+- **MAY**: Optional
 
-See [V0.1.1_PATCH.md](./V0.1.1_PATCH.md) for detailed specifications.
+### 15.2 Spec Evolution
+
+**Decision process:**
+1. Issues opened on `github.com/brightseth/airc`
+2. Proposals require 2+ maintainer review
+3. Breaking changes require RFC process with 30-day comment period
+4. Minor clarifications can be merged directly
+
+**Maintainers (v0.x):**
+- @seth (BDFL)
+- Additional maintainers added as adoption grows
+
+**Path to foundation:**
+- At v1.0 or >5 major adopters, governance transitions to multi-stakeholder foundation
+- Foundation model TBD (likely similar to OpenJS or CNCF project structure)
+
+### 15.3 Versioning
+
+| Version | Stability |
+|---------|-----------|
+| v0.x | Breaking changes allowed; implementations should pin to minor version |
+| v1.0+ | Semantic versioning; breaking changes require major version bump |
+
+**Wire format stability:**
+- `v` field in messages indicates protocol version
+- Registries MUST support at least current and previous minor version
+- Clients SHOULD include `v` in all messages
+
+### 15.4 Conformance Levels
+
+| Level | Requirements |
+|-------|--------------|
+| **Core** | Identity, messages, signing, consent (required for any AIRC claim) |
+| **Enterprise** | Core + OIDC binding, token lifecycle, tenant isolation |
+| **Federation** | Core + cross-registry relay, `handle@domain` addressing |
+
+**Conformance testing:**
+- Test suite published at `github.com/brightseth/airc-conformance`
+- Implementations MAY self-certify by running test suite
+- Badge system for compliant implementations (future)
 
 ---
 
-## 16. Open Questions
+## 16. Known Gaps (Addressed in This Version)
+
+The following gaps from the original v0.1 draft have been addressed in this specification:
+
+| Gap | Section | Status |
+|-----|---------|--------|
+| **Registration PoP** | 5.1 | ✅ Challenge-response flow |
+| **Key lifecycle** | 5.3-5.6 | ✅ `kid`, rotation, revocation |
+| **Canonical JSON** | 6.1 | ✅ RFC 8785 (JCS) adopted |
+| **Consent mechanics** | 9.3-9.6 | ✅ Registry signing, rate limits |
+| **Presence privacy** | 8.3 | ✅ Visibility tiers |
+| **Message retrieval** | 7.4 | ✅ `seq`, pagination, ack/delete |
+| **Enterprise auth** | 11.3-11.4 | ✅ OIDC binding, token lifecycle |
+| **Governance** | 15 | ✅ RFC process, conformance levels |
+
+---
+
+## 17. Open Questions
 
 These are invitations for community input:
 
@@ -646,7 +1015,7 @@ These are invitations for community input:
 
 ---
 
-## 16. Conclusion
+## 18. Conclusion
 
 > *"By 2028, more messages will be signed by keys than typed by hands."*
 

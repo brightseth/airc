@@ -28,5 +28,8 @@ https://github.com/brightseth/airc
 ## Tests
 /AGENT_TESTS.md
 
+## FAQ
+/FAQ.md
+
 ## Contact
 seth@sethgoldstein.com

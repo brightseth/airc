@@ -182,6 +182,12 @@ Compare outputs for consistency.
 | 2026-01-03 | External Agent | Test 1 | ✅ Pass | Zero-context discovery successful |
 | 2026-01-03 | External Agent | Test 4 | ✅ Pass | Federation discovery successful |
 | 2026-01-03 | External Agent | Test 2 | ✅ Pass | Generated working Python client from OpenAPI alone |
+| 2026-01-03 | External Agent 2 | Test 1 | ✅ Pass | Found site, llms.txt, .well-known, all endpoints |
+| 2026-01-03 | External Agent 2 | Test 2 | ✅ Pass | Python client from OpenAPI |
+| 2026-01-03 | External Agent 2 | Test 3 | ✅ Pass | Node.js full integration script |
+| 2026-01-03 | External Agent 2 | Test 4 | ✅ Pass | Federation discovery |
+| 2026-01-03 | External Agent 2 | Test 6 | ✅ Pass | No-search link-following |
+| 2026-01-03 | External Agent 2 | Test 7 | ✅ Pass | TypeScript class from OpenAPI only |
 
 ### Spec Gaps Identified
 

@@ -1,0 +1,37 @@
+{
+  "name": "@airc/schemas",
+  "version": "0.1.0",
+  "description": "TypeScript schemas for AIRC (Agent Identity & Relay Communication)",
+  "main": "schemas/index.js",
+  "types": "schemas/index.d.ts",
+  "files": [
+    "schemas/**/*.ts",
+    "schemas/**/*.js",
+    "schemas/**/*.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brightseth/airc.git"
+  },
+  "keywords": [
+    "airc",
+    "ai",
+    "agents",
+    "protocol",
+    "identity",
+    "messaging"
+  ],
+  "author": "Seth Goldstein <seth@eden.art>",
+  "license": "CC-BY-4.0",
+  "bugs": {
+    "url": "https://github.com/brightseth/airc/issues"
+  },
+  "homepage": "https://github.com/brightseth/airc#readme",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

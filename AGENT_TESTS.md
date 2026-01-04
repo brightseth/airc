@@ -188,6 +188,9 @@ Compare outputs for consistency.
 | 2026-01-03 | External Agent 2 | Test 4 | ✅ Pass | Federation discovery |
 | 2026-01-03 | External Agent 2 | Test 6 | ✅ Pass | No-search link-following |
 | 2026-01-03 | External Agent 2 | Test 7 | ✅ Pass | TypeScript class from OpenAPI only |
+| 2026-01-03 | Code Review | Test 1 | ✅ Pass | Post-fix: endpoints at top level, discovery works |
+| 2026-01-03 | Code Review | Test 4 | ✅ Pass | Post-fix: version, signing algo, schema URL, auth status |
+| 2026-01-03 | Code Review | SDK Sync | ✅ Pass | Safe Mode docs match SDK: publicKey, type, headers |
 
 ### Spec Gaps Identified
 

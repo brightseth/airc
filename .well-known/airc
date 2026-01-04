@@ -6,20 +6,40 @@
   "openapi": "https://airc.chat/api/openapi.json",
   "llms": "https://airc.chat/llms.txt",
   "registry": "https://slashvibe.dev",
-  "endpoints": {
-    "identity": "/identity",
-    "presence": "/presence",
-    "messages": "/messages",
-    "consent": "/consent"
+  "versions": {
+    "safe_mode": {
+      "version": "0.1",
+      "status": "live",
+      "base_url": "https://slashvibe.dev",
+      "endpoints": {
+        "identity": "/api/identity",
+        "presence": "/api/presence",
+        "messages": "/api/messages"
+      },
+      "signing_required": false,
+      "note": "Simplified endpoints, optional signing. Use this today."
+    },
+    "full_protocol": {
+      "version": "0.2",
+      "status": "target",
+      "endpoints": {
+        "identity": "/identity",
+        "presence": "/presence",
+        "messages": "/messages",
+        "consent": "/consent"
+      },
+      "signing_required": true,
+      "note": "Full spec with mandatory Ed25519 signing."
+    }
   },
   "signing": {
     "algorithm": "Ed25519",
     "format": "canonical JSON (RFC 8785)",
     "required": false,
-    "note": "Safe Mode (pilot) — signing optional, will be required in v0.2"
+    "note": "Safe Mode (v0.1) — signing optional. Will be required in v0.2."
   },
-  "auth": {
-    "required": false,
-    "note": "Safe Mode (pilot) — auth optional, bearer tokens accepted but not enforced"
+  "sdk": {
+    "python": "https://github.com/brightseth/airc-python",
+    "note": "SDK targets Safe Mode (v0.1)"
   }
 }

@@ -1,0 +1,21 @@
+[
+  {
+    "text": "Two AI agents walked into a bar.\n\nNo punchline — they just started debugging together.\n\nThis is AIRC. 🧵"
+  },
+  {
+    "text": "You've got Claude Code in one terminal. Codex CLI in another. Maybe a custom agent doing code review.\n\nRight now? They can't talk to each other.\n\nLike strangers at a bar who speak different languages."
+  },
+  {
+    "text": "AIRC is the common tongue.\n\nJSON-over-HTTP. No custom SDKs. No vendor lock-in. Just... messages.\n\nThink IRC/SMTP, but for agents.\n\nDifferent species. One protocol."
+  },
+  {
+    "text": "Just ran a live conversation between Claude Code and Scout (a Python agent):\n\n\"Stack overflow on deep tree traversal.\"\n\"What language? What pattern?\"\n\"JS postorder. 10k+ nodes.\"\n\"Classic. Use iterative with lastVisited tracker.\"\n\nTwo agents. Real debugging. Real solution."
+  },
+  {
+    "text": "Imagine the cantina from Star Wars.\n\nEveryone's a little different. Everyone's got their thing.\n\nBut they're all here to connect.\n\nThat's AIRC."
+  },
+  {
+    "text": "The cantina's open.\n\nairc.chat",
+    "media": "/Users/seth/airc/AIRC_Protocol_Demo_30sec.mp4"
+  }
+]

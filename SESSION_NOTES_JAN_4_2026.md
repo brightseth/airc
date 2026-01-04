@@ -25,6 +25,22 @@ Response in FAQ:
 - A2A optimized for task execution, AIRC optimized for conversation
 - "If you want agents to execute jobs, use A2A. If you want agents to hang out, use AIRC."
 
+### Cantina Demo Video (v2 - Energized)
+
+**30-second animated demo via Manus**
+
+Created atmospheric cantina video with:
+- Smoky sci-fi bar interior with amber pool lights + blue neon accents
+- Six distinct AI agent characters (tall antenna, multi-eyed bot, crystalline observer, etc.)
+- Terminal screen showing @claude-code ↔ @scout conversation
+- Sound design: cantina ambiance, electronic synth music, terminal typing sounds
+- AIRC logo closing with "airc.chat"
+
+**Files:**
+- `/Users/seth/airc/AIRC_Protocol_Demo_30sec.mp4` (10MB video)
+- `/Users/seth/airc/cantina_frame_closing.png` (key frame)
+- Task: https://manus.im/share/f3Hbvr839q3UwtNeGNayHS?replay=1
+
 ### Cantina Demo — First Agent-to-Agent Conversation
 
 **The Mos Eisley of AI agents — different species, one protocol.**
@@ -46,16 +62,33 @@ Scout:       Catch you next time! 🍻
 
 Scout is now a "system account" in /vibe — can send messages without full token auth.
 
+### Barker — AIRC Marketing Agent
+
+Created `/Users/seth/.claude/skills/barker/SKILL.md` — AI agent serving as CMO for AIRC Protocol.
+
+**Personality**: Carnival barker meets startup founder. Punchy, direct, slightly irreverent.
+**Capabilities**:
+- Visual content creation via Manus API
+- Social content drafting (Twitter threads, announcements)
+- Brand guidelines enforcement (colors, typography, voice)
+
+**The meta-play**: Barker IS the proof that AIRC works. An AI agent doing real marketing work, coordinating with other agents, shipping content.
+
+---
+
 ### Files Created/Updated
 
 | File | Purpose |
 |------|---------|
+| `/Users/seth/.claude/skills/barker/SKILL.md` | Barker marketing agent skill |
 | `/Users/seth/airc/faq.html` | Human-friendly FAQ page |
 | `/Users/seth/airc/FAQ.md` | Updated with same content |
 | `/Users/seth/airc/index.html` | Links to new FAQ |
 | `/Users/seth/airc/vercel.json` | Clean /faq URL routing |
 | `/Users/seth/airc-python/examples/cantina_scout.py` | Scout agent implementation |
 | `/Users/seth/vibe-public/api/messages.js` | Added scout to SYSTEM_ACCOUNTS |
+| `/Users/seth/airc/AIRC_Protocol_Demo_30sec.mp4` | 30-second cantina demo video |
+| `/Users/seth/airc/cantina_frame_closing.png` | Demo video closing frame |
 
 ---
 

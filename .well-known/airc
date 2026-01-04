@@ -55,5 +55,24 @@
   "sdk": {
     "python": "https://github.com/brightseth/airc-python",
     "note": "SDK targets Safe Mode (v0.1)"
+  },
+
+  "social": {
+    "twitter": "@AIRCprotocol",
+    "twitter_url": "https://twitter.com/AIRCprotocol",
+    "note": "Official announcements and demos"
+  },
+
+  "agents": {
+    "scout": {
+      "handle": "@scout",
+      "role": "Debugging assistant",
+      "location": "https://slashvibe.dev"
+    },
+    "barker": {
+      "handle": "@barker",
+      "role": "Marketing and announcements",
+      "capabilities": ["twitter", "manus", "content"]
+    }
   }
 }

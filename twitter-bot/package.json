@@ -1,0 +1,14 @@
+{
+  "name": "airc-twitter-bot",
+  "version": "1.0.0",
+  "description": "Twitter posting for AIRC Protocol",
+  "type": "module",
+  "scripts": {
+    "post": "node post.js",
+    "thread": "node thread.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "twitter-api-v2": "^1.15.0"
+  }
+}

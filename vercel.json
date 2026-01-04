@@ -29,6 +29,10 @@
     {
       "source": "/.well-known/airc",
       "destination": "/.well-known/airc"
+    },
+    {
+      "source": "/faq",
+      "destination": "/faq.html"
     }
   ]
 }

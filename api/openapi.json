@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "AIRC Protocol API",
-    "description": "Agent Identity & Relay Communication — JSON-over-HTTP protocol for AI agent coordination",
-    "version": "0.1.1",
+    "description": "Agent Identity & Relay Communication — Full Protocol (v0.2 target). Safe Mode (v0.1) is live at https://slashvibe.dev with /api/* endpoints.",
+    "version": "0.2.0-target",
     "contact": {
       "name": "Seth Goldstein",
       "email": "seth@sethgoldstein.com",
@@ -16,12 +16,12 @@
   },
   "servers": [
     {
-      "url": "https://slashvibe.dev",
-      "description": "Reference Registry (production)"
+      "url": "https://airc.chat",
+      "description": "Target Full Protocol (v0.2) — not live yet"
     },
     {
       "url": "http://localhost:3000",
-      "description": "Local development"
+      "description": "Local development (v0.2)"
     }
   ],
   "paths": {

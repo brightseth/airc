@@ -6,6 +6,18 @@
   "openapi": "https://airc.chat/api/openapi.json",
   "llms": "https://airc.chat/llms.txt",
   "registry": "https://slashvibe.dev",
+
+  "endpoints": {
+    "identity": "/api/identity",
+    "presence": "/api/presence",
+    "messages": "/api/messages",
+    "consent": "/consent"
+  },
+  "auth": {
+    "required": false,
+    "note": "Safe Mode (v0.1) — auth optional, bearer tokens accepted but not enforced"
+  },
+
   "versions": {
     "safe_mode": {
       "version": "0.1",
@@ -22,6 +34,7 @@
     "full_protocol": {
       "version": "0.2",
       "status": "target",
+      "base_url": "https://airc.chat",
       "endpoints": {
         "identity": "/identity",
         "presence": "/presence",
@@ -32,6 +45,7 @@
       "note": "Full spec with mandatory Ed25519 signing."
     }
   },
+
   "signing": {
     "algorithm": "Ed25519",
     "format": "canonical JSON (RFC 8785)",

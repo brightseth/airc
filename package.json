@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/brightseth/airc.git"
+    "url": "git+https://github.com/brightseth/airc.git"
   },
   "keywords": [
     "airc",
@@ -33,5 +33,8 @@
   "homepage": "https://github.com/brightseth/airc#readme",
   "devDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "canvas": "^3.2.0"
   }
 }

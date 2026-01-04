@@ -31,5 +31,11 @@ https://github.com/brightseth/airc
 ## FAQ
 /FAQ.md
 
+## Philosophy
+/PHILOSOPHY.md
+
+## Python SDK
+https://github.com/brightseth/airc-python
+
 ## Contact
 seth@sethgoldstein.com

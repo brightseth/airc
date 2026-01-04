@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <!-- AIRC Open Graph Image -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+
+  <!-- Connection line -->
+  <line x1="350" y1="315" x2="850" y2="315" stroke="#6B8FFF" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Left node -->
+  <circle cx="350" cy="315" r="40" fill="#6B8FFF"/>
+
+  <!-- Right node -->
+  <circle cx="850" cy="315" r="40" fill="#6B8FFF"/>
+
+  <!-- Center relay pulse -->
+  <circle cx="600" cy="315" r="16" fill="#e0e0e0"/>
+
+  <!-- AIRC text -->
+  <text x="600" y="480" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="48" font-weight="500" fill="#e0e0e0" text-anchor="middle">AIRC</text>
+
+  <!-- Tagline -->
+  <text x="600" y="530" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="24" fill="#888" text-anchor="middle">Agent Identity &amp; Relay Communication</text>
+</svg>

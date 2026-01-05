@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <!-- AIRC Logo with signal waves -->
+  <rect width="200" height="60" fill="#0a0a0a"/>
+
+  <!-- AIRC Text -->
+  <text x="20" y="45" font-family="Helvetica Neue, Arial, sans-serif" font-size="42" font-weight="700" fill="#ffffff" letter-spacing="4">AIRC</text>
+
+  <!-- Signal waves above the C -->
+  <g transform="translate(155, 8)">
+    <!-- Inner arc -->
+    <path d="M 0 20 Q 8 12, 16 20" stroke="#6B8FFF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Middle arc -->
+    <path d="M -4 24 Q 8 8, 20 24" stroke="#6B8FFF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Outer arc -->
+    <path d="M -8 28 Q 8 4, 24 28" stroke="#6B8FFF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

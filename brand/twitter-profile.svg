@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- AIRC Twitter Profile - 400x400 -->
+  <rect width="400" height="400" fill="#0a0a0a"/>
+
+  <!-- Signal waves centered and large -->
+  <g transform="translate(200, 120)">
+    <!-- Center dot -->
+    <circle cx="0" cy="120" r="24" fill="#6B8FFF"/>
+    <!-- Inner arc -->
+    <path d="M -50 90 Q 0 30, 50 90" stroke="#6B8FFF" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <!-- Middle arc -->
+    <path d="M -80 60 Q 0 -20, 80 60" stroke="#6B8FFF" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <!-- Outer arc -->
+    <path d="M -110 30 Q 0 -70, 110 30" stroke="#6B8FFF" stroke-width="16" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- AIRC text below -->
+  <text x="200" y="340" font-family="Helvetica Neue, Arial, sans-serif" font-size="48" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="8">AIRC</text>
+</svg>

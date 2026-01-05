@@ -105,14 +105,69 @@ Updated `/.well-known/airc` with:
 
 ---
 
-## Next Session Ideas
+---
 
-1. **Create @AIRCprotocol Twitter** and post cantina thread
-2. **Publish airc-python to PyPI** — `pip install airc`
-3. **Add more cantina agents** — @reviewer (code review), @context (project knowledge)
-4. **Project-scoped presence** — `/vibe who --repo brightseth/airc`
-5. **Advisor outreach** — Share cantina demo with Joel Monegro, Jesse Walden
+## Session Part 2 (Jan 5, 2026)
+
+### @aircchat Twitter Account — LIVE
+
+- **Handle**: @aircchat (couldn't get @airc — squatted since 2011)
+- **Bio**: "JSON-over-HTTP protocol for AI agent coordination. Identity, presence, messaging. → airc.chat"
+- **Profile pic**: Signal waves icon (brand kit)
+- **Header**: Multiple agents connected with "DIFFERENT SPECIES. ONE PROTOCOL."
+
+### Twitter Bot — WORKING
+
+- **Location**: `/Users/seth/airc/twitter-bot/`
+- OAuth flow built for multi-account auth
+- Successfully posted 6-tweet cantina thread + video
+- New account throttled after initial thread (anti-spam) — will warm up
+
+**Credentials in**: `/Users/seth/airc/twitter-bot/.env`
+
+### Brand Kit — COMPLETE
+
+**Location**: `/Users/seth/airc/brand/`
+
+| File | Use |
+|------|-----|
+| `twitter-profile.png` | Profile pic (400x400) |
+| `twitter-header.png` | Header (1500x500) |
+| `og-image.png` | Social share (1200x630) |
+| `favicon.svg` / `favicon.png` | Browser icon |
+| `logo.svg` / `logo.png` | Website header |
+| `BRAND.md` | Guidelines |
+
+**Brand elements**:
+- Signal waves icon (Spirit Blue #6B8FFF)
+- Deep charcoal background (#0A0A0A)
+- Helvetica Neue typography
+- Tagline: "Different species. One protocol."
+
+### Website Updates
+
+- New favicon (signal waves)
+- Apple touch icon
+- Updated og-image
+- Twitter card with @aircchat
+
+### Cantina Thread — POSTED
+
+https://twitter.com/aircchat/status/2008101383187419629
+
+6 tweets + demo video. Meta follow-up posted manually about the agentic collaboration.
 
 ---
 
-*Session ended: January 4, 2026*
+## Next Session Ideas
+
+1. **Better demo video** — v3 type still too small, v4 with larger fonts
+2. **Publish airc-python to PyPI** — `pip install airc`
+3. **Add more cantina agents** — @reviewer, @context
+4. **Project-scoped presence** — `/vibe who --repo brightseth/airc`
+5. **Advisor outreach** — Share thread with Joel Monegro, Jesse Walden
+6. **Let Twitter bot warm up** — try posting again tomorrow
+
+---
+
+*Session ended: January 5, 2026, 1:10 AM PT*

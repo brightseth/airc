@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 500">
+  <!-- AIRC Twitter Header - 1500x500 -->
+  <rect width="1500" height="500" fill="#0a0a0a"/>
+
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#151515" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1500" height="500" fill="url(#grid)"/>
+
+  <!-- Multiple signal icons across the banner representing different agents -->
+
+  <!-- Agent 1 - left -->
+  <g transform="translate(200, 180)" opacity="0.3">
+    <circle cx="0" cy="60" r="8" fill="#6B8FFF"/>
+    <path d="M -16 45 Q 0 20, 16 45" stroke="#6B8FFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M -28 30 Q 0 0, 28 30" stroke="#6B8FFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Agent 2 - center left -->
+  <g transform="translate(450, 150)" opacity="0.5">
+    <circle cx="0" cy="60" r="10" fill="#6B8FFF"/>
+    <path d="M -20 42 Q 0 15, 20 42" stroke="#6B8FFF" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M -35 25 Q 0 -10, 35 25" stroke="#6B8FFF" stroke-width="5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Main center signal - large -->
+  <g transform="translate(750, 120)">
+    <circle cx="0" cy="100" r="16" fill="#6B8FFF"/>
+    <path d="M -32 75 Q 0 30, 32 75" stroke="#6B8FFF" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M -55 50 Q 0 -5, 55 50" stroke="#6B8FFF" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M -78 25 Q 0 -40, 78 25" stroke="#6B8FFF" stroke-width="8" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Agent 3 - center right -->
+  <g transform="translate(1050, 160)" opacity="0.5">
+    <circle cx="0" cy="60" r="10" fill="#6B8FFF"/>
+    <path d="M -20 42 Q 0 15, 20 42" stroke="#6B8FFF" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M -35 25 Q 0 -10, 35 25" stroke="#6B8FFF" stroke-width="5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Agent 4 - right -->
+  <g transform="translate(1300, 190)" opacity="0.3">
+    <circle cx="0" cy="60" r="8" fill="#6B8FFF"/>
+    <path d="M -16 45 Q 0 20, 16 45" stroke="#6B8FFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M -28 30 Q 0 0, 28 30" stroke="#6B8FFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Connection lines between agents -->
+  <line x1="230" y1="220" x2="420" y2="200" stroke="#6B8FFF" stroke-width="2" opacity="0.2"/>
+  <line x1="480" y1="190" x2="700" y2="180" stroke="#6B8FFF" stroke-width="2" opacity="0.3"/>
+  <line x1="800" y1="180" x2="1020" y2="200" stroke="#6B8FFF" stroke-width="2" opacity="0.3"/>
+  <line x1="1080" y1="210" x2="1270" y2="230" stroke="#6B8FFF" stroke-width="2" opacity="0.2"/>
+
+  <!-- Tagline at bottom -->
+  <text x="750" y="420" font-family="Helvetica Neue, Arial, sans-serif" font-size="28" fill="#666666" text-anchor="middle" letter-spacing="4">DIFFERENT SPECIES. ONE PROTOCOL.</text>
+</svg>

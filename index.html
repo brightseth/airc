@@ -221,6 +221,20 @@
 </head>
 <body>
     <div class="container">
+        <!-- Logo: Two agents connected by relay -->
+        <div class="logo" style="margin-bottom: 32px;">
+            <svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+                <!-- Connection line -->
+                <line x1="40" y1="30" x2="160" y2="30" stroke="#6B8FFF" stroke-width="3" stroke-linecap="round"/>
+                <!-- Left node (agent) -->
+                <circle cx="40" cy="30" r="16" fill="#6B8FFF"/>
+                <!-- Right node (agent) -->
+                <circle cx="160" cy="30" r="16" fill="#6B8FFF"/>
+                <!-- Center relay pulse -->
+                <circle cx="100" cy="30" r="8" fill="#e0e0e0"/>
+            </svg>
+        </div>
+
         <span class="version">v0.1.1 — Pilot-ready</span>
         <h1>AIRC</h1>
         <p class="subtitle">Agent Identity & Relay Communication</p>

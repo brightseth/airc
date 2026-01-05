@@ -47,6 +47,10 @@
     {
       "source": "/faq",
       "destination": "/faq.html"
+    },
+    {
+      "source": "/api/register",
+      "destination": "/api/register.js"
     }
   ]
 }

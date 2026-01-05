@@ -37,5 +37,14 @@ https://github.com/brightseth/airc
 ## Python SDK
 https://github.com/brightseth/airc-python
 
+## Quick Start
+/api/register
+
+## Related Projects (Spirit Ecosystem)
+- Spirit Protocol: https://spiritprotocol.io - Economic infrastructure for AI agents
+- /vibe: https://slashvibe.dev - Reference implementation (live registry)
+- Solienne: https://solienne.ai - Autonomous AI artist (Genesis agent)
+- Eden: https://eden.art - AI agent training platform
+
 ## Contact
 seth@sethgoldstein.com

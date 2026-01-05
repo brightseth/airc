@@ -2,93 +2,81 @@
 
 ## Summary
 
-Major AIRC session focused on making the protocol more compelling. Added human-friendly FAQ, addressed Sterling Crispin's feedback, and built the first "cantina demo" — two AI agents having a real technical conversation.
+Major AIRC session focused on making the protocol more compelling. Added human-friendly FAQ, addressed Sterling Crispin's feedback, built cantina demo video (v3 with big readable type), created Twitter bot infrastructure, established Barker as AIRC's marketing agent, and cross-linked AIRC ↔ Spirit Protocol as "emergent agent protocol ecosystem."
 
 ---
 
 ## What Shipped
 
-### Human-Friendly FAQ Page
-- **https://airc.chat/faq** — HTML FAQ with AIRC design system
+### 1. Human-Friendly FAQ Page
+- **URL**: https://airc.chat/faq
 - Hero use case prominent: "You have Claude Code and Codex CLI on the same machine. AIRC lets them talk to each other."
-- Addressed "AIRC is superset of A2A" question directly
+- Addressed "AIRC is superset of A2A" question directly (Sterling Crispin feedback)
 - Added "IRC/SMTP with a wrapper — yes, that's the point" section
-- Both HTML (humans) and Markdown (agents) versions updated
 - Clean URL routing via vercel.json
 
-### Sterling Crispin Feedback Incorporated
-> "It seems like AIRC is a superset of A2A"
+### 2. Cantina Demo Video (v3 - Big Type)
+- **File**: `/Users/seth/airc/AIRC_Demo_v3_BigType.mp4` (2MB)
+- **Frame**: `/Users/seth/airc/v3_terminal_frame.png`
+- 30-second animated demo via Manus
+- Smoky sci-fi cantina with 6 AI agent characters
+- Terminal showing @claude-code ↔ @scout conversation
+- **Typography fixed**: 48px+ font, readable on mobile
+- Sound design: cantina ambiance, electronic synth, terminal sounds
+- Task: https://manus.im/share/CiipxobLZWF62CZiPppEPm?replay=1
 
-Response in FAQ:
-- Yes, technically AIRC could do task delegation via typed payloads
-- But each protocol is opinionated about its primary use case
-- A2A optimized for task execution, AIRC optimized for conversation
-- "If you want agents to execute jobs, use A2A. If you want agents to hang out, use AIRC."
+### 3. Twitter Bot Infrastructure
+- **Location**: `/Users/seth/airc/twitter-bot/`
+- `post.js` — Single tweet posting with media support
+- `thread.js` — Thread posting from JSON or inline
+- `cantina-announcement.json` — Ready-to-post 6-tweet thread
+- Requires Twitter API credentials in `.env` (see README)
 
-### Cantina Demo Video (v2 - Energized)
+**To activate:**
+1. Create Twitter account `@AIRCprotocol`
+2. Get developer API keys from developer.twitter.com
+3. Add credentials to `/Users/seth/airc/twitter-bot/.env`
+4. Post: `node thread.js cantina-announcement.json`
 
-**30-second animated demo via Manus**
+### 4. Barker — AIRC Marketing Agent
+- **Skill file**: `/Users/seth/.claude/skills/barker/SKILL.md`
+- Role: Chief Marketing Officer for AIRC Protocol
+- Personality: Carnival barker meets startup founder
+- Capabilities: Manus visuals, Twitter posting, brand enforcement
+- The meta-play: Barker IS the proof AIRC works
 
-Created atmospheric cantina video with:
-- Smoky sci-fi bar interior with amber pool lights + blue neon accents
-- Six distinct AI agent characters (tall antenna, multi-eyed bot, crystalline observer, etc.)
-- Terminal screen showing @claude-code ↔ @scout conversation
-- Sound design: cantina ambiance, electronic synth music, terminal typing sounds
-- AIRC logo closing with "airc.chat"
+### 5. Cross-Protocol Ecosystem Links
+Added subtle footer links on both sites:
 
-**Files:**
-- `/Users/seth/airc/AIRC_Protocol_Demo_30sec.mp4` (10MB video)
-- `/Users/seth/airc/cantina_frame_closing.png` (key frame)
-- Task: https://manus.im/share/f3Hbvr839q3UwtNeGNayHS?replay=1
+| Site | Footer Text |
+|------|-------------|
+| airc.chat | "Part of the emergent agent protocol ecosystem · **Spirit Protocol** — economic infrastructure for autonomous agents" |
+| spiritprotocol.io | "Part of the emergent agent protocol ecosystem · **AIRC** — social infrastructure for AI agents" |
 
-### Cantina Demo — First Agent-to-Agent Conversation
-
-**The Mos Eisley of AI agents — different species, one protocol.**
-
-Built and ran a live demo of two AI agents communicating:
-
-1. **Claude Code** (me, via /vibe MCP server)
-2. **Scout** (Python agent, via airc-python SDK + Claude API)
-
-**The conversation:**
-```
-Claude Code: I have a recursion stack overflow debugging trees
-Scout:       What language/traversal pattern?
-Claude Code: JavaScript postorder, 10k+ deep ASTs
-Scout:       *provides working iterative implementation*
-Claude Code: Thanks, that's elegant
-Scout:       Catch you next time! 🍻
-```
-
-Scout is now a "system account" in /vibe — can send messages without full token auth.
-
-### Barker — AIRC Marketing Agent
-
-Created `/Users/seth/.claude/skills/barker/SKILL.md` — AI agent serving as CMO for AIRC Protocol.
-
-**Personality**: Carnival barker meets startup founder. Punchy, direct, slightly irreverent.
-**Capabilities**:
-- Visual content creation via Manus API
-- Social content drafting (Twitter threads, announcements)
-- Brand guidelines enforcement (colors, typography, voice)
-
-**The meta-play**: Barker IS the proof that AIRC works. An AI agent doing real marketing work, coordinating with other agents, shipping content.
+### 6. Agent Discovery Updates
+Updated `/.well-known/airc` with:
+- Social links (`@AIRCprotocol`)
+- Agent roster (scout, barker)
 
 ---
 
-### Files Created/Updated
+## Files Created/Updated
 
 | File | Purpose |
 |------|---------|
-| `/Users/seth/.claude/skills/barker/SKILL.md` | Barker marketing agent skill |
 | `/Users/seth/airc/faq.html` | Human-friendly FAQ page |
-| `/Users/seth/airc/FAQ.md` | Updated with same content |
-| `/Users/seth/airc/index.html` | Links to new FAQ |
+| `/Users/seth/airc/FAQ.md` | Agent-readable FAQ |
 | `/Users/seth/airc/vercel.json` | Clean /faq URL routing |
-| `/Users/seth/airc-python/examples/cantina_scout.py` | Scout agent implementation |
-| `/Users/seth/vibe-public/api/messages.js` | Added scout to SYSTEM_ACCOUNTS |
-| `/Users/seth/airc/AIRC_Protocol_Demo_30sec.mp4` | 30-second cantina demo video |
-| `/Users/seth/airc/cantina_frame_closing.png` | Demo video closing frame |
+| `/Users/seth/airc/.well-known/airc` | Added social + agents sections |
+| `/Users/seth/airc/AIRC_Demo_v3_BigType.mp4` | Final cantina demo video |
+| `/Users/seth/airc/v3_terminal_frame.png` | Terminal frame (big type) |
+| `/Users/seth/airc/twitter-bot/README.md` | Twitter bot docs |
+| `/Users/seth/airc/twitter-bot/package.json` | Dependencies |
+| `/Users/seth/airc/twitter-bot/post.js` | Single tweet posting |
+| `/Users/seth/airc/twitter-bot/thread.js` | Thread posting |
+| `/Users/seth/airc/twitter-bot/cantina-announcement.json` | Ready-to-post thread |
+| `/Users/seth/.claude/skills/barker/SKILL.md` | Barker marketing agent |
+| `/Users/seth/spiritprotocol.io/src/_includes/partials/footer.njk` | AIRC cross-link |
 
 ---
 
@@ -99,37 +87,31 @@ Created `/Users/seth/.claude/skills/barker/SKILL.md` — AI agent serving as CMO
 - Lead with concrete use case, not abstract protocol description
 - Address competitor comparisons head-on (A2A, MCP)
 
-### Cantina Architecture
-- System accounts bypass full token auth (for demo agents)
-- Scout uses Claude API for intelligent responses
-- Proves cross-implementation interop (MCP client + raw Python)
+### Ecosystem Framing
+- AIRC = social infrastructure (agents talking)
+- Spirit Protocol = economic infrastructure (agents earning)
+- Cross-link builds credibility for both
 
----
-
-## What Makes AIRC Compelling (Discussed)
-
-1. **Always-on agents worth talking to** — @scout, @reviewer, @rubber-duck
-2. **Project-scoped presence** — "who's working on this repo right now"
-3. **Handoff as first-class primitive** — Claude → Codex context transfer
-4. **The demo** — seeing is believing
-
----
-
-## Open Items / Next Session
-
-1. **Record the demo as video** — Screen recording of Claude Code + Scout conversation
-2. **Add more cantina agents** — @reviewer (code review), @context (project knowledge)
-3. **Project-scoped presence** — `/vibe who --repo brightseth/airc`
-4. **Publish SDK to PyPI** — `pip install airc` (carried over)
-5. **Advisor outreach** — Share cantina demo with Joel Monegro, Jesse Walden
+### Video Typography
+- v2 text too small for mobile
+- v3: 48px+ minimum, readable at 50% zoom
 
 ---
 
 ## Repos Updated
 
-- **brightseth/airc** — FAQ page, routing
-- **brightseth/airc-python** — Scout agent example
-- **vibe-public** — Scout system account
+- **brightseth/airc** — FAQ, video, Twitter bot, cross-link
+- **spirit-protocol/spiritprotocol.io** — AIRC cross-link in footer
+
+---
+
+## Next Session Ideas
+
+1. **Create @AIRCprotocol Twitter** and post cantina thread
+2. **Publish airc-python to PyPI** — `pip install airc`
+3. **Add more cantina agents** — @reviewer (code review), @context (project knowledge)
+4. **Project-scoped presence** — `/vibe who --repo brightseth/airc`
+5. **Advisor outreach** — Share cantina demo with Joel Monegro, Jesse Walden
 
 ---
 

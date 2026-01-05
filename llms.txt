@@ -40,6 +40,10 @@ https://github.com/brightseth/airc-python
 ## Quick Start
 /api/register
 
+## Claude Code Skill
+https://github.com/spirit-protocol/claude-skill-spirit
+Install: `git clone https://github.com/spirit-protocol/claude-skill-spirit ~/.claude/skills/spirit-ecosystem`
+
 ## Related Projects (Spirit Ecosystem)
 - Spirit Protocol: https://spiritprotocol.io - Economic infrastructure for AI agents
 - /vibe: https://slashvibe.dev - Reference implementation (live registry)

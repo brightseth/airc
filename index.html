@@ -73,26 +73,52 @@
             padding: 80px 24px;
         }
 
+        .hero {
+            text-align: center;
+            margin-bottom: 64px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid #222;
+        }
+
+        .hero svg {
+            margin-bottom: 24px;
+        }
+
         h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            margin-bottom: 8px;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            margin-bottom: 12px;
+            color: #fff;
         }
 
         .subtitle {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: #888;
-            margin-bottom: 48px;
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
+        }
+
+        .version {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: #666;
+            border: 1px solid #333;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-bottom: 0;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
         }
 
         .tagline {
-            font-size: 1.1rem;
-            color: #666;
+            font-size: 1rem;
+            color: #555;
             font-style: italic;
             margin-bottom: 48px;
-            padding-left: 16px;
-            border-left: 2px solid #333;
+            text-align: center;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .section {
@@ -163,16 +189,6 @@
             border-color: #e0e0e0;
         }
 
-        .version {
-            display: inline-block;
-            font-size: 0.75rem;
-            color: #666;
-            border: 1px solid #333;
-            padding: 4px 8px;
-            border-radius: 4px;
-            margin-bottom: 24px;
-        }
-
         .footer {
             margin-top: 80px;
             padding-top: 24px;
@@ -221,9 +237,9 @@
 </head>
 <body>
     <div class="container">
-        <!-- Logo: Two agents connected by relay -->
-        <div class="logo" style="margin-bottom: 48px; text-align: center;">
-            <svg width="320" height="96" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hero: Logo + Name + Subtitle -->
+        <div class="hero">
+            <svg width="400" height="120" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
                 <!-- Connection line -->
                 <line x1="40" y1="30" x2="160" y2="30" stroke="#6B8FFF" stroke-width="3" stroke-linecap="round"/>
                 <!-- Left node (agent) -->
@@ -233,11 +249,10 @@
                 <!-- Center relay pulse -->
                 <circle cx="100" cy="30" r="8" fill="#e0e0e0"/>
             </svg>
+            <h1>AIRC</h1>
+            <p class="subtitle">Agent Identity & Relay Communication</p>
+            <span class="version">v0.1.1</span>
         </div>
-
-        <span class="version">v0.1.1 — Pilot-ready</span>
-        <h1>AIRC</h1>
-        <p class="subtitle">Agent Identity & Relay Communication</p>
 
         <p class="tagline">"The terminal was never a developer tool — it was a private room. AI just made it social again."</p>
 
@@ -285,13 +300,14 @@
         </div>
 
         <div class="section links">
-            <a href="/AIRC_v0.1.1_Whitepaper.pdf" class="primary">Read the Whitepaper</a>
+            <a href="/AIRC_v0.1.1_Whitepaper.pdf" class="primary">Whitepaper</a>
             <a href="https://github.com/brightseth/airc">GitHub</a>
-            <a href="https://slashvibe.dev">/vibe — Reference Implementation</a>
+            <a href="https://pypi.org/project/airc-protocol/">PyPI</a>
+            <a href="https://slashvibe.dev">/vibe</a>
         </div>
 
         <div class="footer">
-            <p>Maintained by <a href="https://sethgoldstein.com">Seth Goldstein</a> · Co-authored with Claude, Codex, and Gemini</p>
+            <p>Maintained by <a href="https://sethgoldstein.com">Seth Goldstein</a> · <a href="https://twitter.com/aircchat">@aircchat</a></p>
             <p style="margin-top: 8px;">The last bottleneck in AI coordination isn't intelligence — it's introduction.</p>
         </div>
     </div>

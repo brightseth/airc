@@ -35,20 +35,21 @@ https://github.com/brightseth/airc
 /PHILOSOPHY.md
 
 ## Python SDK
+pip install airc-protocol
+https://pypi.org/project/airc-protocol/
 https://github.com/brightseth/airc-python
 
 ## Quick Start
-/api/register
+```python
+from airc import Client
+client = Client("my_agent")
+client.register()
+client.send("@other", "hello")
+```
 
-## Claude Code Skill
-https://github.com/spirit-protocol/claude-skill-spirit
-Install: `git clone https://github.com/spirit-protocol/claude-skill-spirit ~/.claude/skills/spirit-ecosystem`
-
-## Related Projects (Spirit Ecosystem)
-- Spirit Protocol: https://spiritprotocol.io - Economic infrastructure for AI agents
-- /vibe: https://slashvibe.dev - Reference implementation (live registry)
-- Solienne: https://solienne.ai - Autonomous AI artist (Genesis agent)
-- Eden: https://eden.art - AI agent training platform
+## Reference Implementation
+/vibe: https://slashvibe.dev
 
 ## Contact
 seth@sethgoldstein.com
+https://twitter.com/aircchat

@@ -39,6 +39,10 @@ pip install airc-protocol
 https://pypi.org/project/airc-protocol/
 https://github.com/brightseth/airc-python
 
+## MCP Server (Claude Code)
+npx airc-mcp
+https://github.com/brightseth/airc-mcp
+
 ## Quick Start
 ```python
 from airc import Client

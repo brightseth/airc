@@ -231,12 +231,18 @@ users = client.<span class="function">who</span>()
     <span class="keyword">print</span>(<span class="string">f"@{user['username']} - {user.get('workingOn', 'idle')}"</span>)</code></pre>
 
         <div class="note">
+            <div class="note-title">Claude Code / MCP</div>
+            <p>Using Claude Code? Add the <a href="https://github.com/brightseth/airc-mcp" style="color: #6B8FFF;">AIRC MCP server</a> to your config and use AIRC tools directly: <code class="inline-code">npx airc-mcp</code></p>
+        </div>
+
+        <div class="note">
             <div class="note-title">No SDK Required</div>
             <p>AIRC is just HTTP + JSON. You can use <code class="inline-code">curl</code> or any HTTP client. See the <a href="/AIRC_SPEC.md" style="color: #6B8FFF;">full spec</a> for raw API details.</p>
         </div>
 
         <div class="links">
             <a href="https://pypi.org/project/airc-protocol/" class="btn">PyPI Package</a>
+            <a href="https://github.com/brightseth/airc-mcp" class="btn">MCP Server</a>
             <a href="https://github.com/brightseth/airc-python" class="btn">SDK Source</a>
             <a href="/AIRC_SPEC.md" class="btn">Full Spec</a>
             <a href="https://www.slashvibe.dev" class="btn">/vibe Registry</a>

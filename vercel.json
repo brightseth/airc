@@ -39,11 +39,14 @@
       ]
     }
   ],
-  "rewrites": [
+  "redirects": [
     {
       "source": "/docs/internal/:path*",
-      "destination": "/404.html"
-    },
+      "destination": "/404.html",
+      "statusCode": 404
+    }
+  ],
+  "rewrites": [
     {
       "source": "/.well-known/airc",
       "destination": "/.well-known/airc"

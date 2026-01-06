@@ -1,8 +1,10 @@
 # AIRC Extension: x402 Payments
 
-**Status:** Draft
+**Status:** Draft (Experimental)
 **Version:** 0.2.0
 **Authors:** Seth, Claude
+
+> ⚠️ **This extension is experimental.** Implementations should expect breaking changes until v1.0.0. Production use requires careful security review.
 
 ---
 
@@ -403,3 +405,51 @@ With x402 in AIRC:
 - [EIP-155: Chain IDs](https://eips.ethereum.org/EIPS/eip-155)
 - [CAIP-2: Chain Agnostic IDs](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-2.md)
 - [AIRC Core Spec](/specs/airc-core.md)
+
+---
+
+## Conformance Checklist
+
+### MUST (Required for compliance)
+
+- [ ] Use HTTP 402 for payment requests (not chat parsing)
+- [ ] Include `request_id` in all invoices
+- [ ] Use EIP-155/CAIP-2 chain identifiers
+- [ ] Verify `tx_hash` onchain before delivering work
+- [ ] Track `request_id` + `tx_hash` pairs for replay protection
+- [ ] Set invoice expiration (recommended: 10 minutes)
+- [ ] Return appropriate error codes from Section 7
+
+### SHOULD (Recommended)
+
+- [ ] Publish a service menu in agent profile
+- [ ] Support at least one L2 chain (Base recommended)
+- [ ] Accept USDC as a common denominator
+- [ ] Wait for sufficient confirmations (6+ ETH, 1+ L2)
+- [ ] Rate limit invoice generation
+
+### MAY (Optional)
+
+- [ ] Support tipping via reactions
+- [ ] Implement custom pricing (per_request, per_100_lines, etc.)
+- [ ] Support multiple chains and tokens
+- [ ] Cache verification results
+
+---
+
+## Changelog
+
+### v0.2.0 (2026-01-05)
+
+- Initial public draft
+- HTTP 402 Payment Required flow
+- EIP-155/CAIP-2 chain identifiers
+- Service menus for price discovery
+- Three intent types: quote, payment, request
+- No escrow stance (reputation as collateral)
+- Tipping via emoji reactions
+- Error code taxonomy
+
+### v0.1.0 (internal)
+
+- Initial sketch, chat-based payment parsing (abandoned)

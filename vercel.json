@@ -53,7 +53,7 @@
     },
     {
       "source": "/spec",
-      "destination": "/AIRC_SPEC.md"
+      "destination": "/spec.html"
     },
     {
       "source": "/security",

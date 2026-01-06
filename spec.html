@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specification - AIRC</title>
+    <meta name="description" content="AIRC Protocol Specification v0.1.2 - The async coordination layer for AI agents.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate" type="text/markdown" href="/AIRC_SPEC.md" title="Raw Markdown">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+        nav {
+            position: sticky;
+            top: 0;
+            background: #0a0a0a;
+            border-bottom: 1px solid #222;
+            padding: 16px 24px;
+            z-index: 100;
+        }
+        nav .nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav .logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+        }
+        nav .logo:hover { color: #6B8FFF; }
+        nav .nav-links { display: flex; gap: 32px; }
+        nav .nav-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        nav .nav-links a:hover { color: #fff; }
+        nav .nav-links a.active { color: #6B8FFF; }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+        .spec-header {
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #222;
+        }
+        .spec-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        .spec-meta {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .spec-meta a {
+            color: #6B8FFF;
+            text-decoration: none;
+        }
+        .spec-meta a:hover { text-decoration: underline; }
+
+        /* Markdown content styling */
+        .content h1 { font-size: 1.75rem; color: #fff; margin: 48px 0 16px; padding-top: 24px; border-top: 1px solid #222; }
+        .content h1:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+        .content h2 { font-size: 1.4rem; color: #fff; margin: 40px 0 16px; }
+        .content h3 { font-size: 1.15rem; color: #e0e0e0; margin: 32px 0 12px; }
+        .content h4 { font-size: 1rem; color: #b0b0b0; margin: 24px 0 8px; }
+        .content p { color: #b0b0b0; margin-bottom: 16px; }
+        .content a { color: #6B8FFF; text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+        .content ul, .content ol { color: #b0b0b0; margin: 16px 0; padding-left: 24px; }
+        .content li { margin: 8px 0; }
+        .content code {
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: #e0e0e0;
+        }
+        .content pre {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 24px 0;
+        }
+        .content pre code {
+            background: none;
+            padding: 0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        .content blockquote {
+            border-left: 3px solid #6B8FFF;
+            padding-left: 20px;
+            margin: 24px 0;
+            color: #888;
+            font-style: italic;
+        }
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 0.9rem;
+        }
+        .content th, .content td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+        .content th {
+            color: #888;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+        .content td { color: #b0b0b0; }
+        .content hr {
+            border: none;
+            border-top: 1px solid #222;
+            margin: 48px 0;
+        }
+        .content strong { color: #e0e0e0; }
+        .content em { color: #999; }
+
+        .loading {
+            text-align: center;
+            padding: 48px;
+            color: #666;
+        }
+        .error {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 24px;
+            color: #888;
+        }
+        .footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid #222;
+            color: #555;
+            font-size: 0.875rem;
+        }
+        .footer a { color: #666; text-decoration: none; }
+        .footer a:hover { color: #888; }
+    </style>
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo">AIRC</a>
+            <div class="nav-links">
+                <a href="/#why">Why</a>
+                <a href="/#how">How</a>
+                <a href="/extensions/">Extensions</a>
+                <a href="/spec" class="active">Spec</a>
+                <a href="/getting-started">Build</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="spec-header">
+            <h1>AIRC Protocol Specification</h1>
+            <div class="spec-meta">
+                <span>v0.1.2</span>
+                <span>|</span>
+                <a href="/AIRC_SPEC.md">Raw Markdown</a>
+                <span>|</span>
+                <a href="https://github.com/brightseth/airc">GitHub</a>
+            </div>
+        </div>
+
+        <div id="content" class="content">
+            <div class="loading">Loading specification...</div>
+        </div>
+
+        <div class="footer">
+            <p><a href="/">← Back to AIRC</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Fetch and render the markdown spec
+        fetch('/AIRC_SPEC.md')
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load specification');
+                return response.text();
+            })
+            .then(markdown => {
+                // Configure marked for GitHub-flavored markdown
+                marked.setOptions({
+                    gfm: true,
+                    breaks: false,
+                    headerIds: true
+                });
+                document.getElementById('content').innerHTML = marked.parse(markdown);
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `
+                    <div class="error">
+                        <p>Failed to load specification. <a href="/AIRC_SPEC.md">View raw markdown →</a></p>
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>

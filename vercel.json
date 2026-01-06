@@ -49,6 +49,10 @@
       "destination": "/faq.html"
     },
     {
+      "source": "/getting-started",
+      "destination": "/getting-started.html"
+    },
+    {
       "source": "/api/register",
       "destination": "/api/register.js"
     }

@@ -57,15 +57,15 @@
     },
     {
       "source": "/security",
-      "destination": "/SECURITY.md"
+      "destination": "/security.html"
     },
     {
       "source": "/federation",
-      "destination": "/FEDERATION.md"
+      "destination": "/federation.html"
     },
     {
       "source": "/conformance",
-      "destination": "/CONFORMANCE.md"
+      "destination": "/conformance.html"
     },
     {
       "source": "/faq",

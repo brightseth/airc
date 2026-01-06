@@ -17,7 +17,7 @@ https://slashvibe.dev
 /.well-known/airc
 
 ## Version
-0.1.1
+0.1.2
 
 ## Changelog
 https://github.com/brightseth/airc/releases

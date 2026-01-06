@@ -204,7 +204,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #666;
+            color: #999;
             margin-bottom: 32px;
         }
 
@@ -231,12 +231,12 @@
         .positioning-item .protocol.airc { color: #6B8FFF; }
 
         .positioning-item .arrow {
-            color: #444;
+            color: #666;
             margin-bottom: 8px;
         }
 
         .positioning-item .desc {
-            color: #666;
+            color: #999;
             font-size: 0.95rem;
         }
 
@@ -254,7 +254,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #666;
+            color: #999;
             margin-bottom: 32px;
             text-align: center;
         }
@@ -305,7 +305,7 @@
         }
 
         .flow-arrow {
-            color: #333;
+            color: #555;
             font-size: 1.5rem;
             padding: 0 16px;
             margin-bottom: 24px;
@@ -313,7 +313,7 @@
 
         .flow-desc {
             text-align: center;
-            color: #666;
+            color: #999;
             font-size: 0.9rem;
             max-width: 600px;
             margin: 24px auto 0;
@@ -333,14 +333,14 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #666;
+            color: #999;
             margin-bottom: 8px;
             text-align: center;
         }
 
         .async-demo .demo-subtitle {
             text-align: center;
-            color: #555;
+            color: #888;
             font-size: 0.9rem;
             margin-bottom: 32px;
         }
@@ -398,7 +398,7 @@
         }
 
         .terminal-line .time {
-            color: #555;
+            color: #777;
             margin-right: 12px;
         }
 
@@ -429,12 +429,12 @@
             border-radius: 4px;
             margin: 16px 0;
             text-align: center;
-            color: #666;
+            color: #999;
         }
 
         .terminal-line.time-skip {
             text-align: center;
-            color: #444;
+            color: #777;
             font-style: italic;
             margin: 20px 0;
         }
@@ -471,7 +471,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #666;
+            color: #999;
             margin-bottom: 24px;
         }
 
@@ -492,7 +492,7 @@
         }
 
         .quickstart .comment {
-            color: #666;
+            color: #888;
         }
 
         .quickstart .command {
@@ -513,7 +513,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #666;
+            color: #999;
             margin-bottom: 20px;
         }
 
@@ -551,7 +551,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #666;
+            color: #999;
             margin-bottom: 16px;
         }
 
@@ -584,7 +584,7 @@
         }
 
         .reference-impl .impl-feature {
-            color: #666;
+            color: #999;
             font-size: 0.9rem;
         }
 
@@ -618,7 +618,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #666;
+            color: #999;
             margin-bottom: 24px;
         }
 
@@ -677,7 +677,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #666;
+            color: #999;
             margin-bottom: 16px;
         }
 
@@ -718,40 +718,59 @@
             margin-top: 80px;
             padding-top: 24px;
             border-top: 1px solid #222;
-            color: #555;
+            color: #888;
             font-size: 0.875rem;
         }
 
         .footer a {
-            color: #666;
+            color: #999;
             border: none;
             padding: 0;
             text-decoration: none;
         }
 
         .footer a:hover {
-            color: #888;
+            color: #bbb;
             background: transparent;
         }
 
         .footer .tagline {
             margin-top: 12px;
             font-style: italic;
-            color: #444;
+            color: #777;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
+            .container {
+                padding: 48px 20px;
+            }
+
             nav .nav-links {
                 gap: 16px;
             }
 
             nav .nav-links a {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
+                padding: 8px 4px;
+            }
+
+            .hero {
+                margin-bottom: 48px;
+                padding-bottom: 40px;
             }
 
             .hero h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .positioning {
+                padding: 24px;
+                margin-bottom: 48px;
             }
 
             .positioning-grid {
@@ -769,6 +788,27 @@
                 margin-bottom: 0;
             }
 
+            .flow-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 1.25rem;
+            }
+
+            .async-demo {
+                padding: 24px;
+                margin-bottom: 48px;
+            }
+
+            .terminal-body {
+                padding: 16px;
+                min-height: 240px;
+            }
+
+            .quickstart pre {
+                padding: 16px;
+                font-size: 0.8rem;
+            }
+
             .roadmap-grid {
                 grid-template-columns: 1fr;
             }
@@ -779,15 +819,37 @@
 
             .links-row a {
                 text-align: center;
+                padding: 14px 20px;
+            }
+
+            .reference-impl {
+                padding: 24px;
+            }
+
+            .reference-impl .impl-name {
+                font-size: 1.5rem;
             }
 
             .reference-impl .impl-features {
                 flex-direction: column;
                 gap: 12px;
             }
+
+            .btn {
+                padding: 14px 24px;
+                font-size: 1rem;
+            }
         }
 
         @media (max-width: 480px) {
+            .container {
+                padding: 32px 16px;
+            }
+
+            nav {
+                padding: 12px 16px;
+            }
+
             nav .nav-inner {
                 flex-direction: column;
                 gap: 12px;
@@ -796,6 +858,20 @@
             nav .nav-links {
                 flex-wrap: wrap;
                 justify-content: center;
+                gap: 12px;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero .cta-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>

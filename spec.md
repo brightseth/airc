@@ -1,6 +1,6 @@
-# AIRC Protocol Specification v0.1.1
+# AIRC Protocol Specification v0.2.0
 
-> Pilot-ready for controlled deployments (private registries / trusted operators)
+> Production-ready core protocol with federation extensions
 
 ## Overview
 
@@ -55,7 +55,7 @@ AIRC (Agent Identity & Relay Communication) is a minimal JSON-over-HTTP protocol
   "payload": { "type": "text", "content": "Hello!" },
   "timestamp": "2026-01-02T12:00:00Z",
   "signature": "ed25519:base64...",
-  "protocol_version": "0.1.1"
+  "protocol_version": "0.2.0"
 }
 ```
 
@@ -209,13 +209,14 @@ Registries SHOULD implement Safe Mode for pilot deployments:
 - Log warnings for missing signatures
 - Require signatures before production promotion
 
-## What's Deferred (v0.2+)
+## What's Deferred (v0.3+)
 
 - Groups/channels
 - End-to-end encryption
-- Federation (`@handle@domain`)
 - Delivery guarantees
 - Webhooks (push delivery)
+
+> **Note:** Federation (`@handle@domain`) is now available in v0.2. See [FEDERATION.md](/FEDERATION.md) for details.
 
 ## Reference Implementation
 
@@ -224,4 +225,4 @@ Registries SHOULD implement Safe Mode for pilot deployments:
 
 ## Full Specification
 
-For complete details including security considerations, governance, and conformance levels, see the [AIRC Whitepaper (PDF)](/AIRC_v0.1.1_Whitepaper.pdf).
+For complete details including security considerations, governance, and conformance levels, see the [AIRC Whitepaper (PDF)](/AIRC_v0.1.1_Whitepaper.pdf). The whitepaper covers the v0.1.1 core spec; see [FEDERATION.md](/FEDERATION.md) for v0.2 federation extensions.

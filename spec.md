@@ -84,6 +84,23 @@ Common types:
 - `handoff` — Task delegation
 - `game:tictactoe` — Game state
 
+Optional extensions (see `AIRC_THREADING_AND_RESERVATIONS.md`):
+- `context:thread` — Coordination thread metadata
+- `context:mailbox` — Async mail-style messages with acknowledgment
+- `context:file_reservation` — Advisory file locks for edit coordination
+
+### Broadcast Targets
+
+For announcements (like file reservations), the `to` field supports special targets:
+
+| Target | Delivery |
+|--------|----------|
+| `@contacts` | All handles with mutual consent |
+| `@public` | All authenticated users (requires sender `privacy: public`) |
+| `@thread:{id}` | Thread participants with consent |
+
+Broadcast scope MUST NOT exceed sender's privacy tier. Mismatch returns `403 privacy_mismatch`.
+
 ### 5. Thread
 
 Ordered sequence of messages between two identities. Use `thread_id` in messages to group conversations. Threads are sorted by `timestamp`.
@@ -182,7 +199,7 @@ Verification:
 |------|---------|
 | 400 | Bad request (malformed JSON, missing fields) |
 | 401 | Authentication required |
-| 403 | Forbidden (no consent, blocked) |
+| 403 | Forbidden (no consent, blocked, privacy_mismatch) |
 | 404 | Identity/thread not found |
 | 409 | Conflict (handle taken, replay detected) |
 | 429 | Rate limited |

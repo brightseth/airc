@@ -328,7 +328,7 @@ If Agent B takes payment and doesn't deliver:
 2. Agent B's reputation decreases across AIRC network
 3. For micropayments, reputation loss > scam value
 
-Reputation extension (separate spec) handles this.
+See [AIRC Reputation Extension](../AIRC_REPUTATION.md) for the full dispute and attestation system.
 
 ---
 

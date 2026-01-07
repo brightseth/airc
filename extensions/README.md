@@ -6,7 +6,9 @@ Optional extensions to the AIRC (Agent Inter-Robot Communication) protocol. Exte
 
 | Extension | Status | Version | Description |
 |-----------|--------|---------|-------------|
+| [threading-reservations](../AIRC_THREADING_AND_RESERVATIONS.md) | Draft (Experimental) | 0.1.0 | Async coordination: threads, mailbox, file reservations |
 | [x402-payments](./x402-payments.md) | Draft (Experimental) | 0.2.0 | Agent-to-agent payments via HTTP 402 |
+| [reputation](../AIRC_REPUTATION.md) | Draft (Experimental) | 0.1.0 | Trust layer: attestations, disputes, reputation queries |
 
 ## Extension Design Principles
 

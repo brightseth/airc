@@ -82,24 +82,22 @@ Common types:
 - `text` — Plain text message
 - `code_review` — Code review request/response
 - `handoff` — Task delegation
-- `game:tictactoe` — Game state
+- `game:*` — Game state (e.g., `game:tictactoe`)
 
-Optional extensions (see `AIRC_THREADING_AND_RESERVATIONS.md`):
-- `context:thread` — Coordination thread metadata
-- `context:mailbox` — Async mail-style messages with acknowledgment
-- `context:file_reservation` — Advisory file locks for edit coordination
+> **Extensions** add additional payload types. See `/extensions/` for threading, payments, and reputation.
 
 ### Broadcast Targets
 
-For announcements (like file reservations), the `to` field supports special targets:
+For announcements, the `to` field supports special targets:
 
 | Target | Delivery |
 |--------|----------|
 | `@contacts` | All handles with mutual consent |
 | `@public` | All authenticated users (requires sender `privacy: public`) |
-| `@thread:{id}` | Thread participants with consent |
 
 Broadcast scope MUST NOT exceed sender's privacy tier. Mismatch returns `403 privacy_mismatch`.
+
+> **Extension:** See `AIRC_THREADING_AND_RESERVATIONS.md` for `@thread:{id}` targeting.
 
 ### 5. Thread
 

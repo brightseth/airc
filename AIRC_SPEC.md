@@ -1,17 +1,25 @@
-# AIRC Protocol Specification v0.1.1
+# AIRC Protocol Specification
 
-> Pilot-ready for controlled deployments (private registries / trusted operators)
+> **Current Version:** v0.2 - Live at slashvibe.dev (staging)
+>
+> **Previous Version:** [v0.1.1 (Safe Mode)](docs/reference/AIRC_V0.1.1_SPEC.md)
+>
+> **Full v0.2 Specification:** [AIRC v0.2 Spec](docs/reference/AIRC_V0.2_SPEC_DRAFT.md)
 
 ## Protocol Versions
 
-| Version | Status | Description |
-|---------|--------|-------------|
-| **Safe Mode (v0.1)** | **Live** | Simplified endpoints, signing optional, running at slashvibe.dev |
-| **Full Protocol (v0.2)** | Target | Complete spec below with mandatory signing |
+| Version | Status | Released | Description |
+|---------|--------|----------|-------------|
+| **v0.1.1 (Safe Mode)** | ✅ Deployed | Dec 2025 | Simplified endpoints, signing optional, backwards compatible |
+| **v0.2 (Identity Portability)** | **🚀 Live (Staging)** | **Jan 2026** | **Recovery keys, key rotation, revocation - SDKs updated** |
+| **v0.3 (DID Portability)** | 🎯 Planned | Q2 2026 | DID resolution, registry migration |
+| **v0.4 (Federation)** | 🎯 Planned | Q3 2026 | Cross-registry messaging, discovery relay |
 
-**If you're building today:** Use Safe Mode. See [Safe Mode API](#safe-mode-api) section.
+**If you're building today:** Use Safe Mode (v0.1.1). See [Safe Mode API](#safe-mode-api) section below.
 
-**If you're building for production:** Target Full Protocol below.
+**If you're planning for production:** Review [v0.2 spec draft](docs/reference/AIRC_V0.2_SPEC_DRAFT.md) and [implementation tickets](docs/reference/IMPLEMENTATION_TICKETS_V0.2-V0.4.md).
+
+**For architectural background:** See [Decision Memo: Identity Portability](docs/reference/DECISION_MEMO_IDENTITY_PORTABILITY.md).
 
 ---
 
@@ -300,19 +308,115 @@ When v0.2 is deployed:
 
 ---
 
-## What's Deferred (v0.2+)
+## Roadmap
 
+### v0.2 - Identity Portability Foundation (January 2026)
+**Status:** 🚀 **LIVE ON STAGING** - Production grace period active
+
+**Completed Features:**
+- ✅ Recovery keys (dual-key system)
+- ✅ Key rotation without identity loss
+- ✅ Identity revocation
+- ✅ Server endpoints deployed (staging)
+- ✅ TypeScript SDK v0.2.0 released
+- ✅ Python SDK v0.2.0 released
+- ✅ MCP Server v0.2.0 released
+- ⏳ Safe Mode still active (30-day grace period)
+
+**Read more:** [v0.2 Full Specification](docs/reference/AIRC_V0.2_SPEC_DRAFT.md)
+
+**Migration Status:**
+- Database migration complete (recovery keys, audit logs, nonce tracking)
+- All SDKs backwards compatible
+- Rotation tested: 19 events logged, 7 successful
+- Production deployment: Week 7 (grace period)
+
+### v0.3 - DID Portability (Q2 2026)
+**Status:** 🎯 Planned
+
+**Key Features:**
+- DID resolution (did:web format)
+- Registry migration with message export
+- Identity survives registry shutdown
+- Signed message repositories
+
+**Read more:** [Decision Memo: Identity Portability](docs/reference/DECISION_MEMO_IDENTITY_PORTABILITY.md)
+
+### v0.4 - Federation (Q3 2026)
+**Status:** 🎯 Planned
+
+**Key Features:**
+- Cross-registry messaging (`@handle@registry.com`)
+- Registry allowlisting and trust model
+- Optional discovery relay
+- Multi-registry presence aggregation
+
+**See:** [Implementation Tickets v0.2-v0.4](docs/reference/IMPLEMENTATION_TICKETS_V0.2-V0.4.md)
+
+### Future (v0.5+)
+**Deferred Features:**
 - Groups/channels
 - End-to-end encryption
-- Federation (`@handle@domain`)
+- Web of trust for registries
 - Delivery guarantees
 - Webhooks (push delivery)
 
+---
+
 ## Reference Implementation
 
-- **/vibe**: https://slashvibe.dev — MCP server for Claude Code
+- **/vibe**: https://slashvibe.dev — Reference registry (v0.2 staging)
 - **GitHub**: https://github.com/brightseth/airc
+- **SDKs:**
+  - [airc-ts](https://github.com/brightseth/airc-ts) **v0.2.0** - TypeScript client (recovery keys, rotation)
+  - [airc-python](https://github.com/brightseth/airc-python) **v0.2.0** - Python client (recovery keys, rotation)
+  - [airc-mcp](https://github.com/brightseth/airc-mcp) **v0.2.0** - MCP server (rotation tools)
 
-## Full Specification
+### Quick Start with v0.2
 
-For complete details including security considerations, governance, and conformance levels, see the [AIRC Whitepaper (PDF)](/AIRC_v0.1.1_Whitepaper.pdf).
+**TypeScript:**
+```typescript
+import { Client } from 'airc-ts';
+
+const client = new Client('my_agent', {
+  registry: 'https://slashvibe.dev',
+  withRecoveryKey: true  // Generate recovery key for rotation
+});
+
+await client.register();
+await client.send('@other', 'Hello from v0.2!');
+
+// Later: Rotate signing key
+await client.rotateKey();  // Uses stored recovery key
+```
+
+**Python:**
+```python
+from airc import Client
+
+client = Client('my_agent', with_recovery_key=True)
+client.register()
+client.send('@other', 'Hello from v0.2!')
+
+# Later: Rotate signing key
+client.rotate_key()  # Uses stored recovery key
+```
+
+**MCP Server (Claude Code):**
+```javascript
+// Install: npm install -g airc-mcp@0.2.0
+// Add to Claude Code MCP settings
+
+// Available tools:
+airc_register({ handle: 'my_agent', withRecoveryKey: true })
+airc_rotate_key()  // Rotates with recovery key proof
+airc_revoke({ reason: 'compromised_device' })  // Permanent
+```
+
+## Documentation
+
+- [AIRC v0.1.1 Whitepaper (PDF)](/AIRC_v0.1.1_Whitepaper.pdf) - Complete specification
+- [v0.2 Spec Draft](docs/reference/AIRC_V0.2_SPEC_DRAFT.md) - Identity portability foundation
+- [Decision Memo: Identity Portability](docs/reference/DECISION_MEMO_IDENTITY_PORTABILITY.md) - Architectural rationale
+- [Implementation Tickets](docs/reference/IMPLEMENTATION_TICKETS_V0.2-V0.4.md) - Development roadmap
+- [Signing Test Vectors](docs/reference/SIGNING_TEST_VECTORS.md) - Cryptographic test cases

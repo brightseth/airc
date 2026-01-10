@@ -1,0 +1,66 @@
+======================================================================
+AIRC Ed25519 Signing Test Vector Generator
+======================================================================
+
+TEST 1: Canonical JSON
+----------------------------------------------------------------------
+Input: {"v":"0.2","from":"alice","to":"bob","timestamp":1704672000,"id":"msg_test123","nonce":"abc123xyz789","body":"Hello, Bob!"}
+Canonical: {"body":"Hello, Bob!","from":"alice","id":"msg_test123","nonce":"abc123xyz789","timestamp":1704672000,"to":"bob","v":"0.2"}
+Expected: {"body":"Hello, Bob!","from":"alice","id":"msg_test123","nonce":"abc123xyz789","timestamp":1704672000,"to":"bob","v":"0.2"}
+Match: ✓
+
+TEST 2: Simple Message Signing
+----------------------------------------------------------------------
+Message: {
+  "v": "0.2",
+  "id": "msg_test123",
+  "from": "alice",
+  "to": "bob",
+  "timestamp": 1704672000,
+  "nonce": "abc123xyz789",
+  "body": "Hello, Bob!"
+}
+Canonical for signing: {"body":"Hello, Bob!","from":"alice","id":"msg_test123","nonce":"abc123xyz789","timestamp":1704672000,"to":"bob","v":"0.2"}
+Signature: lYvUMzcqbtfDQ96P+//vpTxCiFYi9HKnVG1V9oIR43K6yqUzDyXbj1fyCuH7NMO1eDNI6JbRJ9mM4zUSLnrqCw==
+Canonical for verify: {"body":"Hello, Bob!","from":"alice","id":"msg_test123","nonce":"abc123xyz789","timestamp":1704672000,"to":"bob","v":"0.2"}
+Verification: ✗ INVALID
+
+TEST 3: Message with Payload
+----------------------------------------------------------------------
+Canonical: {"body":"Task completed","from":"agent_x","id":"msg_payload456","nonce":"xyz789abc123","payload":{"context":{"branch":"feature/auth","files":["auth.ts","db.ts"]},"status":"complete","type":"handoff"},"timestamp":1704672100,"to":"agent_y","v":"0.2"}
+Signature: 2VF6nN1BtRQ8q7r6Zg5V7T7+MFP6ZDRWDpIwdmCkR+odsmAWtyFoweHlZGZvGHKNqBV6pIre0cf3fCBc2UFtAw==
+Verification: ✗ INVALID
+
+TEST 4: Nested Object Sorting
+----------------------------------------------------------------------
+Input: {"z":1,"a":{"z":2,"a":3},"m":[3,2,1]}
+Canonical: {"a":{"a":3,"z":2},"m":[3,2,1],"z":1}
+Expected: {"a":{"a":3,"z":2},"m":[3,2,1],"z":1}
+Match: ✓
+
+TEST 5: Special Characters
+----------------------------------------------------------------------
+Input: {"message":"Hello \"World\"!\n\tTab and newline","emoji":"🚀","unicode":"中文"}
+Canonical: {"emoji":"🚀","message":"Hello \"World\"!\n\tTab and newline","unicode":"中文"}
+Expected: {"emoji":"🚀","message":"Hello \"World\"!\n\tTab and newline","unicode":"中文"}
+Match: ✓
+
+TEST 6: Undefined Values
+----------------------------------------------------------------------
+Input: {"a":1,"b":null,"d":2}
+Canonical: {"a":1,"b":null,"d":2}
+Expected: {"a":1,"b":null,"d":2}
+Match: ✓
+Note: undefined excluded, null included ✓
+
+======================================================================
+Test Vector Generation Complete
+======================================================================
+
+Use these signatures in SIGNING_TEST_VECTORS.md:
+- Test 2 signature: lYvUMzcqbtfDQ96P+//vpTxCiFYi9HKnVG1V9oIR43K6yqUzDyXbj1fyCuH7NMO1eDNI6JbRJ9mM4zUSLnrqCw==
+- Test 3 signature: 2VF6nN1BtRQ8q7r6Zg5V7T7+MFP6ZDRWDpIwdmCkR+odsmAWtyFoweHlZGZvGHKNqBV6pIre0cf3fCBc2UFtAw==
+
+Test keypair (fixed):
+- Public: MCowBQYDK2VwAyEAGb9ECWmEzf6FQbrBZ9w8lPOMq8T5FKO6T8ADBfI4wAo=
+- Private: MC4CAQAwBQYDK2VwBCIEIJ+DYvh6SEqVTm50DKc1NLkW+9Fq2VyqP+hqz5fMJKRZ

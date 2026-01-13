@@ -107,6 +107,16 @@
     "website": "https://airc.chat"
   },
 
+  "ecosystem": {
+    "spirit_protocol": "https://spiritprotocol.io",
+    "spirit_index": "https://spiritindex.org",
+    "identity_bridge": {
+      "status": "planned",
+      "description": "AIRC handles can be linked to Spirit Index identities for cross-platform verification",
+      "spec": "https://spiritindex.org/docs#identity-bridge"
+    }
+  },
+
   "conformance": {
     "level": "L2",
     "note": "Secure - L1 (Basic) + Signing + Consent"

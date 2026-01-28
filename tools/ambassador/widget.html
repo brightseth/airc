@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIRC Ambassador</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111;
+            --border: #222;
+            --text: #fff;
+            --text-muted: #888;
+            --accent: #6B8FFF;
+            --accent-dim: #3d5aa3;
+            --success: #4ade80;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--surface);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .header-info {
+            flex: 1;
+        }
+
+        .header-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .header-subtitle {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .header-badge {
+            background: var(--accent-dim);
+            color: var(--text);
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Messages */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 85%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .message.ambassador {
+            align-self: flex-start;
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message-sender {
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 0 4px;
+        }
+
+        .message.user .message-sender {
+            text-align: right;
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .message.ambassador .message-bubble {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-bubble {
+            background: var(--accent);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-bubble code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 13px;
+        }
+
+        .message-bubble pre {
+            background: rgba(0,0,0,0.4);
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 8px 0;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-6px); }
+        }
+
+        /* Suggestions */
+        .suggestions {
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .suggestion {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        /* Input */
+        .input-area {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            background: var(--bg);
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        button {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 12px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .footer a:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="status-dot"></div>
+        <div class="header-info">
+            <div class="header-title">@ambassador</div>
+            <div class="header-subtitle">AIRC Protocol Support</div>
+        </div>
+        <div class="header-badge">Online</div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="suggestions" id="suggestions">
+        <button class="suggestion" onclick="ask('What is AIRC?')">What is AIRC?</button>
+        <button class="suggestion" onclick="ask('Show me Python code')">Python example</button>
+        <button class="suggestion" onclick="ask('How does AIRC compare to A2A?')">vs A2A</button>
+        <button class="suggestion" onclick="ask('Who made this?')">About</button>
+    </div>
+
+    <div class="input-area">
+        <div class="input-wrapper">
+            <input type="text" id="input" placeholder="Ask about AIRC..." autofocus>
+        </div>
+        <button id="send" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="footer">
+        <a href="https://github.com/spirit-protocol/airc" target="_blank">AIRC Protocol</a>
+        <span style="color: #333; margin: 0 8px;">|</span>
+        <a href="https://spiritprotocol.io" target="_blank">Spirit Protocol</a>
+    </div>
+
+    <script>
+        const AMBASSADOR_URL = 'wss://airc-ambassador.fly.dev/ws/chat';
+
+        const messagesEl = document.getElementById('messages');
+        const suggestionsEl = document.getElementById('suggestions');
+        const inputEl = document.getElementById('input');
+        const sendBtn = document.getElementById('send');
+
+        let ws = null;
+        let isFirstMessage = true;
+
+        function connect() {
+            ws = new WebSocket(AMBASSADOR_URL);
+
+            ws.onopen = () => {
+                sendBtn.disabled = false;
+                console.log('Connected to ambassador');
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                removeTyping();
+                addMessage('ambassador', data.body);
+            };
+
+            ws.onclose = () => {
+                sendBtn.disabled = true;
+                setTimeout(connect, 3000); // Reconnect after 3s
+            };
+
+            ws.onerror = (err) => {
+                console.error('WebSocket error:', err);
+            };
+        }
+
+        function addMessage(from, body) {
+            // Hide suggestions after first exchange
+            if (from === 'user' && isFirstMessage) {
+                suggestionsEl.style.display = 'none';
+                isFirstMessage = false;
+            }
+
+            const msg = document.createElement('div');
+            msg.className = `message ${from}`;
+
+            // Format the body (basic markdown)
+            let formatted = body
+                .replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+
+            msg.innerHTML = `
+                <div class="message-sender">${from === 'ambassador' ? '@ambassador' : 'You'}</div>
+                <div class="message-bubble">${formatted}</div>
+            `;
+
+            messagesEl.appendChild(msg);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function addTyping() {
+            const typing = document.createElement('div');
+            typing.className = 'message ambassador';
+            typing.id = 'typing';
+            typing.innerHTML = `
+                <div class="message-sender">@ambassador</div>
+                <div class="typing">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+            messagesEl.appendChild(typing);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function removeTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.remove();
+        }
+
+        function send() {
+            const text = inputEl.value.trim();
+            if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+            addMessage('user', text);
+            ws.send(JSON.stringify({ message: text }));
+            inputEl.value = '';
+            addTyping();
+        }
+
+        function ask(question) {
+            inputEl.value = question;
+            send();
+        }
+
+        // Event listeners
+        sendBtn.onclick = send;
+        inputEl.onkeypress = (e) => {
+            if (e.key === 'Enter') send();
+        };
+
+        // Connect on load
+        connect();
+    </script>
+</body>
+</html>

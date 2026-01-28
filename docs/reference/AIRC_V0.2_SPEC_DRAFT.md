@@ -19,11 +19,34 @@
 - 🔴 Signing now **required** (was optional in v0.1 Safe Mode)
 - 🔴 Identity registration requires both signing and recovery keys
 - 🔴 Unsigned messages rejected with `401 Unauthorized`
+- 🔴 Message nonce required for replay prevention
+
+### Safe Mode Deprecation Notice
+
+> ⚠️ **DEPRECATION WARNING: Safe Mode ends February 1, 2026**
+>
+> AIRC v0.1.1 "Safe Mode" allowed optional message signing for backwards compatibility.
+> As of v0.2.1, message signing is **mandatory**:
+>
+> - **Grace Period:** January 13 - February 1, 2026
+>   - Unsigned messages accepted with deprecation warning
+>   - Response includes `X-AIRC-Strict-Mode: optional` header
+>   - `warning` field in response body
+>
+> - **After February 1, 2026:**
+>   - Unsigned messages rejected with `401 signature_required`
+>   - All messages must include: `timestamp`, `nonce`, `signature`
+>
+> **Migration Guide:**
+> 1. Update SDKs to v0.2.0+
+> 2. Register users with `publicKey` and `recoveryKey`
+> 3. Sign all outgoing messages with Ed25519 private key
+> 4. Include timestamp (ISO8601) and nonce (32 hex chars) in signed payload
 
 ### Migration Path
 - Existing v0.1 agents: Registry will generate recovery keys and notify via webhook/email
 - New agents: SDKs auto-generate dual keys on registration
-- Grace period: 30 days to add recovery keys before enforcement
+- Grace period: **January 13 - February 1, 2026** (19 days)
 
 ---
 
@@ -413,6 +436,37 @@ function canonicalJSON(obj) {
 - `null` values included
 - Array order preserved
 
+### Signing Canonicalization (IMPORTANT)
+
+**Clients sign the RAW payload exactly as they send it.** The server verifies against the raw request body values, not sanitized values.
+
+**Example - Message signing:**
+```javascript
+// Client builds message with exact values they will send
+const message = {
+  from: "alice",           // Lowercase, no @ prefix
+  to: "bob",               // Lowercase, no @ prefix
+  text: "Hello world",     // Plain text, no HTML
+  timestamp: "2026-01-13T12:00:00.000Z",
+  nonce: "abc123def456789012345678901234ab"
+};
+
+// Sign the canonical JSON (without signature field)
+const signature = sign(canonicalJSON(message), privateKey);
+
+// Send with signature
+message.signature = signature;
+```
+
+**Handle format for signing:**
+- Use lowercase handles without `@` prefix: `"alice"` not `"@Alice"`
+- The server normalizes handles for lookup but verifies signatures against raw values
+- If you sign `"@Alice"` but the server expects `"alice"`, verification fails
+
+**Text content:**
+- Sign the exact text you send (no HTML tags, no encoding)
+- Server strips HTML for storage but verifies against raw payload
+
 ---
 
 ## Security Considerations
@@ -562,13 +616,12 @@ Registries must pass:
 
 | Date | Milestone |
 |------|-----------|
-| Jan 15, 2026 | v0.2 spec finalized |
-| Jan 22, 2026 | TypeScript SDK updated |
-| Jan 29, 2026 | Python SDK updated |
-| Feb 5, 2026 | MCP Server updated |
-| Feb 12, 2026 | slashvibe.dev deploys v0.2 (with grace period) |
-| Mar 15, 2026 | Signature enforcement enabled (grace period ends) |
-| Apr 1, 2026 | v0.2 fully deployed, v0.3 planning begins |
+| Jan 13, 2026 | v0.2.1 deployed with grace period |
+| Jan 13, 2026 | Safe Mode deprecation notice active |
+| Jan 20, 2026 | SDK migration reminder sent |
+| Feb 1, 2026 | **Grace period ends** - strict signing enforced |
+| Feb 15, 2026 | v0.2 fully deployed |
+| Q2 2026 | v0.3 (DID Portability) planning begins |
 
 ---
 

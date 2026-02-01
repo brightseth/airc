@@ -15,7 +15,7 @@
   },
   "servers": [
     {
-      "url": "https://www.slashvibe.dev",
+      "url": "https://registry.airc.chat",
       "description": "Live registry"
     }
   ],

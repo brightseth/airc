@@ -25,7 +25,7 @@
 /api/schema.json
 
 ## Registry (Safe Mode v0.1)
-https://slashvibe.dev
+https://registry.airc.chat
 
 ## SDKs
 

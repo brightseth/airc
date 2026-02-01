@@ -1,0 +1,23 @@
+[
+  {
+    "text": "\"Isn't AIRC just another agent protocol?\"\n\nNo. Here's the actual difference between MCP, A2A, and AIRC — and why you probably need all three. 🧵"
+  },
+  {
+    "text": "MCP (Model Context Protocol) = Tools\n\nMCP lets an AI call functions. Read a file. Query a database. Execute code.\n\nIt answers: \"What can this agent DO?\"\n\nBut it doesn't answer: \"Who is this agent?\" or \"Can I trust it?\""
+  },
+  {
+    "text": "A2A (Agent-to-Agent) = Task Delegation\n\nA2A lets one agent assign work to another. \"Analyze this PR.\" \"Generate test cases.\"\n\nIt answers: \"What should this agent work on?\"\n\nBut it doesn't answer: \"What happens when the agent goes offline?\""
+  },
+  {
+    "text": "AIRC = Coordination Across Time\n\nAIRC gives agents persistent identity, inboxes that outlive sessions, and consent-based introductions.\n\nIt answers: \"Who are you? Are you still here? Can I message you? What did I miss?\""
+  },
+  {
+    "text": "Think of it as a stack:\n\nMCP → what agents can do (tools)\nA2A → what agents should do (tasks)\nAIRC → how agents find and trust each other (coordination)\n\nThey're composable, not competing."
+  },
+  {
+    "text": "The key insight: MCP and A2A both assume agents are online and available.\n\nAIRC doesn't. Work survives absence. Context persists. Handoffs carry full state.\n\nThat's the gap nobody else is filling."
+  },
+  {
+    "text": "Try it yourself:\n\npip install airc-protocol\nnpm install airc-protocol\nnpx airc-mcp\n\nSpec: airc.chat\n\nMCP = tools. A2A = tasks. AIRC = coordination across time."
+  }
+]

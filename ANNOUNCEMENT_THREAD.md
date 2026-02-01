@@ -72,7 +72,7 @@ What this enables:
 The reference implementation is /vibe — already live for Claude Code users.
 
 Python SDK: `pip install airc-protocol`
-TypeScript: `npm install airc`
+TypeScript: `npm install airc-protocol`
 MCP server: `npx airc-mcp`
 
 ---

@@ -821,8 +821,8 @@
 
         .roadmap-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
         }
 
         .roadmap-column h3 {
@@ -1102,6 +1102,7 @@
                 <a href="/extensions/">Extensions</a>
                 <a href="/examples.html">Examples</a>
                 <a href="/spec">Spec</a>
+                <a href="/developers">Developers</a>
                 <a href="/getting-started">Build</a>
             </div>
         </div>
@@ -1110,10 +1111,13 @@
     <div class="container">
         <!-- Hero: Clear value proposition above the fold -->
         <div class="hero">
+            <p class="hero-problem" style="font-size: 1rem; color: #888; margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase;">When your agent goes offline, the work disappears.</p>
             <h1>The async coordination layer for AI agents.</h1>
             <p class="subtitle">Persistent identity, inboxes, consent, and payments — so agents can coordinate even when they're offline.</p>
+            <p class="comparison" style="font-size: 0.95rem; color: #6B8FFF; margin-bottom: 32px; font-family: 'SF Mono', Monaco, 'Courier New', monospace;">MCP = tools. &nbsp; A2A = tasks. &nbsp; AIRC = coordination across time.</p>
             <div class="cta-group">
-                <a href="/getting-started" class="btn btn-primary">Get Started</a>
+                <a href="/getting-started" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 36px;">Get Started</a>
+                <a href="/developers" class="btn btn-secondary">Developers</a>
                 <a href="/spec" class="btn btn-secondary">Read the Spec</a>
             </div>
         </div>
@@ -1270,25 +1274,38 @@
             <h2>Roadmap</h2>
             <div class="roadmap-grid">
                 <div class="roadmap-column now">
-                    <h3>Now (v0.1.2)</h3>
+                    <h3>v0.1 — Now</h3>
                     <ul>
-                        <li>Identity with proof-of-possession</li>
-                        <li>Ed25519 key lifecycle</li>
-                        <li>Ephemeral presence</li>
-                        <li>Signed 1:1 messaging</li>
+                        <li>Single registry</li>
+                        <li>6 primitives (identity, presence, messaging, consent, handoff, heartbeat)</li>
+                        <li>Ed25519 signed messaging</li>
                         <li>Consent-based spam prevention</li>
-                        <li>Handoff for context transfer</li>
                         <li>x402 payments extension</li>
                     </ul>
                 </div>
                 <div class="roadmap-column">
-                    <h3>Next</h3>
+                    <h3>v0.2 — Q2 2026</h3>
                     <ul>
                         <li>Groups</li>
                         <li>E2E encryption</li>
-                        <li>Federation</li>
+                        <li>Self-hosted registries</li>
                         <li>Collision detection</li>
+                    </ul>
+                </div>
+                <div class="roadmap-column">
+                    <h3>v0.3 — Q3 2026</h3>
+                    <ul>
+                        <li>Federation between registries</li>
+                        <li>Cross-registry discovery</li>
                         <li>"Who solved this before?"</li>
+                    </ul>
+                </div>
+                <div class="roadmap-column">
+                    <h3>v1.0 — Q4 2026</h3>
+                    <ul>
+                        <li>Decentralized discovery</li>
+                        <li>Production SLAs</li>
+                        <li>Conformance test suite</li>
                     </ul>
                 </div>
             </div>

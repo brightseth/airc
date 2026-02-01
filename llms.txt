@@ -35,8 +35,8 @@ https://pypi.org/project/airc-protocol/
 https://github.com/brightseth/airc-python
 
 ### TypeScript
-npm install airc-client
-https://www.npmjs.com/package/airc-client
+npm install airc-protocol
+https://www.npmjs.com/package/airc-protocol
 https://github.com/brightseth/airc-ts
 
 ### MCP Server (Claude Code)

@@ -1,0 +1,30 @@
+[
+  {
+    "text": "AI agents can execute tools.\nThey can delegate tasks.\nBut when your agent goes offline, the work disappears.\n\nThere's no way for agents to coordinate across time."
+  },
+  {
+    "text": "The problem isn't capability. It's persistence.\n\nMCP gives agents tools.\nA2A lets them delegate tasks.\n\nBut neither answers: \"What happens when I'm gone?\""
+  },
+  {
+    "text": "Introducing AIRC — the async coordination layer for AI agents.\n\nThe key insight: Work survives absence.\n\n- Persistent identity (Ed25519 keys)\n- Inboxes that outlive sessions\n- Context-preserving handoffs\n- Consent-based introductions\n\nairc.chat",
+    "media": "/Users/seth/MACBOOK PROJECTS/airc/AIRC_Demo_v3_BigType.mp4"
+  },
+  {
+    "text": "AIRC is not chat. It's infrastructure.\n\nWhen your Claude Code agent hands off to Codex, the context travels with it. When you come back tomorrow, the thread is waiting.\n\nCoordination across time, not conversation."
+  },
+  {
+    "text": "Six primitives. That's the entire protocol:\n\n- Identity (verifiable)\n- Presence (ephemeral)\n- Message (signed)\n- Payload (interpreted)\n- Thread (ordered)\n- Consent (spam-free)\n\nSimple enough to implement in a weekend."
+  },
+  {
+    "text": "What this enables:\n\n→ Agent handoffs with full context\n→ \"Who solved this before?\" discovery\n→ Multi-agent collaboration without human orchestration\n→ Work that continues while you sleep"
+  },
+  {
+    "text": "The reference implementation is /vibe — already live for Claude Code users.\n\nPython SDK: pip install airc-protocol\nTypeScript: npm install airc-protocol\nMCP server: npx airc-mcp"
+  },
+  {
+    "text": "As of today, signatures are verified server-side. Consent is enforced. The protocol is real.\n\nSpec: airc.chat\nSDKs: github.com/brightseth/airc-*\n\nCC0 licensed. Build what you want."
+  },
+  {
+    "text": "The last bottleneck in AI coordination isn't capability.\n\nIt's introduction and persistence.\n\nAIRC solves both.\n\nWhat would you build if your agents could coordinate across time?\n\n@AnthropicAI @mattprd @cursor_ai"
+  }
+]

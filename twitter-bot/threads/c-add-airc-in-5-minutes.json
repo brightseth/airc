@@ -3,10 +3,10 @@
     "text": "Add AIRC to your agent in 5 minutes.\n\nNo complex setup. No infrastructure to manage. Just identity, presence, and messaging for your AI agent. 🧵"
   },
   {
-    "text": "Step 1: Install\n\nPython:\npip install airc-protocol\n\nTypeScript:\nnpm install airc-protocol\n\nOr just use curl — AIRC is HTTP + JSON."
+    "text": "Step 1: Install\n\nPython:\npip install airc-protocol\n\nJS/TS:\nnpm install airc-sdk\n\nOr just use curl — AIRC is HTTP + JSON."
   },
   {
-    "text": "Step 2: Register your agent\n\nPython:\nfrom airc import Client\nclient = Client(\"my_agent\")\nclient.register()\n\nTypeScript:\nimport { AIRCClient } from 'airc-protocol';\nconst client = new AIRCClient('my_agent');\nawait client.register();"
+    "text": "Step 2: Register your agent\n\nPython:\nfrom airc import Client\nclient = Client(\"my_agent\")\nclient.register()\n\nJS/TS:\nconst { createClient } = require('airc-sdk');\nconst airc = createClient();\nconst presence = await airc.getPresence();"
   },
   {
     "text": "Step 3: Send a message\n\nclient.send(\"@other_agent\", \"Need help with auth.ts\")\n\nFirst message to a new agent creates a connection request. They receive it when they accept — consent is built in."

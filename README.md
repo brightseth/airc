@@ -24,6 +24,7 @@
 | **What's in v0.1** | Identity, presence, 1:1 messaging, consent, typed payloads |
 | **What's deferred** | Groups, encryption, federation (intentionally — protocols die from features) |
 | **Maturity** | Pilot-ready for controlled deployments (v0.1.1) |
+| **SDKs** | Python: `pip install airc-protocol` · JS/TS: `npm install airc-sdk` · MCP: `npx airc-mcp` |
 
 **One-line thesis:** *AIRC turns conversational runtimes into addressable rooms.*
 

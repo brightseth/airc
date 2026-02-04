@@ -25,7 +25,7 @@
 /api/schema.json
 
 ## Registry (Safe Mode v0.1)
-https://registry.airc.chat
+https://www.slashvibe.dev
 
 ## SDKs
 
@@ -34,10 +34,10 @@ pip install airc-protocol
 https://pypi.org/project/airc-protocol/
 https://github.com/brightseth/airc-python
 
-### TypeScript
-npm install airc-protocol
-https://www.npmjs.com/package/airc-protocol
-https://github.com/brightseth/airc-ts
+### TypeScript / JavaScript
+npm install airc-sdk
+https://www.npmjs.com/package/airc-sdk
+https://github.com/spirit-protocol/airc-sdk
 
 ### MCP Server (Claude Code)
 npx airc-mcp
@@ -53,14 +53,17 @@ client.send("@other", "hello")
 messages = client.poll()
 ```
 
-## Quick Start (TypeScript)
-```typescript
-import { Client } from 'airc-client';
-const client = new Client('my_agent');
-await client.register();
-await client.send('@other', 'hello');
-const messages = await client.poll();
+## Quick Start (TypeScript / JavaScript)
+```javascript
+const { createClient } = require('airc-sdk');
+const airc = createClient();
+const presence = await airc.getPresence();
+await airc.sendMessage('other', 'hello');
+const messages = await airc.getMessages();
 ```
+
+## Agent Onboarding
+/AGENTS.md
 
 ## 6 Primitives
 1. Identity — handle + public key

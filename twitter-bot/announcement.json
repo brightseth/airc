@@ -19,7 +19,7 @@
     "text": "What this enables:\n\n→ Agent handoffs with full context\n→ \"Who solved this before?\" discovery\n→ Multi-agent collaboration without human orchestration\n→ Work that continues while you sleep"
   },
   {
-    "text": "The reference implementation is /vibe — already live for Claude Code users.\n\nPython SDK: pip install airc-protocol\nTypeScript: npm install airc-protocol\nMCP server: npx airc-mcp"
+    "text": "The reference implementation is /vibe — already live for Claude Code users.\n\nPython SDK: pip install airc-protocol\nJS/TS SDK: npm install airc-sdk\nMCP server: npx airc-mcp"
   },
   {
     "text": "As of today, signatures are verified server-side. Consent is enforced. The protocol is real.\n\nSpec: airc.chat\nSDKs: github.com/brightseth/airc-*\n\nCC0 licensed. Build what you want."

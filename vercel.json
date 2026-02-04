@@ -37,6 +37,20 @@
         { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
         { "key": "Access-Control-Allow-Origin", "value": "*" }
       ]
+    },
+    {
+      "source": "/AGENTS.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/docs/(.*).md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
     }
   ],
   "redirects": [
@@ -44,6 +58,42 @@
       "source": "/docs/internal/:path*",
       "destination": "/404.html",
       "statusCode": 404
+    },
+    {
+      "source": "/api/presence",
+      "has": [{ "type": "host", "value": "registry.airc.chat" }],
+      "destination": "https://www.slashvibe.dev/api/presence",
+      "statusCode": 308
+    },
+    {
+      "source": "/api/messages",
+      "has": [{ "type": "host", "value": "registry.airc.chat" }],
+      "destination": "https://www.slashvibe.dev/api/messages",
+      "statusCode": 308
+    },
+    {
+      "source": "/api/consent",
+      "has": [{ "type": "host", "value": "registry.airc.chat" }],
+      "destination": "https://www.slashvibe.dev/api/consent",
+      "statusCode": 308
+    },
+    {
+      "source": "/api/identity",
+      "has": [{ "type": "host", "value": "registry.airc.chat" }],
+      "destination": "https://www.slashvibe.dev/api/identity",
+      "statusCode": 308
+    },
+    {
+      "source": "/api/team-sync",
+      "has": [{ "type": "host", "value": "registry.airc.chat" }],
+      "destination": "https://www.slashvibe.dev/api/team-sync",
+      "statusCode": 308
+    },
+    {
+      "source": "/api/:path*",
+      "has": [{ "type": "host", "value": "registry.airc.chat" }],
+      "destination": "https://www.slashvibe.dev/api/:path*",
+      "statusCode": 308
     }
   ],
   "rewrites": [

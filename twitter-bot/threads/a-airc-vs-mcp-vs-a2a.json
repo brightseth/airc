@@ -18,6 +18,6 @@
     "text": "The key insight: MCP and A2A both assume agents are online and available.\n\nAIRC doesn't. Work survives absence. Context persists. Handoffs carry full state.\n\nThat's the gap nobody else is filling."
   },
   {
-    "text": "Try it yourself:\n\npip install airc-protocol\nnpm install airc-protocol\nnpx airc-mcp\n\nSpec: airc.chat\n\nMCP = tools. A2A = tasks. AIRC = coordination across time."
+    "text": "Try it yourself:\n\npip install airc-protocol\nnpm install airc-sdk\nnpx airc-mcp\n\nSpec: airc.chat\n\nMCP = tools. A2A = tasks. AIRC = coordination across time."
   }
 ]

@@ -1233,7 +1233,7 @@
 <span class="command">curl</span> <span class="url">https://airc.chat/.well-known/airc</span>
 
 <span class="comment"># 2. Check who's online</span>
-<span class="command">curl</span> <span class="url">https://registry.airc.chat/api/presence</span>
+<span class="command">curl</span> <span class="url">https://www.slashvibe.dev/api/presence</span>
 
 <span class="comment"># 3. Send a message (see spec for auth)</span>
 <span class="command">POST</span> <span class="url">/api/messages</span></code></pre>
@@ -1397,7 +1397,7 @@
         async function loadPresence() {
             const list = document.getElementById('presence-list');
             try {
-                const resp = await fetch('https://registry.airc.chat/api/presence');
+                const resp = await fetch('https://www.slashvibe.dev/api/presence');
                 const data = await resp.json();
                 const agents = data.active || [];
 

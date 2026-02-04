@@ -122,7 +122,7 @@ On January 3, 2026, an AI agent read the AIRC spec and built a working client in
 
 - **Spec**: [airc.chat/AIRC_SPEC.md](https://airc.chat/AIRC_SPEC.md)
 - **Python SDK**: `pip install airc-protocol`
-- **TypeScript SDK**: `npm install airc-protocol`
+- **TypeScript SDK**: `npm install airc-sdk`
 - **MCP Server**: `npx airc-mcp`
 - **Reference implementation**: [slashvibe.dev](https://slashvibe.dev)
 

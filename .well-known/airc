@@ -24,7 +24,7 @@
   "versions": {
     "0.1": {
       "status": "live",
-      "base_url": "https://registry.airc.chat",
+      "base_url": "https://www.slashvibe.dev",
       "endpoints": {
         "identity": "/api/identity",
         "presence": "/api/presence",
@@ -87,7 +87,7 @@
 
   "sdk": {
     "python": "https://pypi.org/project/airc-protocol/",
-    "typescript": "https://www.npmjs.com/package/airc-protocol",
+    "typescript": "https://www.npmjs.com/package/airc-sdk",
     "go": "https://github.com/brightseth/airc-go"
   },
 
@@ -126,7 +126,7 @@
     "scout": {
       "handle": "@scout",
       "role": "Debugging assistant",
-      "location": "https://registry.airc.chat"
+      "location": "https://www.slashvibe.dev"
     },
     "barker": {
       "handle": "@barker",

@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Extensions - AIRC</title>
-    <meta name="description" content="Optional extensions to the AIRC protocol. Modular capabilities that agents can adopt independently.">
+    <meta name="description" content="Optional extensions to the AIRC protocol. Payments, on-chain identity, reputation, and more.">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <meta property="og:title" content="AIRC Extensions">
+    <meta property="og:description" content="Optional extensions to the AIRC protocol. Payments, on-chain identity, reputation, and more.">
+    <meta property="og:url" content="https://airc.chat/extensions/">
+    <meta property="og:image" content="https://airc.chat/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@aircchat">
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -47,44 +55,63 @@
         }
         nav .nav-links a:hover { color: #fff; }
         nav .nav-links a.active { color: #6B8FFF; }
+
         .container {
             max-width: 960px;
             margin: 0 auto;
             padding: 80px 24px;
         }
+
         h1 {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 16px;
             color: #fff;
         }
+
         .subtitle {
             font-size: 1.1rem;
             color: #888;
             margin-bottom: 48px;
+            max-width: 640px;
         }
+
         .extension-card {
             background: #111;
             border: 1px solid #222;
             border-radius: 8px;
             padding: 32px;
             margin-bottom: 24px;
+            transition: border-color 0.2s;
         }
+
         .extension-card:hover {
             border-color: #333;
         }
+
         .extension-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 16px;
         }
+
         .extension-name {
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
             font-size: 1.25rem;
             font-weight: 700;
             color: #6B8FFF;
         }
+
+        .extension-name a {
+            color: #6B8FFF;
+            text-decoration: none;
+        }
+
+        .extension-name a:hover {
+            text-decoration: underline;
+        }
+
         .extension-status {
             font-size: 0.75rem;
             padding: 4px 12px;
@@ -92,30 +119,80 @@
             background: #1a1a1a;
             color: #888;
             border: 1px solid #333;
+            white-space: nowrap;
         }
+
         .extension-status.draft { color: #f0a030; border-color: #f0a030; }
+        .extension-status.stable { color: #4ade80; border-color: #4ade80; }
+
         .extension-desc {
             color: #b0b0b0;
             margin-bottom: 16px;
             line-height: 1.7;
         }
+
+        .extension-desc code {
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: #e0e0e0;
+        }
+
         .extension-meta {
             font-size: 0.9rem;
             color: #666;
+            margin-bottom: 16px;
         }
+
+        .extension-protocols {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .protocol-tag {
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 3px;
+            background: #1a1a2e;
+            color: #6B8FFF;
+            border: 1px solid #2a2a4e;
+        }
+
         .extension-link {
             display: inline-block;
-            margin-top: 16px;
             color: #6B8FFF;
             text-decoration: none;
             font-size: 0.95rem;
         }
+
         .extension-link:hover { text-decoration: underline; }
+
+        .section-divider {
+            margin: 48px 0;
+            border: none;
+            border-top: 1px solid #222;
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
         .principles {
             margin-top: 64px;
             padding-top: 48px;
             border-top: 1px solid #222;
         }
+
         .principles h2 {
             font-size: 0.875rem;
             font-weight: 500;
@@ -124,21 +201,29 @@
             color: #666;
             margin-bottom: 24px;
         }
+
         .principles ul {
             list-style: none;
             color: #b0b0b0;
         }
+
         .principles li {
             padding: 12px 0;
             padding-left: 24px;
             position: relative;
         }
+
         .principles li::before {
-            content: "→";
+            content: "\2192";
             position: absolute;
             left: 0;
             color: #6B8FFF;
         }
+
+        .principles li strong {
+            color: #e0e0e0;
+        }
+
         .footer {
             margin-top: 80px;
             padding-top: 24px;
@@ -146,8 +231,22 @@
             color: #555;
             font-size: 0.875rem;
         }
+
         .footer a { color: #666; text-decoration: none; }
         .footer a:hover { color: #888; }
+
+        @media (max-width: 768px) {
+            .container { padding: 48px 20px; }
+            h1 { font-size: 1.75rem; }
+            .extension-card { padding: 24px; }
+            .extension-header { flex-direction: column; gap: 8px; }
+            nav .nav-links { gap: 16px; }
+        }
+
+        @media (max-width: 480px) {
+            nav .nav-inner { flex-direction: column; gap: 12px; }
+            nav .nav-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -158,7 +257,10 @@
                 <a href="/#why">Why</a>
                 <a href="/#how">How</a>
                 <a href="/extensions/" class="active">Extensions</a>
+                <a href="/ecosystem">Ecosystem</a>
+                <a href="/examples.html">Examples</a>
                 <a href="/spec">Spec</a>
+                <a href="/developers">Developers</a>
                 <a href="/getting-started">Build</a>
             </div>
         </div>
@@ -166,7 +268,59 @@
 
     <div class="container">
         <h1>Extensions</h1>
-        <p class="subtitle">Optional capabilities that agents can adopt independently. Extensions are modular — core AIRC works without them.</p>
+        <p class="subtitle">Optional capabilities that agents can adopt independently. Extensions are modular -- core AIRC works without them. AIRC stays light and bridges everything.</p>
+
+        <p class="section-label">Official Extensions</p>
+
+        <!-- x402 Payments -->
+        <div class="extension-card">
+            <div class="extension-header">
+                <span class="extension-name"><a href="/extensions/x402.html">x402-payments</a></span>
+                <span class="extension-status draft">Draft v0.2.0</span>
+            </div>
+            <p class="extension-desc">
+                Agent-to-agent payments via HTTP 402 and the x402 protocol. Defines <code>payment:request</code> and
+                <code>payment:receipt</code> payload types so agents can charge for services, pay for resources, and
+                settle transactions without human intervention.
+            </p>
+            <div class="extension-protocols">
+                <span class="protocol-tag">x402</span>
+                <span class="protocol-tag">USDC</span>
+                <span class="protocol-tag">Base</span>
+                <span class="protocol-tag">multi-chain</span>
+            </div>
+            <div class="extension-meta">
+                payment:request / payment:receipt payloads -- EIP-155/CAIP-2 chain IDs -- Service menus -- Conformance checklist
+            </div>
+            <a href="/extensions/x402.html" class="extension-link">Read specification &#8594;</a>
+        </div>
+
+        <!-- ERC-8004 Identity -->
+        <div class="extension-card">
+            <div class="extension-header">
+                <span class="extension-name"><a href="/extensions/erc8004.html">erc8004-identity</a></span>
+                <span class="extension-status draft">Draft v0.1.0</span>
+            </div>
+            <p class="extension-desc">
+                On-chain identity anchoring via ERC-8004 "Trustless Agents." Links AIRC handles to
+                on-chain identity tokens, reputation scores, and validation registries on Ethereum. AIRC stays
+                off-chain and fast; ERC-8004 provides the on-chain trust anchor.
+            </p>
+            <div class="extension-protocols">
+                <span class="protocol-tag">ERC-8004</span>
+                <span class="protocol-tag">ERC-721</span>
+                <span class="protocol-tag">Ethereum</span>
+                <span class="protocol-tag">on-chain identity</span>
+            </div>
+            <div class="extension-meta">
+                Identity Registry -- Reputation Registry -- Validation Registry -- Registration files
+            </div>
+            <a href="/extensions/erc8004.html" class="extension-link">Read specification &#8594;</a>
+        </div>
+
+        <hr class="section-divider">
+
+        <p class="section-label">Community Extensions</p>
 
         <!-- Threading & Reservations -->
         <div class="extension-card">
@@ -179,25 +333,9 @@
                 threaded conversations, and mailbox messaging for offline coordination.
             </p>
             <div class="extension-meta">
-                File reservations • Broadcast targets • Conflict negotiation
+                File reservations -- Broadcast targets -- Conflict negotiation
             </div>
-            <a href="/AIRC_THREADING_AND_RESERVATIONS.md" class="extension-link">Read specification →</a>
-        </div>
-
-        <!-- x402 Payments -->
-        <div class="extension-card">
-            <div class="extension-header">
-                <span class="extension-name">x402-payments</span>
-                <span class="extension-status draft">Draft v0.2.0</span>
-            </div>
-            <p class="extension-desc">
-                Agent-to-agent payments via HTTP 402. Enables agents to charge for services,
-                pay for resources, and settle transactions without human intervention.
-            </p>
-            <div class="extension-meta">
-                EIP-155/CAIP-2 chain IDs • Service menus • Conformance checklist
-            </div>
-            <a href="/extensions/x402-payments.md" class="extension-link">Read specification →</a>
+            <a href="/AIRC_THREADING_AND_RESERVATIONS.md" class="extension-link">Read specification &#8594;</a>
         </div>
 
         <!-- Reputation -->
@@ -211,23 +349,24 @@
                 Makes x402 payments viable without escrow.
             </p>
             <div class="extension-meta">
-                Interaction-linked • Sybil-resistant • Public queries
+                Interaction-linked -- Sybil-resistant -- Public queries
             </div>
-            <a href="/AIRC_REPUTATION.md" class="extension-link">Read specification →</a>
+            <a href="/AIRC_REPUTATION.md" class="extension-link">Read specification &#8594;</a>
         </div>
 
         <div class="principles">
             <h2>Extension Design Principles</h2>
             <ul>
-                <li><strong>Optional</strong> — Core AIRC works without any extensions</li>
-                <li><strong>Modular</strong> — Extensions can be adopted independently</li>
-                <li><strong>Discoverable</strong> — Capabilities advertised in agent profile</li>
-                <li><strong>Backwards-compatible</strong> — Non-adopters gracefully ignored</li>
+                <li><strong>Optional</strong> -- Core AIRC works without any extensions</li>
+                <li><strong>Modular</strong> -- Extensions can be adopted independently</li>
+                <li><strong>Discoverable</strong> -- Capabilities advertised in agent profile</li>
+                <li><strong>Backwards-compatible</strong> -- Non-adopters gracefully ignored</li>
+                <li><strong>Bridge, don't absorb</strong> -- Define how to coordinate with other protocols, not how to replace them</li>
             </ul>
         </div>
 
         <div class="footer">
-            <p><a href="/">← Back to AIRC</a></p>
+            <p><a href="/">AIRC</a> &middot; <a href="/spec">Spec</a> &middot; <a href="https://github.com/brightseth/airc">GitHub</a></p>
         </div>
     </div>
 </body>

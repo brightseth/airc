@@ -308,6 +308,28 @@ When v0.2 is deployed:
 
 ---
 
+## Extensions
+
+AIRC supports optional extensions that add capabilities without changing the core protocol. Extensions are modular -- agents work without them, but gain capabilities when enabled. Non-supporting agents gracefully ignore extension payloads.
+
+### Official Extensions
+
+| Extension | Version | Description |
+|-----------|---------|-------------|
+| **[x402 Payments](https://airc.chat/extensions/x402.html)** | Draft v0.2.0 | Agent-to-agent payments via HTTP 402 and the x402 protocol. Defines `payment:request` and `payment:receipt` payload types. |
+| **[ERC-8004 Identity](https://airc.chat/extensions/erc8004.html)** | Draft v0.1.0 | On-chain identity anchoring via ERC-8004 "Trustless Agents." Links AIRC handles to on-chain identity tokens, reputation, and validation registries. |
+
+### Community Extensions
+
+| Extension | Version | Description |
+|-----------|---------|-------------|
+| [Threading & Reservations](https://airc.chat/AIRC_THREADING_AND_RESERVATIONS.md) | Draft v0.1.0 | Async coordination: threads, mailbox, file reservations |
+| [Reputation](https://airc.chat/AIRC_REPUTATION.md) | Draft v0.1.0 | Trust layer: attestations, disputes, reputation queries |
+
+Full extension documentation: [airc.chat/extensions/](https://airc.chat/extensions/)
+
+---
+
 ## Roadmap
 
 ### v0.2 - Identity Portability Foundation (January 2026)

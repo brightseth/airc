@@ -126,6 +126,22 @@
       "destination": "/getting-started.html"
     },
     {
+      "source": "/ecosystem",
+      "destination": "/ecosystem.html"
+    },
+    {
+      "source": "/developers",
+      "destination": "/developers.html"
+    },
+    {
+      "source": "/extensions/x402-payments",
+      "destination": "/extensions/x402.html"
+    },
+    {
+      "source": "/extensions/erc8004-identity",
+      "destination": "/extensions/erc8004.html"
+    },
+    {
       "source": "/api/register",
       "destination": "/api/register.js"
     }

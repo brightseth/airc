@@ -18,8 +18,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #000;
             color: #e0e0e0;
             min-height: 100vh;
             line-height: 1.6;
@@ -28,8 +28,8 @@
         nav {
             position: sticky;
             top: 0;
-            background: #0a0a0a;
-            border-bottom: 1px solid #222;
+            background: #000;
+            border-bottom: 1px solid #1F2937;
             padding: 16px 24px;
             z-index: 100;
         }
@@ -58,9 +58,11 @@
         }
 
         nav .nav-links a {
-            color: #888;
+            color: #9CA3AF;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: color 0.2s;
         }
 
@@ -77,7 +79,7 @@
             text-align: center;
             margin-bottom: 80px;
             padding-bottom: 48px;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1F2937;
         }
 
         .hero h1 {
@@ -85,11 +87,13 @@
             font-weight: 700;
             color: #fff;
             margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: -2px;
         }
 
         .hero .subtitle {
             font-size: 1.15rem;
-            color: #888;
+            color: #9CA3AF;
             margin-bottom: 32px;
             max-width: 600px;
             margin-left: auto;
@@ -101,7 +105,7 @@
             background: #fff;
             color: #000;
             padding: 14px 32px;
-            border-radius: 4px;
+            border-radius: 0;
             text-decoration: none;
             font-weight: 600;
             font-size: 1rem;
@@ -120,34 +124,36 @@
 
         .use-case {
             background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 40px;
         }
 
         .use-case h2 {
             font-size: 1.5rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #fff;
             margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
 
         .use-case .uc-subtitle {
-            color: #888;
+            color: #9CA3AF;
             font-size: 1rem;
             margin-bottom: 24px;
         }
 
         .use-case .uc-description {
-            color: #b0b0b0;
+            color: #9CA3AF;
             margin-bottom: 24px;
             line-height: 1.7;
         }
 
         pre {
-            background: #0a0a0a;
-            border: 1px solid #222;
-            border-radius: 6px;
+            background: #000;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 20px;
             overflow-x: auto;
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
@@ -186,7 +192,7 @@
             text-align: left;
             padding: 12px 16px;
             border-bottom: 2px solid #333;
-            color: #888;
+            color: #9CA3AF;
             font-weight: 500;
             text-transform: uppercase;
             font-size: 0.8rem;
@@ -195,8 +201,8 @@
 
         .matrix-table td {
             padding: 12px 16px;
-            border-bottom: 1px solid #1a1a1a;
-            color: #b0b0b0;
+            border-bottom: 1px solid #1F2937;
+            color: #9CA3AF;
         }
 
         .matrix-table tr:hover td {
@@ -220,8 +226,8 @@
         /* Comparison */
         .comparison {
             background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 40px;
             margin-bottom: 80px;
             text-align: center;
@@ -250,8 +256,8 @@
             margin-bottom: 8px;
         }
 
-        .comparison-item .protocol-name.mcp { color: #888; }
-        .comparison-item .protocol-name.a2a { color: #888; }
+        .comparison-item .protocol-name.mcp { color: #9CA3AF; }
+        .comparison-item .protocol-name.a2a { color: #9CA3AF; }
         .comparison-item .protocol-name.airc { color: #6B8FFF; }
 
         .comparison-item .protocol-role {
@@ -270,17 +276,20 @@
         .bottom-cta {
             text-align: center;
             padding: 48px 0;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
         }
 
         .bottom-cta h2 {
             font-size: 1.5rem;
             color: #fff;
             margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            font-weight: 700;
         }
 
         .bottom-cta p {
-            color: #888;
+            color: #9CA3AF;
             margin-bottom: 32px;
         }
 
@@ -296,12 +305,12 @@
             text-decoration: none;
             padding: 12px 24px;
             border: 1px solid #333;
-            border-radius: 4px;
+            border-radius: 0;
             transition: all 0.2s;
         }
 
         .bottom-cta a:hover {
-            background: #1a1a1a;
+            background: #0a0a0a;
             border-color: #444;
         }
 
@@ -318,7 +327,7 @@
         .footer {
             margin-top: 64px;
             padding-top: 24px;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
             color: #555;
             font-size: 0.875rem;
         }
@@ -328,7 +337,7 @@
             text-decoration: none;
         }
 
-        .footer a:hover { color: #888; }
+        .footer a:hover { color: #9CA3AF; }
 
         @media (max-width: 768px) {
             .container { padding: 48px 20px; }

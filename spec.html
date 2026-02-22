@@ -10,8 +10,8 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #000;
             color: #e0e0e0;
             min-height: 100vh;
             line-height: 1.7;
@@ -19,8 +19,8 @@
         nav {
             position: sticky;
             top: 0;
-            background: #0a0a0a;
-            border-bottom: 1px solid #222;
+            background: #000;
+            border-bottom: 1px solid #1F2937;
             padding: 16px 24px;
             z-index: 100;
         }
@@ -41,9 +41,11 @@
         nav .logo:hover { color: #6B8FFF; }
         nav .nav-links { display: flex; gap: 32px; }
         nav .nav-links a {
-            color: #888;
+            color: #9CA3AF;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: color 0.2s;
         }
         nav .nav-links a:hover { color: #fff; }
@@ -56,13 +58,15 @@
         .spec-header {
             margin-bottom: 48px;
             padding-bottom: 32px;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1F2937;
         }
         .spec-header h1 {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 12px;
             color: #fff;
+            text-transform: uppercase;
+            letter-spacing: -2px;
         }
         .spec-meta {
             display: flex;
@@ -78,28 +82,28 @@
         .spec-meta a:hover { text-decoration: underline; }
 
         /* Markdown content styling */
-        .content h1 { font-size: 1.75rem; color: #fff; margin: 48px 0 16px; padding-top: 24px; border-top: 1px solid #222; }
+        .content h1 { text-transform: uppercase; letter-spacing: -2px; font-weight: 700; font-size: 1.75rem; color: #fff; margin: 48px 0 16px; padding-top: 24px; border-top: 1px solid #1F2937; }
         .content h1:first-child { margin-top: 0; padding-top: 0; border-top: none; }
-        .content h2 { font-size: 1.4rem; color: #fff; margin: 40px 0 16px; }
+        .content h2 { text-transform: uppercase; letter-spacing: -1px; font-weight: 700; font-size: 1.4rem; color: #fff; margin: 40px 0 16px; }
         .content h3 { font-size: 1.15rem; color: #e0e0e0; margin: 32px 0 12px; }
-        .content h4 { font-size: 1rem; color: #b0b0b0; margin: 24px 0 8px; }
-        .content p { color: #b0b0b0; margin-bottom: 16px; }
+        .content h4 { font-size: 1rem; color: #9CA3AF; margin: 24px 0 8px; }
+        .content p { color: #9CA3AF; margin-bottom: 16px; }
         .content a { color: #6B8FFF; text-decoration: none; }
         .content a:hover { text-decoration: underline; }
-        .content ul, .content ol { color: #b0b0b0; margin: 16px 0; padding-left: 24px; }
+        .content ul, .content ol { color: #9CA3AF; margin: 16px 0; padding-left: 24px; }
         .content li { margin: 8px 0; }
         .content code {
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-            background: #1a1a1a;
+            background: #0a0a0a;
             padding: 2px 6px;
-            border-radius: 3px;
+            border-radius: 0;
             font-size: 0.9em;
             color: #e0e0e0;
         }
         .content pre {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            background: #0a0a0a;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 20px;
             overflow-x: auto;
             margin: 24px 0;
@@ -114,7 +118,7 @@
             border-left: 3px solid #6B8FFF;
             padding-left: 20px;
             margin: 24px 0;
-            color: #888;
+            color: #9CA3AF;
             font-style: italic;
         }
         .content table {
@@ -126,19 +130,19 @@
         .content th, .content td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1F2937;
         }
         .content th {
-            color: #888;
+            color: #9CA3AF;
             font-weight: 500;
             text-transform: uppercase;
             font-size: 0.8rem;
             letter-spacing: 0.05em;
         }
-        .content td { color: #b0b0b0; }
+        .content td { color: #9CA3AF; }
         .content hr {
             border: none;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
             margin: 48px 0;
         }
         .content strong { color: #e0e0e0; }
@@ -150,21 +154,21 @@
             color: #666;
         }
         .error {
-            background: #1a1a1a;
+            background: #0a0a0a;
             border: 1px solid #333;
-            border-radius: 8px;
+            border-radius: 0;
             padding: 24px;
-            color: #888;
+            color: #9CA3AF;
         }
         .footer {
             margin-top: 80px;
             padding-top: 24px;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
             color: #555;
             font-size: 0.875rem;
         }
         .footer a { color: #666; text-decoration: none; }
-        .footer a:hover { color: #888; }
+        .footer a:hover { color: #9CA3AF; }
     </style>
     <!-- Marked.js for markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

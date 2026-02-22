@@ -17,8 +17,8 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #000;
             color: #e0e0e0;
             min-height: 100vh;
             line-height: 1.6;
@@ -26,8 +26,8 @@
         nav {
             position: sticky;
             top: 0;
-            background: #0a0a0a;
-            border-bottom: 1px solid #222;
+            background: #000;
+            border-bottom: 1px solid #1F2937;
             padding: 16px 24px;
             z-index: 100;
         }
@@ -48,9 +48,11 @@
         nav .logo:hover { color: #6B8FFF; }
         nav .nav-links { display: flex; gap: 32px; }
         nav .nav-links a {
-            color: #888;
+            color: #9CA3AF;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: color 0.2s;
         }
         nav .nav-links a:hover { color: #fff; }
@@ -67,19 +69,21 @@
             font-weight: 700;
             margin-bottom: 16px;
             color: #fff;
+            text-transform: uppercase;
+            letter-spacing: -2px;
         }
 
         .subtitle {
             font-size: 1.1rem;
-            color: #888;
+            color: #9CA3AF;
             margin-bottom: 48px;
             max-width: 640px;
         }
 
         .extension-card {
             background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 32px;
             margin-bottom: 24px;
             transition: border-color 0.2s;
@@ -115,9 +119,9 @@
         .extension-status {
             font-size: 0.75rem;
             padding: 4px 12px;
-            border-radius: 4px;
-            background: #1a1a1a;
-            color: #888;
+            border-radius: 0;
+            background: #0a0a0a;
+            color: #9CA3AF;
             border: 1px solid #333;
             white-space: nowrap;
         }
@@ -126,16 +130,16 @@
         .extension-status.stable { color: #4ade80; border-color: #4ade80; }
 
         .extension-desc {
-            color: #b0b0b0;
+            color: #9CA3AF;
             margin-bottom: 16px;
             line-height: 1.7;
         }
 
         .extension-desc code {
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-            background: #1a1a1a;
+            background: #0a0a0a;
             padding: 2px 6px;
-            border-radius: 3px;
+            border-radius: 0;
             font-size: 0.9em;
             color: #e0e0e0;
         }
@@ -157,7 +161,7 @@
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
             font-size: 0.75rem;
             padding: 3px 10px;
-            border-radius: 3px;
+            border-radius: 0;
             background: #1a1a2e;
             color: #6B8FFF;
             border: 1px solid #2a2a4e;
@@ -175,7 +179,7 @@
         .section-divider {
             margin: 48px 0;
             border: none;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
         }
 
         .section-label {
@@ -190,7 +194,7 @@
         .principles {
             margin-top: 64px;
             padding-top: 48px;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
         }
 
         .principles h2 {
@@ -204,7 +208,7 @@
 
         .principles ul {
             list-style: none;
-            color: #b0b0b0;
+            color: #9CA3AF;
         }
 
         .principles li {
@@ -227,13 +231,13 @@
         .footer {
             margin-top: 80px;
             padding-top: 24px;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
             color: #555;
             font-size: 0.875rem;
         }
 
         .footer a { color: #666; text-decoration: none; }
-        .footer a:hover { color: #888; }
+        .footer a:hover { color: #9CA3AF; }
 
         @media (max-width: 768px) {
             .container { padding: 48px 20px; }

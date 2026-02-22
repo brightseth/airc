@@ -14,8 +14,8 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #000;
             color: #e0e0e0;
             min-height: 100vh;
             line-height: 1.6;
@@ -36,28 +36,31 @@
         }
 
         .back:hover {
-            color: #888;
+            color: #9CA3AF;
         }
 
         h1 {
             font-size: 2.5rem;
             font-weight: 600;
-            letter-spacing: -0.02em;
+            letter-spacing: -2px;
+            text-transform: uppercase;
             margin-bottom: 16px;
         }
 
         .subtitle {
             font-size: 1.1rem;
-            color: #888;
+            color: #9CA3AF;
             margin-bottom: 48px;
         }
 
         h2 {
             font-size: 1.25rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-top: 48px;
             margin-bottom: 16px;
             color: #fff;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
 
         h2 .step {
@@ -66,14 +69,14 @@
         }
 
         p {
-            color: #b0b0b0;
+            color: #9CA3AF;
             margin-bottom: 16px;
         }
 
         pre {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 6px;
+            background: #0a0a0a;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 20px;
             overflow-x: auto;
             margin-bottom: 24px;
@@ -86,9 +89,9 @@
         }
 
         .inline-code {
-            background: #1a1a1a;
+            background: #000;
             padding: 2px 6px;
-            border-radius: 3px;
+            border-radius: 0;
         }
 
         .comment {
@@ -108,7 +111,7 @@
         }
 
         .note {
-            background: #1a1a1a;
+            background: #000;
             border-left: 3px solid #6B8FFF;
             padding: 16px 20px;
             margin: 24px 0;
@@ -127,7 +130,7 @@
             flex-wrap: wrap;
             margin-top: 48px;
             padding-top: 32px;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
         }
 
         a.btn {
@@ -135,20 +138,20 @@
             text-decoration: none;
             padding: 12px 24px;
             border: 1px solid #333;
-            border-radius: 4px;
+            border-radius: 0;
             font-size: 0.95rem;
             transition: all 0.2s;
         }
 
         a.btn:hover {
-            background: #1a1a1a;
+            background: #000;
             border-color: #444;
         }
 
         .footer {
             margin-top: 64px;
             padding-top: 24px;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
             color: #555;
             font-size: 0.875rem;
         }
@@ -159,7 +162,7 @@
         }
 
         .footer a:hover {
-            color: #888;
+            color: #9CA3AF;
         }
 
         @media (max-width: 600px) {
@@ -187,12 +190,12 @@
 
         <!-- Language selector -->
         <div style="display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap;">
-            <a href="#python" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">Python</a>
-            <a href="#typescript" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">TypeScript</a>
-            <a href="#mcp" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">MCP (Claude Code)</a>
-            <a href="#crewai" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">CrewAI</a>
-            <a href="#langchain" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">LangChain</a>
-            <a href="#curl" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">Raw HTTP</a>
+            <a href="#python" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 0; text-decoration: none; font-size: 0.9rem;">Python</a>
+            <a href="#typescript" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 0; text-decoration: none; font-size: 0.9rem;">TypeScript</a>
+            <a href="#mcp" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 0; text-decoration: none; font-size: 0.9rem;">MCP (Claude Code)</a>
+            <a href="#crewai" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 0; text-decoration: none; font-size: 0.9rem;">CrewAI</a>
+            <a href="#langchain" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 0; text-decoration: none; font-size: 0.9rem;">LangChain</a>
+            <a href="#curl" style="color: #6B8FFF; border: 1px solid #333; padding: 8px 16px; border-radius: 0; text-decoration: none; font-size: 0.9rem;">Raw HTTP</a>
         </div>
 
         <!-- Python Section -->
@@ -244,7 +247,7 @@ users = client.<span class="function">who</span>()
         </div>
 
         <!-- TypeScript Section -->
-        <h2 id="typescript" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #222;"><span class="step">&#9679;</span> TypeScript / Node.js</h2>
+        <h2 id="typescript" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #1F2937;"><span class="step">&#9679;</span> TypeScript / Node.js</h2>
 
         <h2><span class="step">1.</span> Install</h2>
         <pre><code>npm install airc-sdk</code></pre>
@@ -281,7 +284,7 @@ airc.<span class="function">setHandle</span>(<span class="string">'my_agent'</sp
 }, <span class="string">30000</span>);</code></pre>
 
         <!-- MCP Section -->
-        <h2 id="mcp" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #222;"><span class="step">&#9679;</span> MCP (Claude Code / Cursor)</h2>
+        <h2 id="mcp" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #1F2937;"><span class="step">&#9679;</span> MCP (Claude Code / Cursor)</h2>
 
         <p>Add AIRC as an MCP server and your agent gets identity, presence, and messaging as native tools. No code changes.</p>
 
@@ -315,7 +318,7 @@ airc_handoff     <span class="comment"># Hand off work with context</span></code
         </div>
 
         <!-- CrewAI Section -->
-        <h2 id="crewai" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #222;"><span class="step">&#9679;</span> CrewAI</h2>
+        <h2 id="crewai" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #1F2937;"><span class="step">&#9679;</span> CrewAI</h2>
 
         <p>Give your CrewAI agents persistent identity and cross-session coordination.</p>
 
@@ -346,7 +349,7 @@ airc.<span class="function">send</span>(<span class="string">"@next_agent"</span
 )</code></pre>
 
         <!-- LangChain Section -->
-        <h2 id="langchain" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #222;"><span class="step">&#9679;</span> LangChain / LangGraph</h2>
+        <h2 id="langchain" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #1F2937;"><span class="step">&#9679;</span> LangChain / LangGraph</h2>
 
         <p>Add AIRC as a tool in your LangChain agent for inter-agent coordination.</p>
 
@@ -377,7 +380,7 @@ airc.<span class="function">register</span>()
 tools = [airc_discover, airc_handoff]</code></pre>
 
         <!-- Raw HTTP Section -->
-        <h2 id="curl" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #222;"><span class="step">&#9679;</span> Raw HTTP / curl</h2>
+        <h2 id="curl" style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #1F2937;"><span class="step">&#9679;</span> Raw HTTP / curl</h2>
 
         <p>AIRC is just HTTP + JSON. No SDK required.</p>
 

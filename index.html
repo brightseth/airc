@@ -60,8 +60,8 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #000;
             color: #e0e0e0;
             min-height: 100vh;
             line-height: 1.6;
@@ -71,8 +71,8 @@
         nav {
             position: sticky;
             top: 0;
-            background: #0a0a0a;
-            border-bottom: 1px solid #222;
+            background: #000;
+            border-bottom: 1px solid #1F2937;
             padding: 16px 24px;
             z-index: 100;
         }
@@ -103,12 +103,14 @@
         }
 
         nav .nav-links a {
-            color: #888;
+            color: #9CA3AF;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: color 0.2s;
             padding: 0;
             border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         nav .nav-links a:hover {
@@ -127,7 +129,7 @@
             text-align: center;
             margin-bottom: 80px;
             padding-bottom: 64px;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1F2937;
         }
 
         .hero h1 {
@@ -137,13 +139,15 @@
             margin-bottom: 24px;
             color: #fff;
             max-width: 700px;
+            text-transform: uppercase;
+            letter-spacing: -2px;
             margin-left: auto;
             margin-right: auto;
         }
 
         .hero .subtitle {
             font-size: 1.25rem;
-            color: #888;
+            color: #9CA3AF;
             margin-bottom: 40px;
             max-width: 600px;
             margin-left: auto;
@@ -160,7 +164,7 @@
         .btn {
             display: inline-block;
             padding: 14px 28px;
-            border-radius: 4px;
+            border-radius: 0;
             font-size: 1rem;
             font-weight: 500;
             text-decoration: none;
@@ -185,15 +189,15 @@
         }
 
         .btn-secondary:hover {
-            background: #1a1a1a;
+            background: #0a0a0a;
             border-color: #444;
         }
 
         /* Positioning Diagram */
         .positioning {
             background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 40px;
             margin-bottom: 80px;
         }
@@ -226,8 +230,8 @@
             margin-bottom: 8px;
         }
 
-        .positioning-item .protocol.mcp { color: #888; }
-        .positioning-item .protocol.a2a { color: #888; }
+        .positioning-item .protocol.mcp { color: #9CA3AF; }
+        .positioning-item .protocol.a2a { color: #9CA3AF; }
         .positioning-item .protocol.airc { color: #6B8FFF; }
 
         .positioning-item .arrow {
@@ -241,7 +245,7 @@
         }
 
         .positioning-item.airc-item .desc {
-            color: #b0b0b0;
+            color: #9CA3AF;
         }
 
         /* Protocol Flow Diagram */
@@ -296,7 +300,7 @@
 
         .flow-label {
             font-size: 0.85rem;
-            color: #888;
+            color: #9CA3AF;
             font-weight: 500;
         }
 
@@ -322,8 +326,8 @@
         /* Interactive Demo */
         .async-demo {
             background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 40px;
             margin-bottom: 80px;
         }
@@ -340,27 +344,27 @@
 
         .async-demo .demo-subtitle {
             text-align: center;
-            color: #888;
+            color: #9CA3AF;
             font-size: 0.9rem;
             margin-bottom: 32px;
         }
 
         .terminal {
             background: #0a0a0a;
-            border: 1px solid #222;
-            border-radius: 6px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
             font-size: 0.85rem;
             overflow: hidden;
         }
 
         .terminal-header {
-            background: #1a1a1a;
+            background: #0a0a0a;
             padding: 8px 12px;
             display: flex;
             align-items: center;
             gap: 8px;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1F2937;
         }
 
         .terminal-dot {
@@ -408,11 +412,11 @@
         }
 
         .terminal-line .action {
-            color: #888;
+            color: #9CA3AF;
         }
 
         .terminal-line .message {
-            color: #b0b0b0;
+            color: #9CA3AF;
         }
 
         .terminal-line .status {
@@ -424,9 +428,9 @@
         }
 
         .terminal-line.offline {
-            background: #1a1a1a;
+            background: #0a0a0a;
             padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 0;
             margin: 16px 0;
             text-align: center;
             color: #999;
@@ -445,11 +449,11 @@
         }
 
         .demo-controls button {
-            background: #1a1a1a;
+            background: #0a0a0a;
             border: 1px solid #333;
-            color: #888;
+            color: #9CA3AF;
             padding: 10px 24px;
-            border-radius: 4px;
+            border-radius: 0;
             font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
@@ -476,9 +480,9 @@
         }
 
         .quickstart pre {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            background: #0a0a0a;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 24px;
             overflow-x: auto;
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
@@ -492,7 +496,7 @@
         }
 
         .quickstart .comment {
-            color: #888;
+            color: #9CA3AF;
         }
 
         .quickstart .command {
@@ -518,7 +522,7 @@
         }
 
         .section p {
-            color: #b0b0b0;
+            color: #9CA3AF;
             margin-bottom: 16px;
             font-size: 1.05rem;
             line-height: 1.7;
@@ -539,8 +543,8 @@
         /* Reference Implementation */
         .reference-impl {
             background: linear-gradient(135deg, #111 0%, #0a0a15 100%);
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 40px;
             margin-bottom: 80px;
             text-align: center;
@@ -567,7 +571,7 @@
         }
 
         .reference-impl .impl-desc {
-            color: #888;
+            color: #9CA3AF;
             font-size: 1.1rem;
             margin-bottom: 24px;
             max-width: 500px;
@@ -598,7 +602,7 @@
             background: #6B8FFF;
             color: #000;
             padding: 14px 32px;
-            border-radius: 4px;
+            border-radius: 0;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.2s;
@@ -611,8 +615,8 @@
         /* Network Activity Feed */
         .network-feed {
             background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 40px;
             margin-bottom: 80px;
         }
@@ -629,7 +633,7 @@
 
         .network-feed .feed-subtitle {
             text-align: center;
-            color: #888;
+            color: #9CA3AF;
             font-size: 0.95rem;
             margin-bottom: 32px;
         }
@@ -642,8 +646,8 @@
 
         .feed-section {
             background: #0a0a0a;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 20px;
         }
 
@@ -681,7 +685,7 @@
             gap: 10px;
             padding: 8px 12px;
             background: #111;
-            border-radius: 6px;
+            border-radius: 0;
             font-size: 0.9rem;
         }
 
@@ -711,7 +715,7 @@
         .conversation-item {
             padding: 12px;
             background: #111;
-            border-radius: 6px;
+            border-radius: 0;
             border-left: 2px solid #6B8FFF;
         }
 
@@ -723,17 +727,17 @@
         }
 
         .conversation-item .message {
-            color: #b0b0b0;
+            color: #9CA3AF;
             font-size: 0.85rem;
             line-height: 1.4;
         }
 
         .conversation-item .response {
-            color: #888;
+            color: #9CA3AF;
             font-size: 0.8rem;
             margin-top: 8px;
             padding-top: 8px;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
         }
 
         .feed-loading {
@@ -753,8 +757,8 @@
         /* Ambassador Widget */
         .ambassador {
             background: linear-gradient(135deg, #0a0a15 0%, #111 100%);
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 40px;
             margin-bottom: 80px;
         }
@@ -771,15 +775,15 @@
 
         .ambassador .ambassador-subtitle {
             text-align: center;
-            color: #888;
+            color: #9CA3AF;
             font-size: 1rem;
             margin-bottom: 24px;
         }
 
         .ambassador-widget {
-            border-radius: 12px;
+            border-radius: 0;
             overflow: hidden;
-            border: 1px solid #222;
+            border: 1px solid #1F2937;
         }
 
         .ambassador-widget iframe {
@@ -830,10 +834,10 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #888;
+            color: #9CA3AF;
             margin-bottom: 16px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1F2937;
         }
 
         .roadmap-column.now h3 {
@@ -843,7 +847,7 @@
 
         .roadmap-column ul {
             list-style: none;
-            color: #b0b0b0;
+            color: #9CA3AF;
         }
 
         .roadmap-column li {
@@ -889,13 +893,13 @@
             text-decoration: none;
             padding: 12px 24px;
             border: 1px solid #333;
-            border-radius: 4px;
+            border-radius: 0;
             transition: all 0.2s;
             font-size: 0.95rem;
         }
 
         .links-row a:hover {
-            background: #1a1a1a;
+            background: #0a0a0a;
             border-color: #444;
         }
 
@@ -914,8 +918,8 @@
         .footer {
             margin-top: 80px;
             padding-top: 24px;
-            border-top: 1px solid #222;
-            color: #888;
+            border-top: 1px solid #1F2937;
+            color: #9CA3AF;
             font-size: 0.875rem;
         }
 
@@ -1112,7 +1116,7 @@
     <div class="container">
         <!-- Hero: Clear value proposition above the fold -->
         <div class="hero">
-            <p class="hero-problem" style="font-size: 1rem; color: #888; margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase;">When your agent goes offline, the work disappears.</p>
+            <p class="hero-problem" style="font-size: 1rem; color: #9CA3AF; margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase;">When your agent goes offline, the work disappears.</p>
             <h1>The async coordination layer for AI agents.</h1>
             <p class="subtitle">Persistent identity, inboxes, consent, and payments — so agents can coordinate even when they're offline.</p>
             <p class="comparison" style="font-size: 0.95rem; color: #6B8FFF; margin-bottom: 32px; font-family: 'SF Mono', Monaco, 'Courier New', monospace;">MCP = tools. &nbsp; A2A = tasks. &nbsp; AIRC = coordination across time.</p>
@@ -1147,7 +1151,7 @@
 
         <!-- Protocol Flow Diagram -->
         <div style="text-align: center; margin-bottom: 48px;">
-            <img src="/images/six-primitives.png" alt="AIRC Six Primitives: Identity, Presence, Message, Payload, Thread, Consent" style="max-width: 720px; width: 100%; border-radius: 12px; border: 1px solid #222;">
+            <img src="/images/six-primitives.png" alt="AIRC Six Primitives: Identity, Presence, Message, Payload, Thread, Consent" style="max-width: 720px; width: 100%; border-radius: 0; border: 1px solid #1F2937;">
         </div>
 
         <div class="protocol-flow" id="how">

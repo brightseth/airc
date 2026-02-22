@@ -21,8 +21,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: #0a0a0a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #000;
             color: #e0e0e0;
             min-height: 100vh;
             line-height: 1.6;
@@ -31,8 +31,8 @@
         nav {
             position: sticky;
             top: 0;
-            background: #0a0a0a;
-            border-bottom: 1px solid #222;
+            background: #000;
+            border-bottom: 1px solid #1F2937;
             padding: 16px 24px;
             z-index: 100;
         }
@@ -61,9 +61,11 @@
         }
 
         nav .nav-links a {
-            color: #888;
+            color: #9CA3AF;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: color 0.2s;
         }
 
@@ -81,7 +83,7 @@
             text-align: center;
             margin-bottom: 80px;
             padding-bottom: 48px;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1F2937;
         }
 
         .hero h1 {
@@ -89,11 +91,13 @@
             font-weight: 700;
             color: #fff;
             margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: -2px;
         }
 
         .hero .subtitle {
             font-size: 1.15rem;
-            color: #888;
+            color: #9CA3AF;
             margin-bottom: 40px;
             max-width: 640px;
             margin-left: auto;
@@ -103,8 +107,8 @@
         /* Stack Diagram */
         .stack-diagram {
             background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 40px;
             margin-bottom: 80px;
         }
@@ -132,9 +136,9 @@
             align-items: center;
             gap: 20px;
             padding: 16px 24px;
-            border: 1px solid #222;
-            border-radius: 6px;
-            background: #0a0a0a;
+            border: 1px solid #1F2937;
+            border-radius: 0;
+            background: #000;
             transition: border-color 0.2s;
         }
 
@@ -172,7 +176,7 @@
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
             font-size: 0.95rem;
             font-weight: 600;
-            color: #888;
+            color: #9CA3AF;
         }
 
         .stack-protocol.highlight {
@@ -197,7 +201,7 @@
         .protocol-section {
             margin-bottom: 64px;
             padding-bottom: 64px;
-            border-bottom: 1px solid #1a1a1a;
+            border-bottom: 1px solid #1F2937;
         }
 
         .protocol-section:last-of-type {
@@ -239,18 +243,18 @@
             white-space: nowrap;
             padding: 6px 14px;
             border: 1px solid #333;
-            border-radius: 4px;
+            border-radius: 0;
             transition: all 0.2s;
             flex-shrink: 0;
         }
 
         .protocol-link:hover {
-            background: #1a1a1a;
+            background: #0a0a0a;
             border-color: #6B8FFF;
         }
 
         .protocol-desc {
-            color: #b0b0b0;
+            color: #9CA3AF;
             margin-bottom: 16px;
             font-size: 1.05rem;
             line-height: 1.7;
@@ -259,8 +263,8 @@
         /* Relationship Diagram */
         .relationship {
             background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 28px;
             margin: 24px 0;
         }
@@ -275,9 +279,9 @@
 
         .rel-box {
             padding: 16px;
-            border: 1px solid #222;
-            border-radius: 6px;
-            background: #0a0a0a;
+            border: 1px solid #1F2937;
+            border-radius: 0;
+            background: #000;
         }
 
         .rel-box .rel-name {
@@ -287,7 +291,7 @@
             margin-bottom: 4px;
         }
 
-        .rel-box .rel-name.other { color: #888; }
+        .rel-box .rel-name.other { color: #9CA3AF; }
         .rel-box .rel-name.airc { color: #6B8FFF; }
 
         .rel-box .rel-role {
@@ -316,9 +320,9 @@
 
         /* Code Examples */
         pre {
-            background: #0a0a0a;
-            border: 1px solid #222;
-            border-radius: 6px;
+            background: #000;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 20px;
             overflow-x: auto;
             font-family: 'SF Mono', Monaco, 'Courier New', monospace;
@@ -368,7 +372,7 @@
             text-align: center;
             padding: 12px 10px;
             border-bottom: 2px solid #333;
-            color: #888;
+            color: #9CA3AF;
             font-weight: 600;
             text-transform: uppercase;
             font-size: 0.75rem;
@@ -385,9 +389,9 @@
 
         .matrix-table td {
             padding: 10px;
-            border-bottom: 1px solid #1a1a1a;
+            border-bottom: 1px solid #1F2937;
             text-align: center;
-            color: #b0b0b0;
+            color: #9CA3AF;
         }
 
         .matrix-table td:first-child {
@@ -417,8 +421,8 @@
         /* Closing */
         .closing {
             background: linear-gradient(135deg, #111 0%, #0a0a15 100%);
-            border: 1px solid #222;
-            border-radius: 8px;
+            border: 1px solid #1F2937;
+            border-radius: 0;
             padding: 48px 40px;
             text-align: center;
             margin-bottom: 80px;
@@ -429,10 +433,12 @@
             font-weight: 700;
             color: #fff;
             margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
 
         .closing p {
-            color: #888;
+            color: #9CA3AF;
             font-size: 1.05rem;
             max-width: 560px;
             margin: 0 auto 32px;
@@ -458,12 +464,12 @@
             text-decoration: none;
             padding: 12px 24px;
             border: 1px solid #333;
-            border-radius: 4px;
+            border-radius: 0;
             transition: all 0.2s;
         }
 
         .closing .links a:hover {
-            background: #1a1a1a;
+            background: #0a0a0a;
             border-color: #444;
         }
 
@@ -482,7 +488,7 @@
         .footer {
             margin-top: 64px;
             padding-top: 24px;
-            border-top: 1px solid #222;
+            border-top: 1px solid #1F2937;
             color: #555;
             font-size: 0.875rem;
         }
@@ -492,7 +498,7 @@
             text-decoration: none;
         }
 
-        .footer a:hover { color: #888; }
+        .footer a:hover { color: #9CA3AF; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -557,7 +563,7 @@
 
         <!-- Visual Stack Infographic -->
         <div style="text-align: center; margin-bottom: 48px;">
-            <img src="/images/protocol-stack.png" alt="The Agent Protocol Stack: MCP (Tools), A2A (Tasks), AIRC (Coordination), x402 (Payments), ERC-8004 (On-chain Identity)" style="max-width: 480px; width: 100%; border-radius: 12px; border: 1px solid #222;">
+            <img src="/images/protocol-stack.png" alt="The Agent Protocol Stack: MCP (Tools), A2A (Tasks), AIRC (Coordination), x402 (Payments), ERC-8004 (On-chain Identity)" style="max-width: 480px; width: 100%; border-radius: 0; border: 1px solid #1F2937;">
         </div>
 
         <!-- Stack Diagram -->

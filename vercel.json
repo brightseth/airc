@@ -134,6 +134,10 @@
       "destination": "/developers.html"
     },
     {
+      "source": "/frameworks",
+      "destination": "/frameworks.html"
+    },
+    {
       "source": "/extensions/x402-payments",
       "destination": "/extensions/x402.html"
     },

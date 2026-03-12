@@ -224,14 +224,12 @@
       const res = await fetch(API + '/messages?user=' + username);
       const data = await res.json();
       const threads = data.threads || [];
-      let allMsgs = [];
-      threads.forEach(function(t) {
-        (t.messages || []).forEach(function(m) { allMsgs.push(m); });
-      });
-      // Find new agent messages
-      const agentMsgs = allMsgs.filter(function(m) {
-        return m.from === TARGET || m.from === 'airc_ambassador';
-      });
+      // API returns last_message per thread, not messages array
+      const agentMsgs = threads
+        .map(function(t) { return t.last_message; })
+        .filter(function(m) {
+          return m && (m.from === TARGET || m.from === 'airc_ambassador');
+        });
       if (agentMsgs.length > lastMessageCount) {
         removeTyping();
         const newMsgs = agentMsgs.slice(lastMessageCount);

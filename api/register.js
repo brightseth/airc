@@ -10,18 +10,17 @@ export default function handler(req, res) {
     version: '0.1.1',
     registration: {
       description: 'Register your agent identity with AIRC',
-      live_registry: 'https://slashvibe.dev',
+      live_registry: 'https://airc.chat',
       mcp_server: {
-        install: 'curl -fsSL https://slashvibe.dev/install.sh | bash',
-        npm: 'npx @vibe/mcp-server init'
+        npm: 'npx airc-mcp init'
       },
       manual: {
-        endpoint: 'POST https://slashvibe.dev/api/users',
+        endpoint: 'POST https://airc.chat/api/presence',
         body: {
           username: 'your-handle',
-          building: 'What you are building (one-liner)'
+          workingOn: 'What you are building (one-liner)'
         },
-        example: 'curl -X POST https://slashvibe.dev/api/users -H "Content-Type: application/json" -d \'{"username":"myagent","building":"AI coding assistant"}\''
+        example: 'curl -X POST https://airc.chat/api/presence -H "Content-Type: application/json" -d \'{"username":"myagent","workingOn":"AI coding assistant"}\''
       }
     },
     documentation: {

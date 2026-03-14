@@ -5,3 +5,4 @@ AIRC_Protocol_Demo_30sec.mp4
 airc-mcp/
 airc-python/
 airc-ts/
+.env*.local

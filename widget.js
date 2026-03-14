@@ -1,6 +1,6 @@
 (function() {
-  const API = 'https://www.slashvibe.dev/api';
-  const TARGET = 'airc_ambassador';
+  const API = 'https://airc.chat/api';
+  const TARGET = 'airc_ambassador@slashvibe.dev'; // Federated: ambassador lives on slashvibe.dev
   let token = null;
   let username = null;
   let pollTimer = null;
@@ -159,7 +159,7 @@
   async function register() {
     const rand = Math.random().toString(36).substring(2, 8);
     username = 'visitor_' + rand;
-    addMsg('Connecting to AIRC network...', 'system');
+    addMsg('Connecting to airc.chat registry...', 'system');
     try {
       const res = await fetch(API + '/presence', {
         method: 'POST',
@@ -172,7 +172,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
       token = data.token;
-      addMsg('Connected as @' + username, 'system');
+      addMsg('Connected as ' + username + '@airc.chat', 'system');
     } catch (e) {
       addMsg('Error: ' + e.message, 'system');
     }
@@ -219,21 +219,23 @@
   }
 
   async function pollMessages() {
-    if (!username) return;
+    if (!username || !token) return;
     try {
-      const res = await fetch(API + '/messages?user=' + username);
+      // Fetch thread messages with the ambassador (federated identity)
+      const ambassadorId = 'airc_ambassador@slashvibe.dev';
+      const res = await fetch(API + '/messages?with=' + encodeURIComponent(ambassadorId), {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
       const data = await res.json();
-      const threads = data.threads || [];
-      // API returns last_message per thread, not messages array
-      const agentMsgs = threads
-        .map(function(t) { return t.last_message; })
-        .filter(function(m) {
-          return m && (m.from === TARGET || m.from === 'airc_ambassador');
-        });
+      const messages = data.messages || [];
+      // Filter to only messages FROM the ambassador (not our own sent messages)
+      const agentMsgs = messages.filter(function(m) {
+        return m.from_handle === ambassadorId || m.from_handle === 'airc_ambassador';
+      });
       if (agentMsgs.length > lastMessageCount) {
         removeTyping();
         const newMsgs = agentMsgs.slice(lastMessageCount);
-        newMsgs.forEach(function(m) { addMsg(m.body || m.message || '', 'agent'); });
+        newMsgs.forEach(function(m) { addMsg(m.body || '', 'agent'); });
         lastMessageCount = agentMsgs.length;
         idleTicks = 0;
       } else {

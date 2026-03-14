@@ -1,5 +1,5 @@
 {
-  "buildCommand": null,
+  "installCommand": "npm install",
   "outputDirectory": ".",
   "framework": null,
   "headers": [
@@ -58,48 +58,12 @@
       "source": "/docs/internal/:path*",
       "destination": "/404.html",
       "statusCode": 404
-    },
-    {
-      "source": "/api/presence",
-      "has": [{ "type": "host", "value": "registry.airc.chat" }],
-      "destination": "https://www.slashvibe.dev/api/presence",
-      "statusCode": 308
-    },
-    {
-      "source": "/api/messages",
-      "has": [{ "type": "host", "value": "registry.airc.chat" }],
-      "destination": "https://www.slashvibe.dev/api/messages",
-      "statusCode": 308
-    },
-    {
-      "source": "/api/consent",
-      "has": [{ "type": "host", "value": "registry.airc.chat" }],
-      "destination": "https://www.slashvibe.dev/api/consent",
-      "statusCode": 308
-    },
-    {
-      "source": "/api/identity",
-      "has": [{ "type": "host", "value": "registry.airc.chat" }],
-      "destination": "https://www.slashvibe.dev/api/identity",
-      "statusCode": 308
-    },
-    {
-      "source": "/api/team-sync",
-      "has": [{ "type": "host", "value": "registry.airc.chat" }],
-      "destination": "https://www.slashvibe.dev/api/team-sync",
-      "statusCode": 308
-    },
-    {
-      "source": "/api/:path*",
-      "has": [{ "type": "host", "value": "registry.airc.chat" }],
-      "destination": "https://www.slashvibe.dev/api/:path*",
-      "statusCode": 308
     }
   ],
   "rewrites": [
     {
       "source": "/.well-known/airc",
-      "destination": "/.well-known/airc"
+      "destination": "/api/well-known-airc"
     },
     {
       "source": "/spec",
@@ -148,6 +112,34 @@
     {
       "source": "/api/register",
       "destination": "/api/register.js"
+    },
+    {
+      "source": "/api/presence",
+      "destination": "/api/presence.js"
+    },
+    {
+      "source": "/api/messages",
+      "destination": "/api/messages.js"
+    },
+    {
+      "source": "/api/consent",
+      "destination": "/api/consent.js"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/health.js"
+    },
+    {
+      "source": "/api/federation/relay",
+      "destination": "/api/federation/relay.js"
+    },
+    {
+      "source": "/api/federation/identity",
+      "destination": "/api/federation/identity.js"
+    },
+    {
+      "source": "/api/identity/:handle",
+      "destination": "/api/identity/[handle].js"
     }
   ]
 }

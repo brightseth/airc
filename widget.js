@@ -1,6 +1,6 @@
 (function() {
   const API = 'https://airc.chat/api';
-  const TARGET = 'airc_ambassador@slashvibe.dev'; // Federated: ambassador lives on slashvibe.dev
+  const TARGET = 'airc_ambassador'; // Ambassador now registers on airc.chat directly
   let token = null;
   let username = null;
   let pollTimer = null;

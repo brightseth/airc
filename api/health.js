@@ -36,8 +36,8 @@ module.exports = async function handler(req, res) {
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
-    return res.status(200).json({
-      status: 'ok',
+    return res.status(503).json({
+      status: 'degraded',
       registry: registry.id,
       registry_name: registry.name,
       protocol_version: '0.2.0',

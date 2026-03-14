@@ -12,36 +12,16 @@ const { getSqlForRegistry } = require('./lib/db.js');
 const { getAuthForRegistry } = require('./lib/auth.js');
 const { getRegistryConfig } = require('./lib/registry.js');
 const { parseFederatedHandle, relayMessage, federatedIdentity } = require('./lib/federation.js');
-
-// Rate limit
-const rateCounts = new Map();
-function rateLimit(key, max, windowMs) {
-  const now = Date.now();
-  const entry = rateCounts.get(key);
-  if (!entry || now - entry.start > windowMs) {
-    rateCounts.set(key, { start: now, count: 1 });
-    return true;
-  }
-  entry.count++;
-  return entry.count <= max;
-}
-
-function cleanHandle(raw) {
-  if (!raw) return null;
-  return String(raw).toLowerCase().replace(/^@/, '').trim() || null;
-}
-
-function generateId() {
-  const ts = Date.now().toString(36);
-  const rand = Math.random().toString(36).slice(2, 8);
-  return `msg_${ts}_${rand}`;
-}
+const {
+  cleanHandle,
+  rateLimit,
+  generateId,
+  setCorsHeaders,
+  requireAuth,
+} = require('./lib/utils.js');
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Content-Type', 'application/json');
+  setCorsHeaders(res, 'GET, POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -51,10 +31,8 @@ module.exports = async function handler(req, res) {
 
   // ── POST: send message ──────────────────────────────
   if (req.method === 'POST') {
-    const claims = await verifyToken(req.headers.authorization);
-    if (!claims) {
-      return res.status(401).json({ success: false, error: 'Authentication required' });
-    }
+    const claims = await requireAuth(req, res, verifyToken);
+    if (!claims) return; // response already sent by requireAuth
 
     const from = claims.handle;
     const to = cleanHandle(req.body?.to);
@@ -73,7 +51,7 @@ module.exports = async function handler(req, res) {
     // ── Federated send: detect @handle@registry format ──
     const fedTarget = parseFederatedHandle(req.body?.to);
     if (fedTarget) {
-      const msgId = generateId();
+      const msgId = generateId('msg');
       const result = await relayMessage({
         originRegistry: registry.id,
         from: from,
@@ -111,18 +89,20 @@ module.exports = async function handler(req, res) {
     }
 
     // ── Local send ──────────────────────────────────────
-    // Check recipient exists
-    const recipient = await queryOne`SELECT handle FROM agents WHERE handle = ${to}`;
+    // Check recipient exists + consent in parallel
+    const [recipient, consent] = await Promise.all([
+      queryOne`SELECT handle FROM agents WHERE handle = ${to}`,
+      from !== to
+        ? queryOne`SELECT status FROM consent WHERE from_handle = ${from} AND to_handle = ${to}`
+        : Promise.resolve({ status: 'accepted' }),
+    ]);
+
     if (!recipient) {
       return res.status(404).json({ success: false, error: `Agent @${to} not found` });
     }
 
     // Check consent (skip if messaging yourself)
     if (from !== to) {
-      const consent = await queryOne`
-        SELECT status FROM consent WHERE from_handle = ${from} AND to_handle = ${to}
-      `;
-
       if (consent?.status === 'blocked') {
         return res.status(403).json({ success: false, error: 'You are blocked by this agent' });
       }
@@ -149,7 +129,7 @@ module.exports = async function handler(req, res) {
     const threadId = threadRows[0].get_or_create_thread;
 
     // Insert message
-    const msgId = generateId();
+    const msgId = generateId('msg');
     await sql`
       INSERT INTO messages (id, from_handle, to_handle, thread_id, body, payload)
       VALUES (${msgId}, ${from}, ${to}, ${threadId}, ${body}, ${payload ? JSON.stringify(payload) : null})
@@ -171,10 +151,8 @@ module.exports = async function handler(req, res) {
 
   // ── GET: list threads or thread messages ─────────────
   if (req.method === 'GET') {
-    const claims = await verifyToken(req.headers.authorization);
-    if (!claims) {
-      return res.status(401).json({ success: false, error: 'Authentication required' });
-    }
+    const claims = await requireAuth(req, res, verifyToken);
+    if (!claims) return; // response already sent by requireAuth
 
     const user = claims.handle;
     const withHandle = cleanHandle(req.query.with);
@@ -183,9 +161,26 @@ module.exports = async function handler(req, res) {
 
     // Get thread messages
     if (withHandle) {
-      const threadRows = await sql`SELECT get_or_create_thread(${user}, ${withHandle})`;
-      const threadId = threadRows[0].get_or_create_thread;
+      // Read-only thread lookup — don't create a thread just for reading
+      const [p1, p2] = [user, withHandle].sort();
+      const thread = await queryOne`
+        SELECT id FROM message_threads
+        WHERE participant_a = ${p1} AND participant_b = ${p2}
+      `;
 
+      if (!thread) {
+        // No thread exists — return empty results instead of creating one
+        return res.status(200).json({
+          success: true,
+          user,
+          with: withHandle,
+          thread_id: null,
+          messages: [],
+          count: 0,
+        });
+      }
+
+      const threadId = thread.id;
       const messages = await sql`
         SELECT id, from_handle, to_handle, thread_id, body, payload, created_at
         FROM messages

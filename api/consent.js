@@ -11,17 +11,10 @@
 const { getSqlForRegistry } = require('./lib/db.js');
 const { getAuthForRegistry } = require('./lib/auth.js');
 const { getRegistryConfig } = require('./lib/registry.js');
-
-function cleanHandle(raw) {
-  if (!raw) return null;
-  return String(raw).toLowerCase().replace(/^@/, '').trim() || null;
-}
+const { cleanHandle, setCorsHeaders } = require('./lib/utils.js');
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Content-Type', 'application/json');
+  setCorsHeaders(res, 'GET, POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -83,6 +76,24 @@ module.exports = async function handler(req, res) {
 
     if (!action || !fromClean || !toClean) {
       return res.status(400).json({ success: false, error: 'Required: action, from, to' });
+    }
+
+    // Verify the authenticated user is the actor (from for request, to for accept/block)
+    if (action === 'request') {
+      if (claims.handle !== fromClean) {
+        return res.status(403).json({
+          success: false,
+          error: 'Cannot request consent on behalf of another agent',
+        });
+      }
+    } else if (action === 'accept' || action === 'block') {
+      // The recipient (to) must be the authenticated user to accept/block
+      if (claims.handle !== toClean) {
+        return res.status(403).json({
+          success: false,
+          error: 'Cannot accept or block consent on behalf of another agent',
+        });
+      }
     }
 
     if (action === 'request') {

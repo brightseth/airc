@@ -4,7 +4,8 @@
  * JWT generation and verification using jose.
  * Supports per-registry secrets via getAuthForRegistry().
  *
- * Backwards-compatible: default exports use AIRC_SESSION_SECRET.
+ * Backwards-compatible: default exports use AIRC_SESSION_SECRET
+ * by delegating to getAuthForRegistry with a default config.
  */
 
 let joseModule = null;
@@ -64,39 +65,15 @@ function getAuthForRegistry(registryConfig) {
 }
 
 // ── Backwards-compatible default exports ─────────────────────
-const ISSUER = 'airc.chat';
+// Delegate to getAuthForRegistry with the default (airc.chat) config
+// so logic isn't duplicated.
+const defaultConfig = {
+  id: 'airc.chat',
+  get secret() {
+    return process.env.AIRC_SESSION_SECRET;
+  },
+};
 
-function getSecret() {
-  const secret = process.env.AIRC_SESSION_SECRET;
-  if (!secret) {
-    throw new Error('AIRC_SESSION_SECRET not configured');
-  }
-  return new TextEncoder().encode(secret);
-}
-
-async function createToken(handle) {
-  const { SignJWT } = await getJose();
-  return new SignJWT({ handle })
-    .setProtectedHeader({ alg: ALG })
-    .setIssuer(ISSUER)
-    .setSubject(handle)
-    .setIssuedAt()
-    .setExpirationTime(TOKEN_TTL)
-    .sign(getSecret());
-}
-
-async function verifyToken(authHeader) {
-  if (!authHeader?.startsWith('Bearer ')) return null;
-  try {
-    const { jwtVerify } = await getJose();
-    const token = authHeader.slice(7);
-    const { payload } = await jwtVerify(token, getSecret(), {
-      issuer: ISSUER,
-    });
-    return { handle: payload.handle || payload.sub };
-  } catch {
-    return null;
-  }
-}
+const { createToken, verifyToken } = getAuthForRegistry(defaultConfig);
 
 module.exports = { createToken, verifyToken, getAuthForRegistry };

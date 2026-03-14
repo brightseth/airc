@@ -128,6 +128,7 @@
     btn.style.display = open ? 'none' : 'block';
     if (open && !token) register();
     if (open) panel.querySelector('#airc-widget-input').focus();
+    if (!open) stopPolling();
   }
 
   function addMsg(text, cls) {
@@ -219,11 +220,13 @@
   }
 
   async function pollMessages() {
-    if (!username || !token) return;
+    if (!username || !token || !open) return;
     try {
-      // Fetch thread messages with the ambassador (federated identity)
+      // Fetch only new messages using offset to avoid re-fetching entire thread
       const ambassadorId = 'airc_ambassador@slashvibe.dev';
-      const res = await fetch(API + '/messages?with=' + encodeURIComponent(ambassadorId), {
+      const url = API + '/messages?with=' + encodeURIComponent(ambassadorId)
+        + '&offset=' + lastMessageCount;
+      const res = await fetch(url, {
         headers: { 'Authorization': 'Bearer ' + token }
       });
       const data = await res.json();
@@ -232,11 +235,10 @@
       const agentMsgs = messages.filter(function(m) {
         return m.from_handle === ambassadorId || m.from_handle === 'airc_ambassador';
       });
-      if (agentMsgs.length > lastMessageCount) {
+      if (agentMsgs.length > 0) {
         removeTyping();
-        const newMsgs = agentMsgs.slice(lastMessageCount);
-        newMsgs.forEach(function(m) { addMsg(m.body || '', 'agent'); });
-        lastMessageCount = agentMsgs.length;
+        agentMsgs.forEach(function(m) { addMsg(m.body || '', 'agent'); });
+        lastMessageCount += messages.length; // advance offset by total messages fetched
         idleTicks = 0;
       } else {
         idleTicks++;

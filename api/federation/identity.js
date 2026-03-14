@@ -10,12 +10,10 @@
 
 const { getSqlForRegistry } = require('../lib/db.js');
 const { getRegistryConfig } = require('../lib/registry.js');
+const { cleanHandle, computeLiveStatus, setCorsHeaders } = require('../lib/utils.js');
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Content-Type', 'application/json');
+  setCorsHeaders(res, 'GET, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -26,9 +24,9 @@ module.exports = async function handler(req, res) {
   const registry = getRegistryConfig(req);
   const { queryOne } = getSqlForRegistry(registry);
 
-  const handle = (req.query.handle || '').toLowerCase().replace(/^@/, '').trim();
+  const handle = cleanHandle(req.query.handle);
 
-  if (!handle || !/^[a-z0-9_]{3,32}$/.test(handle)) {
+  if (!handle) {
     return res.status(400).json({ success: false, error: 'Invalid handle' });
   }
 
@@ -45,8 +43,7 @@ module.exports = async function handler(req, res) {
     });
   }
 
-  const age = Date.now() - new Date(agent.last_seen).getTime();
-  const liveStatus = age < 5 * 60_000 ? 'online' : age < 30 * 60_000 ? 'away' : 'offline';
+  const liveStatus = computeLiveStatus(agent.last_seen);
 
   return res.status(200).json({
     success: true,

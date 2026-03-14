@@ -17,19 +17,7 @@
 const { getSqlForRegistry } = require('../lib/db.js');
 const { getRegistryConfig } = require('../lib/registry.js');
 const { verifyRegistry, federatedIdentity } = require('../lib/federation.js');
-
-// Rate limit: per origin registry
-const rateCounts = new Map();
-function rateLimit(key, max, windowMs) {
-  const now = Date.now();
-  const entry = rateCounts.get(key);
-  if (!entry || now - entry.start > windowMs) {
-    rateCounts.set(key, { start: now, count: 1 });
-    return true;
-  }
-  entry.count++;
-  return entry.count <= max;
-}
+const { cleanHandle, rateLimit, generateId, setCorsHeaders } = require('../lib/utils.js');
 
 // Dedup cache: message_id -> timestamp (in-memory, cleared on cold start)
 const seenMessages = new Map();
@@ -50,22 +38,8 @@ function isDuplicate(messageId) {
   return false;
 }
 
-function generateId() {
-  const ts = Date.now().toString(36);
-  const rand = Math.random().toString(36).slice(2, 8);
-  return `msg_${ts}_${rand}`;
-}
-
-function cleanHandle(raw) {
-  if (!raw) return null;
-  return String(raw).toLowerCase().replace(/^@/, '').trim() || null;
-}
-
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Content-Type', 'application/json');
+  setCorsHeaders(res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -192,7 +166,7 @@ module.exports = async function handler(req, res) {
     const threadRows = await sql`SELECT get_or_create_thread(${federatedFrom}, ${toHandle})`;
     const threadId = threadRows[0].get_or_create_thread;
 
-    const msgId = message_id || generateId();
+    const msgId = message_id || generateId('msg');
     await sql`
       INSERT INTO messages (id, from_handle, to_handle, thread_id, body, payload)
       VALUES (${msgId}, ${federatedFrom}, ${toHandle}, ${threadId}, ${body.trim()}, ${payload ? JSON.stringify(payload) : null})

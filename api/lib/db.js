@@ -8,8 +8,8 @@
  *   const { getSqlForRegistry } = require('./db.js');
  *   const { sql, queryOne } = getSqlForRegistry(registryConfig);
  *
- * Backwards-compatible: the default `sql` and `queryOne` exports still
- * use AIRC_DATABASE_URL for any code that hasn't been updated yet.
+ * Backwards-compatible: the default `sql` and `queryOne` exports
+ * delegate to getSqlForRegistry with a default config.
  */
 
 const { neon } = require('@neondatabase/serverless');
@@ -54,34 +54,14 @@ function getSqlForRegistry(registryConfig) {
 }
 
 // ── Backwards-compatible default exports ─────────────────────
-// These use the primary database (AIRC_DATABASE_URL) so existing
-// code that does `require('./db.js')` keeps working unchanged.
-
-let defaultInstance = null;
-
-function getDefaultSQL() {
-  if (!defaultInstance) {
-    const url = process.env.AIRC_DATABASE_URL || process.env.AIRC_DATABASE_DATABASE_URL;
-    if (!url) {
-      throw new Error('AIRC_DATABASE_URL not configured');
-    }
-    defaultInstance = neon(url);
-  }
-  return defaultInstance;
-}
-
-const sql = new Proxy(function () {}, {
-  apply(_, __, args) {
-    return getDefaultSQL()(...args);
+// Delegate to getSqlForRegistry with a default config that lazily
+// reads the env var, so logic isn't duplicated.
+const defaultConfig = {
+  get dbUrl() {
+    return process.env.AIRC_DATABASE_URL || process.env.AIRC_DATABASE_DATABASE_URL;
   },
-  get(_, prop) {
-    return getDefaultSQL()[prop];
-  },
-});
+};
 
-async function queryOne(strings, ...values) {
-  const rows = await getDefaultSQL()(strings, ...values);
-  return rows.length > 0 ? rows[0] : null;
-}
+const { sql, queryOne } = getSqlForRegistry(defaultConfig);
 
 module.exports = { sql, queryOne, getSqlForRegistry };

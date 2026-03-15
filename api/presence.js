@@ -48,9 +48,9 @@ async function handlePresence(req, res) {
       });
     }
 
-    // Rate limit: 10 registrations per IP per hour
+    // Rate limit: 30 registrations per IP per hour
     const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
-    if (!rateLimit(`reg:${ip}`, 10, 3600_000)) {
+    if (!rateLimit(`reg:${ip}`, 30, 3600_000)) {
       return res.status(429).json({ success: false, error: 'Rate limited' });
     }
 

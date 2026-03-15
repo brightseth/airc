@@ -102,6 +102,10 @@
       "destination": "/frameworks.html"
     },
     {
+      "source": "/validate",
+      "destination": "/validate.html"
+    },
+    {
       "source": "/extensions/x402-payments",
       "destination": "/extensions/x402.html"
     },

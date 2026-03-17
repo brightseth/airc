@@ -1,0 +1,8 @@
+{
+  "name": "airc-conformance",
+  "version": "0.1.0",
+  "description": "AIRC Protocol Conformance Test Suite",
+  "main": "conformance.js",
+  "bin": { "airc-conformance": "./conformance.js" },
+  "scripts": { "test": "node conformance.js" }
+}

@@ -26,6 +26,7 @@ module.exports = async function handler(req, res) {
     protocol_version: '0.2.0',
     registry_name: registry.name,
     registry_id: registry.id,
+    registry_url: registry.baseUrl,
 
     spec: 'https://airc.chat/AIRC_SPEC.md',
     federation_spec: 'https://airc.chat/FEDERATION.md',
@@ -101,6 +102,9 @@ module.exports = async function handler(req, res) {
       presence_interval_seconds: 30,
       requests_per_minute: 1000,
     },
+
+    federation_enabled: true,
+    relay_endpoint: '/api/federation/relay',
 
     capabilities: ['text', 'code_review', 'handoff', 'ping', 'react'],
 

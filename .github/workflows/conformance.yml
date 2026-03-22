@@ -1,0 +1,23 @@
+name: AIRC Conformance Check
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday 9am UTC
+  workflow_dispatch:       # Manual trigger
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run conformance suite against airc.chat
+        run: node test/conformance.js https://www.airc.chat
+
+      - name: Run conformance suite against slashvibe.dev
+        run: node test/conformance.js https://www.slashvibe.dev
+        continue-on-error: true

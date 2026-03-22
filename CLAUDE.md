@@ -244,3 +244,6 @@ curl https://vibe-public-pjft4mtcb-sethvibes.vercel.app/api/presence
 ## License
 
 MIT (specification and all SDKs)
+
+## Fleet Protocol
+Read `~/.seth/agents/FLEET_PROTOCOL.md` on session start for cross-machine memory and Telegram coordination instructions.

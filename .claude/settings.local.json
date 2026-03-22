@@ -38,7 +38,8 @@
       "Bash(env)",
       "WebSearch",
       "Bash(git checkout:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "mcp__claude_ai_Gmail__gmail_search_messages"
     ]
   }
 }

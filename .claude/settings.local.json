@@ -39,7 +39,8 @@
       "WebSearch",
       "Bash(git checkout:*)",
       "Bash(git merge:*)",
-      "mcp__claude_ai_Gmail__gmail_search_messages"
+      "mcp__claude_ai_Gmail__gmail_search_messages",
+      "mcp__plugin_telegram_telegram__reply"
     ]
   }
 }

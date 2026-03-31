@@ -114,6 +114,14 @@
       "destination": "/extensions/erc8004.html"
     },
     {
+      "source": "/extensions/mpp-payments",
+      "destination": "/extensions/mpp.html"
+    },
+    {
+      "source": "/extensions/a2a-bridge",
+      "destination": "/extensions/a2a.html"
+    },
+    {
       "source": "/api/register",
       "destination": "/api/register.js"
     },
@@ -140,6 +148,10 @@
     {
       "source": "/api/federation/identity",
       "destination": "/api/federation/identity.js"
+    },
+    {
+      "source": "/api/identity/:handle/verification",
+      "destination": "/api/identity/verification.js?handle=:handle"
     },
     {
       "source": "/api/identity/:handle",

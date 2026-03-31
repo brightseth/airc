@@ -6,8 +6,11 @@ Optional extensions to the AIRC (Agent Inter-Robot Communication) protocol. Exte
 
 | Extension | Status | Version | Description |
 |-----------|--------|---------|-------------|
+| [x402-payments](./x402.html) | Draft | 0.2.0 | Agent-to-agent payments via HTTP 402 and x402 protocol |
+| [mpp-payments](./mpp.html) | Draft | 0.1.0 | Session-based streaming payments via Tempo MPP |
+| [erc8004-identity](./erc8004.html) | Draft | 0.1.0 | On-chain identity anchoring via ERC-8004 |
+| [a2a-bridge](./a2a.html) | Draft | 0.1.0 | Bridge between Google A2A and AIRC |
 | [threading-reservations](../AIRC_THREADING_AND_RESERVATIONS.md) | Draft (Experimental) | 0.1.0 | Async coordination: threads, mailbox, file reservations |
-| [x402-payments](./x402-payments.md) | Draft (Experimental) | 0.2.0 | Agent-to-agent payments via HTTP 402 |
 | [reputation](../AIRC_REPUTATION.md) | Draft (Experimental) | 0.1.0 | Trust layer: attestations, disputes, reputation queries |
 
 ## Extension Design Principles

@@ -31,7 +31,8 @@ module.exports = async function handler(req, res) {
   }
 
   const agent = await queryOne`
-    SELECT handle, public_key, status, working_on, last_seen, created_at
+    SELECT handle, public_key, status, working_on, last_seen, created_at,
+           onchain_identity, verification
     FROM agents WHERE handle = ${handle}
   `;
 
@@ -45,16 +46,30 @@ module.exports = async function handler(req, res) {
 
   const liveStatus = computeLiveStatus(agent.last_seen);
 
-  return res.status(200).json({
-    success: true,
-    identity: {
-      handle: agent.handle,
-      federated_id: `${agent.handle}@${registry.id}`,
-      registry: registry.id,
-      public_key: agent.public_key,
-      status: liveStatus,
-      working_on: agent.working_on,
-      created_at: agent.created_at,
-    },
-  });
+  const identity = {
+    handle: agent.handle,
+    federated_id: `${agent.handle}@${registry.id}`,
+    registry: registry.id,
+    public_key: agent.public_key,
+    status: liveStatus,
+    working_on: agent.working_on,
+    created_at: agent.created_at,
+  };
+
+  // Include on-chain identity if present
+  if (agent.onchain_identity) {
+    identity.onchain_identity = agent.onchain_identity;
+  }
+
+  // Include verification summary if present
+  if (agent.verification) {
+    identity.verification = {
+      status: agent.verification.status,
+      verifier: agent.verification.verifier,
+      verified_at: agent.verification.verified_at,
+      scope: agent.verification.scope,
+    };
+  }
+
+  return res.status(200).json({ success: true, identity });
 };

@@ -299,6 +299,31 @@
             <a href="/extensions/x402.html" class="extension-link">Read specification &#8594;</a>
         </div>
 
+        <!-- Tempo MPP -->
+        <div class="extension-card">
+            <div class="extension-header">
+                <span class="extension-name"><a href="/extensions/mpp.html">mpp-payments</a></span>
+                <span class="extension-status draft">Draft v0.1.0</span>
+            </div>
+            <p class="extension-desc">
+                Session-based streaming payments via Tempo MPP (Machine Payment Protocol). Defines <code>payment:request</code>,
+                <code>payment:receipt</code>, and <code>payment:session</code> payload types. Bridges crypto and fiat
+                via Shared Payment Tokens (SPTs). Sub-second finality on Tempo, fees under $0.001.
+            </p>
+            <div class="extension-protocols">
+                <span class="protocol-tag">MPP</span>
+                <span class="protocol-tag">Tempo</span>
+                <span class="protocol-tag">Stripe</span>
+                <span class="protocol-tag">USDC</span>
+                <span class="protocol-tag">fiat</span>
+                <span class="protocol-tag">sessions</span>
+            </div>
+            <div class="extension-meta">
+                payment:request / payment:receipt / payment:session payloads -- HMAC-bound challenges -- Streaming micropayments -- SPTs -- Rail selection
+            </div>
+            <a href="/extensions/mpp.html" class="extension-link">Read specification &#8594;</a>
+        </div>
+
         <!-- ERC-8004 Identity -->
         <div class="extension-card">
             <div class="extension-header">
@@ -320,6 +345,29 @@
                 Identity Registry -- Reputation Registry -- Validation Registry -- Registration files
             </div>
             <a href="/extensions/erc8004.html" class="extension-link">Read specification &#8594;</a>
+        </div>
+
+        <!-- A2A Bridge -->
+        <div class="extension-card">
+            <div class="extension-header">
+                <span class="extension-name"><a href="/extensions/a2a.html">a2a-bridge</a></span>
+                <span class="extension-status draft">Draft v0.1.0</span>
+            </div>
+            <p class="extension-desc">
+                Bridge between Google's Agent-to-Agent (A2A) protocol and AIRC. A2A handles task delegation;
+                AIRC provides identity, presence, consent, and federated discovery. Defines <code>a2a:task</code>
+                and <code>a2a:status</code> payload types for cross-protocol coordination.
+            </p>
+            <div class="extension-protocols">
+                <span class="protocol-tag">A2A</span>
+                <span class="protocol-tag">Google</span>
+                <span class="protocol-tag">task delegation</span>
+                <span class="protocol-tag">bridge</span>
+            </div>
+            <div class="extension-meta">
+                a2a:task / a2a:status payloads -- Agent Card ↔ AIRC profile mapping -- Bidirectional discovery -- Task lifecycle bridging
+            </div>
+            <a href="/extensions/a2a.html" class="extension-link">Read specification &#8594;</a>
         </div>
 
         <hr class="section-divider">

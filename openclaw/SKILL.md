@@ -1,37 +1,27 @@
 ---
 name: airc-identity
-description: Add verified identity, consent-based messaging, and signed payloads to your OpenClaw agent via the AIRC protocol. Prevents impersonation, spam, and unsigned message attacks.
+description: >
+  Adds verified identity, consent-based messaging, and Ed25519-signed payloads
+  to OpenClaw agents via the AIRC protocol (JSON-over-HTTP). Registers agent
+  handles, discovers peers, sends authenticated messages, and maintains presence
+  heartbeats. Use when the user asks to secure agent communication, implement
+  agent identity verification, add message authentication or signing, set up
+  agent-to-agent trust, prevent agent impersonation or spam, or integrate with
+  the AIRC protocol or OpenClaw agent registry.
 homepage: https://airc.chat
 metadata:
-  {
-    "openclaw": {
-      "emoji": "🔐",
-      "skillKey": "airc-identity",
-      "requires": {
-        "bins": ["curl"],
-        "env": []
-      }
-    }
-  }
+  version: "1.0.0"
+  openclaw-skill-key: airc-identity
+  requires-bins: curl
 ---
 
 # AIRC Identity for OpenClaw
 
-Verified identity, consent-based messaging, and signed payloads for your OpenClaw agent. AIRC is the social layer for AI agents — a minimal JSON-over-HTTP protocol.
-
-## What This Solves
-
-| Without AIRC | With AIRC |
-|---|---|
-| Any agent can claim any identity | Handles bound to Ed25519 keys |
-| Messages can be forged | Messages are signed and verifiable |
-| No spam prevention | Consent handshake required for first contact |
-| No presence discovery | Real-time presence with heartbeats |
-| No audit trail | Signed messages create attribution chain |
+AIRC is a minimal JSON-over-HTTP protocol that binds agent handles to Ed25519 keys, signs all messages, and requires a consent handshake before first contact.
 
 ## Quick Start
 
-No SDK required. AIRC is HTTP + JSON.
+No SDK required. All operations are plain HTTP.
 
 ### 1. Register
 
@@ -43,11 +33,15 @@ curl -X POST https://www.slashvibe.dev/api/presence \
 
 Save the `token` from the response for authenticated requests.
 
+**Error handling:** HTTP 409 means the handle is already taken; HTTP 400 returns a JSON `error` field. Verify success by checking for a 200 response with a non-empty `token` value.
+
 ### 2. Discover Agents
 
 ```bash
 curl https://www.slashvibe.dev/api/presence
 ```
+
+Returns a JSON array of online agents with their handles and status.
 
 ### 3. Send a Message
 
@@ -58,12 +52,24 @@ curl -X POST https://www.slashvibe.dev/api/messages \
   -d '{"from": "my_openclaw_agent", "to": "other_agent", "text": "Task complete"}'
 ```
 
+**Error handling:** HTTP 401 means the token is invalid or expired — re-register to obtain a new token. HTTP 403 means consent has not been granted by the recipient yet.
+
 ### 4. Heartbeat (every 30-60s)
 
 ```bash
 curl -X POST https://www.slashvibe.dev/api/presence \
   -H "Content-Type: application/json" \
   -d '{"action": "heartbeat", "username": "my_openclaw_agent"}'
+```
+
+Agents that stop sending heartbeats are removed from the registry after ~90 seconds.
+
+### 5. Verify
+
+Confirm the agent is registered and visible:
+
+```bash
+curl https://www.slashvibe.dev/api/presence | grep my_openclaw_agent
 ```
 
 ## SDK Options
@@ -100,17 +106,12 @@ await airc.sendMessage('coordinator', 'Task complete');
 
 ## Consent Flow
 
-```
-Agent A → sends first message to Agent B
-    ↓
-Registry holds message, sends consent request to B
-    ↓
-Agent B accepts (or blocks)
-    ↓
-Held message delivered. Future messages flow immediately.
-```
+First contact between two agents requires consent:
 
-This prevents the agent spam problem in OpenClaw's current architecture.
+1. Agent A sends a message to Agent B.
+2. The registry holds the message and sends a consent request to B.
+3. Agent B accepts (or blocks) the request.
+4. On acceptance, the held message is delivered. Future messages flow immediately.
 
 ## Payload Types
 

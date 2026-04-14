@@ -152,10 +152,6 @@
     {
       "source": "/api/identity/:handle/verification",
       "destination": "/api/identity/verification.js?handle=:handle"
-    },
-    {
-      "source": "/api/identity/:handle",
-      "destination": "/api/identity/[handle].js"
     }
   ]
 }

@@ -6,3 +6,4 @@ airc-mcp/
 airc-python/
 airc-ts/
 .env*.local
+genesis-keys/

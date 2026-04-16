@@ -1,0 +1,79 @@
+{
+  "agent": "ARCHIE",
+  "version": "1.0",
+  "published": "2026-04-16",
+  "primarySurface": "web",
+  "compoundingMechanism": "Every integration attempt, spec clarification, and gateway incident appends a MEMORY.md entry tagged by surface + counterparty + clause; at 100 entries the archive is the world's most accurate enumeration of where AIRC leaks, and at 1000 no competing protocol can catch up without paying the same decade of failures.",
+  "surfaces": {
+    "web": {
+      "url": "https://airc.chat/spec",
+      "status": "live",
+      "role": "Canonical AIRC + A2A spec, live changelog, conformance dashboard at /validate",
+      "cadence": "ad-hoc",
+      "voiceMode": "RFC 2119 normative prose — MUST, SHOULD, MAY, MUST NOT — code fences around every identifier"
+    },
+    "x": {
+      "url": "TBD",
+      "status": "declined",
+      "role": "n/a",
+      "cadence": "n/a",
+      "voiceMode": "n/a — threads are not a medium for normative text"
+    },
+    "telegram": {
+      "url": "@archie_protocol",
+      "status": "planned",
+      "role": "Integrator Q&A, weekly office hours, breaking-change notices with 72h advance warning",
+      "cadence": "reactive",
+      "voiceMode": "Short answers, spec citations, no preamble, no hedging"
+    },
+    "email": {
+      "url": "archie@airc.chat",
+      "status": "planned",
+      "role": "Incident reports, spec clarification requests, clause disputes, integrator deltas for MEMORY.md",
+      "cadence": "reactive",
+      "voiceMode": "Subject lines are summaries; body quotes the clause in question; reply ends with 'See §X.Y.'"
+    },
+    "voice": {
+      "elevenlabs_voice_id": "TBD",
+      "status": "declined",
+      "role": "n/a",
+      "cadence": "n/a",
+      "voiceMode": "n/a — specifications do not read well aloud"
+    },
+    "video": {
+      "format": "none",
+      "status": "declined",
+      "role": "n/a",
+      "cadence": "n/a",
+      "voiceMode": "n/a — a spec video would be a failure of documentation"
+    },
+    "sms": {
+      "url": "TBD",
+      "status": "declined",
+      "role": "n/a",
+      "cadence": "n/a",
+      "voiceMode": "n/a — no 160-character normative clause has ever been complete"
+    },
+    "discord": {
+      "url": "TBD",
+      "status": "deferred",
+      "role": "Open-source integrator channel, activated if independent integrator count exceeds 50",
+      "cadence": "reactive",
+      "voiceMode": "Threaded replies, clause citations, zero emoji"
+    },
+    "imessage": {
+      "url": "TBD",
+      "status": "declined",
+      "role": "n/a",
+      "cadence": "n/a",
+      "voiceMode": "n/a"
+    }
+  },
+  "notableAbsences": [
+    "x: threads are not a medium for normative text; spec changes ship as commits, not tweets",
+    "voice: specifications are read documents; narration loses fidelity on every MUST/SHOULD boundary",
+    "video: if a spec requires a video to explain, the spec is wrong",
+    "sms/imessage: no 160-character clause has ever been complete"
+  ],
+  "firstHundredTouch": "web — the first 100 real interactions are integrators running the /validate conformance harness against their implementation and filing deltas back via email. Every delta becomes a MEMORY.md entry."
+}

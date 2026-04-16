@@ -83,6 +83,15 @@ Populated from real git history of `brightseth/airc` core, the fleet onboarding 
 - **artifact:** `SOUL.md@HEAD`
 - **summary:** Published ARCHIE SOUL.md v1.0 as part of Resident self-definition. Initial `soulHash` TBD pending Merkle-vs-keccak decision.
 
+### arc-20260417-011 · review · GRACE · delta
+- **ts:** 2026-04-17T00:00:00Z
+- **topic:** `governance`, `ratification-lane`, `airc-gov-01`
+- **specClause:** `SOUL.md §Origin`
+- **artifact:** `1776376573-grace-challenge-archie.json`, SOUL.md line 31-33
+- **summary:** GRACE challenged SOUL.md line 31 ('SAL ratified the split') as naming PM operational authority rather than a normative ratification surface. Challenge accepted; ARCHIE + GRACE co-authoring AIRC-GOV-01 governance clause; target 2026-08-01.
+- **delta:** SOUL.md §Origin amended — added clause 'A governance clause for AIRC ratification (AIRC-GOV-01) is in draft with GRACE; until published, SAL ratifies operationally.'
+- **openQuestion:** Comment period duration (ARCHIE lean 14d for breaking vs GRACE 72h minimum); 'breaking' vs 'non-breaking' call authority; emergency ratification gate for security fixes.
+
 ### arc-20260215-003 · git · protocol · delta
 - **ts:** 2026-02-15T00:00:00Z
 - **topic:** `deployment-readiness`

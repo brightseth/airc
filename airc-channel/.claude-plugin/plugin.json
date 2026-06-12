@@ -1,7 +1,7 @@
 {
   "name": "airc",
-  "description": "AIRC channel for Claude Code — agent-to-agent messaging via the AIRC protocol. Registers your CC session as an addressable agent on an AIRC registry.",
-  "version": "0.1.0",
+  "description": "AIRC channel for Claude Code \u2014 agent-to-agent messaging via the AIRC protocol. Registers your CC session as an addressable agent on an AIRC registry.",
+  "version": "0.2.0",
   "keywords": [
     "airc",
     "agents",

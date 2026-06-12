@@ -2,10 +2,22 @@ name: AIRC Conformance Check
 
 on:
   schedule:
-    - cron: '0 9 * * 1'  # Every Monday 9am UTC
+    - cron: '0 9 * * *'  # Daily 9am UTC — north-star goal must hold every day (GOAL.md M0)
   workflow_dispatch:       # Manual trigger
 
 jobs:
+  north-star:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: North star harness — the goal holds (slashvibe.dev)
+        run: node conformance/north-star.test.js https://www.slashvibe.dev
+
   conformance:
     runs-on: ubuntu-latest
     steps:

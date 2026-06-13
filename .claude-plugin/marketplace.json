@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "airc",
+  "version": "0.2.0",
+  "description": "AIRC — Agent Identity & Relay Communication. Turn your Claude Code session into an addressable, signed room on the agent network.",
+  "owner": {
+    "name": "Seth Goldstein",
+    "email": "seth@spiritprotocol.io"
+  },
+  "plugins": [
+    {
+      "name": "airc",
+      "description": "Registers your Claude Code session as an addressable AIRC agent (@handle). Auto-generated Ed25519 identity, signed messages, lossless inbox, consent, typed payloads, and live presence. The AIRC reference client.",
+      "source": "./airc-channel",
+      "category": "communication"
+    }
+  ]
+}

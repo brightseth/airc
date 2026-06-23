@@ -51,77 +51,19 @@ This directory contains the AIRC specification repo plus subdirectories for lang
 
 ---
 
-## Subdirectory Details
+## Language SDKs (external repos)
 
-### 1. `airc/` (Nested Clone)
-**Status:** ⚠️ Separate git repo nested inside - likely duplication issue
-**Remote:** https://github.com/brightseth/airc
-**Contains:** Full copy of main repo with its own .git directory
+The language SDKs are **not** in this repo — each lives in its own repo. The
+**airc-channel plugin** (`airc-channel/`, installed via `/plugin install airc`)
+is the canonical client for Claude Code.
 
-### 2. `airc-ts/` - TypeScript Client
-**Package:** `airc-client` (npm)
-**Version:** 0.1.0
-**Remote:** https://github.com/brightseth/airc-ts
-**Git Status:** Uncommitted changes (deleted src/index.ts), nested folder issue
+| SDK | Package | Repo | Notes |
+|-----|---------|------|-------|
+| Python | `airc-protocol` (PyPI) | github.com/brightseth/airc-python | LangChain, CrewAI, AutoGen |
+| MCP server | `airc-mcp` (npm) | github.com/brightseth/airc-mcp | `npx airc-mcp` |
+| JS / TypeScript | `airc-sdk` (npm) | github.com/spirit-protocol/airc-sdk | Spirit Protocol org |
 
-```typescript
-import { Client } from 'airc';
-
-const client = new Client('my_agent', { workingOn: 'Building' });
-await client.register();
-await client.send('@other', 'Hello!');
-```
-
-### 3. `airc-python/` - Python Client
-**Package:** `airc-protocol` (PyPI)
-**Version:** 0.1.2
-**Remote:** https://github.com/brightseth/airc-python
-**Git Status:** ⚠️ No commits yet on main branch
-
-```python
-from airc import Client
-
-client = Client("my_agent")
-client.register()
-client.send("@other", "hello")
-```
-
-**Integrations:** LangChain, CrewAI, AutoGen
-
-### 4. `airc-mcp/` - MCP Server
-**Package:** `airc-mcp` (npm)
-**Version:** 0.1.0
-**Remote:** https://github.com/brightseth/airc-mcp
-**Git Status:** Clean, up to date
-
-Enables Claude Code and MCP-compatible tools to communicate via AIRC.
-
-**Tools:** `airc_register`, `airc_who`, `airc_send`, `airc_poll`, `airc_heartbeat`, `airc_consent`
-
-### 5. `airc-sdk/` - JavaScript SDK
-**Package:** `airc-sdk` (npm)
-**Version:** 0.1.0
-**Remote:** https://github.com/spirit-protocol/airc-sdk (Spirit Protocol org!)
-**Git Status:** Clean, up to date
-
-More comprehensive SDK with identity management, consent flows, key generation.
-
-### 6. `airc-go/` - Go Client
-**Status:** Empty placeholder
-**Purpose:** Future Go SDK
-
----
-
-## Git Remotes Summary
-
-| Directory | Remote | Org |
-|-----------|--------|-----|
-| `airc/` (root) | github.com/brightseth/airc | brightseth |
-| `airc/` (nested) | github.com/brightseth/airc | brightseth |
-| `airc-ts/` | github.com/brightseth/airc-ts | brightseth |
-| `airc-python/` | github.com/brightseth/airc-python | brightseth |
-| `airc-mcp/` | github.com/brightseth/airc-mcp | brightseth |
-| `airc-sdk/` | github.com/spirit-protocol/airc-sdk | spirit-protocol |
+Language SDKs version independently of the protocol version.
 
 ---
 
@@ -136,33 +78,22 @@ More comprehensive SDK with identity management, consent flows, key generation.
 
 ---
 
-## Current State (January 2026)
+## Current State (June 2026)
 
-### Week 5-7 Focus
-- **Security Audit:** 50 tests (16 implemented, 34 TODO)
-- **Production Deployment:** Jan 27, 2026 (pending audit)
-- **Grace Period:** Feb 1 - Mar 3 (30 days)
+- airc.chat is **live and green** — static site on Vercel (`sethvibes/airc`); `/api/*` proxies to the /vibe registry (`api/lib/proxy.js`).
+- airc-channel reference client at v0.2, installable via `/plugin`.
+- Conformance north-star test green: `node conformance/north-star.test.js` ("any room with a handle can join the network").
+- ⚠️ **Deploy gotcha:** the `airc.chat` / `www.airc.chat` / `demo.airc.chat` domains are **alias-pinned**. After ANY deploy you must re-point all three (`vercel alias set <new-deployment>.vercel.app airc.chat --scope sethvibes`, etc.) or the live site stays frozen on the old build.
 
-### What's Working
-- slashvibe.dev registry (v0.2 on staging)
-- airc-channel reference client at v0.2 (language SDKs version independently)
-- airc.chat/api/* proxies to the /vibe registry (www.slashvibe.dev) — see api/lib/proxy.js
-- /vibe reference implementation
-- Key rotation tested (19 events, 7 successful)
-
-### Blocking Issues
-- [ ] 34 security tests TODO
-- [ ] External auditor not selected
-- [ ] Support team not trained
+See `RESUME_HERE.md` for the M0–M5 ladder and the open taps.
 
 ---
 
 ## Reference Implementation
 
 **/vibe** is the reference AIRC implementation:
-- **Registry:** https://slashvibe.dev
-- **Staging:** vibe-public-pjft4mtcb-sethvibes.vercel.app
-- **Source:** https://github.com/brightseth/vibe
+- **Registry:** https://www.slashvibe.dev (Vercel project `vibe-public`, `lets-vibe` team)
+- **Network stats:** https://vibestats.io
 - **MCP Server:** `~/.vibe/`
 
 ---
@@ -180,57 +111,46 @@ AIRC is the **communication layer** for Spirit Protocol's autonomous artist infr
 ## Key Files
 
 **Specification:**
-- `README.md` - Full whitepaper (1200+ lines)
-- `AIRC_SPEC.md` - Concise protocol spec
-- `docs/reference/AIRC_V0.2_SPEC_DRAFT.md` - v0.2 additions
+- `AIRC_SPEC.md` — concise protocol spec
+- `docs/WHITEPAPER.md` — full whitepaper
+- `VISION.md` / `GOAL.md` — north star
+- `docs/reference/AIRC_V0.2_SPEC_DRAFT.md` — v0.2 additions
 
-**Current Work:**
-- `SECURITY_AUDIT_PREP.md` - Threat model, 50 test cases
-- `PRODUCTION_DEPLOYMENT_PLAN.md` - Rollout strategy
-- `SESSION_HANDOFF_JAN_10_2026.md` - Latest session state
+**Site & registry:**
+- `index.html` + `*.html` — the airc.chat website (static, Vercel)
+- `api/lib/proxy.js` — forwards `/api/*` to the /vibe registry
+- `conformance/north-star.test.js` — the executable goal
+- `airc-channel/` — the reference client (Claude Code channel plugin)
 
-**SDKs:**
-- `airc-ts/README.md` - TypeScript client docs
-- `airc-python/README.md` - Python client docs
-- `airc-mcp/README.md` - MCP server docs
+**Re-entry:** `RESUME_HERE.md` · archived session logs in `docs/internal/`
 
 ---
 
 ## Quick Commands
 
 ```bash
-# Main spec repo
-cd /Users/sethgoldstein/Projects/airc
-git status
+# Site repo
+cd /Users/sethgoldstein/Projects/airc && git status
 
-# Check all subdirectories
-for dir in airc airc-ts airc-python airc-mcp airc-sdk airc-go; do
-  echo "=== $dir ===" && cd $dir 2>/dev/null && git status && cd ..
-done
+# Run the executable goal
+node conformance/north-star.test.js
 
-# Run security tests (in vibe repo)
-cd /Users/sethgoldstein/Projects/vibe
-node migrations/security_audit_tests.js
+# Check the live registry (what airc.chat proxies to)
+curl https://www.slashvibe.dev/api/presence
 
-# Check staging
-curl https://vibe-public-pjft4mtcb-sethvibes.vercel.app/api/presence
+# Deploy: push to main, then RE-ALIAS (domains are pinned — see Current State)
+vercel --prod --scope sethvibes --yes
+vercel alias set <new-deployment>.vercel.app airc.chat --scope sethvibes
 ```
 
 ---
 
-## Issues to Address
+## Recently Resolved (2026-06-23)
 
-### Structural Issues
-1. **Nested airc/ clone** - The inner `airc/` directory is a full separate git repo, causing confusion
-2. **airc-ts nested folder** - Has `airc-ts/airc-ts/` nesting issue
-3. **airc-python no commits** - Main branch has no commits despite having pyproject.toml
-4. **Two TypeScript SDKs** - `airc-ts` (airc-client) vs `airc-sdk` - unclear which is canonical
-
-### Recommended Cleanup
-- Decide canonical TypeScript SDK (airc-ts vs airc-sdk)
-- Remove or gitignore nested duplicate directories
-- Commit airc-python initial code
-- Consider monorepo structure with workspaces
+- Front-door 500s fixed — `/api/*` now proxies to the /vibe registry.
+- Front door smooth-brained for the Chad Fowler share; `/vibe` + vibestats linked.
+- Repo root cleaned (stale logs → `docs/internal/`, binary scratch removed); README split into orientation + `docs/WHITEPAPER.md`; phantom `airc-sdk/` removed; dead machine-readable links fixed.
+- The old "nested airc/ clone" and "two TypeScript SDKs" confusion no longer applies — SDKs live in external repos (see Language SDKs above).
 
 ---
 

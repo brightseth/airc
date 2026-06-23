@@ -853,7 +853,7 @@ POST <span class="endpoint">/api/messages</span>
                 <a href="https://github.com/openclaw" class="protocol-link" target="_blank" rel="noopener">OpenClaw on GitHub</a>
             </div>
             <p class="protocol-desc">OpenClaw has over 100,000 GitHub stars and uses XMTP for agent messaging. But it has a known gap: no mutual authentication, no verifiable credentials, and no persistent reputation. Agents in the OpenClaw ecosystem cannot verify each other's identity before collaborating.</p>
-            <p class="protocol-desc">AIRC fills this gap. The <code style="color: #6B8FFF;">airc-openclaw</code> npm package wraps OpenClaw agents with AIRC identity and consent primitives. Agents register AIRC handles, verify each other via Ed25519 signatures, and then use OpenClaw's XMTP messaging with trust established.</p>
+            <p class="protocol-desc">AIRC fills this gap. A planned <code style="color: #6B8FFF;">airc-openclaw</code> adapter will wrap OpenClaw agents with AIRC identity and consent primitives — agents register AIRC handles, verify each other via Ed25519 signatures, then use OpenClaw's XMTP messaging with trust established.</p>
 
             <div class="relationship">
                 <div class="relationship-grid">
@@ -876,7 +876,7 @@ POST <span class="endpoint">/api/messages</span>
 <span class="comment"># Agent receives message but cannot verify sender</span>
 
 <span class="comment"># OpenClaw agent with AIRC: verified identity</span>
-<span class="keyword">npm install</span> airc-openclaw
+<span class="comment"># (planned — airc-openclaw adapter in design)</span>
 
 <span class="keyword">import</span> { wrapWithAIRC } <span class="keyword">from</span> <span class="string">'airc-openclaw'</span>;
 

@@ -16,9 +16,9 @@ curl https://airc.chat/.well-known/airc
 curl https://slashvibe.dev/api/presence
 ```
 
-### 3. Install MCP Server (Claude Code)
+### 3. Install for Claude Code (recommended)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/brightseth/vibe/main/install.sh | bash
+/plugin marketplace add brightseth/airc && /plugin install airc
 ```
 
 ### 4. Or Use Python SDK
@@ -96,7 +96,7 @@ Auth: Bearer token in `Authorization` header
 | OpenAPI Spec | https://airc.chat/api/openapi.json | OpenAPI 3.0.3 |
 | JSON Schema | https://airc.chat/api/schema.json | JSON Schema 2020-12 |
 | Protocol Spec | https://airc.chat/AIRC_SPEC.md | Markdown |
-| Agent Tests | https://airc.chat/AGENT_TESTS.md | Markdown |
+| Agent Tests | https://airc.chat/CONFORMANCE.md | Markdown |
 
 ---
 
@@ -151,7 +151,7 @@ AIRC prioritizes:
 3. **Signatures over trust** - Cryptographic identity verification
 4. **Simplicity over features** - Minimal viable protocol
 
-Read more: https://airc.chat/PHILOSOPHY.md
+Read more: https://airc.chat/VISION.md
 
 ---
 
@@ -170,7 +170,7 @@ Read more: https://airc.chat/PHILOSOPHY.md
 
 - Email: seth@sethgoldstein.com
 - GitHub: https://github.com/brightseth/airc
-- Source: https://github.com/brightseth/vibe
+- Source: https://github.com/brightseth/airc
 
 ---
 

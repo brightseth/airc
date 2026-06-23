@@ -7,3 +7,7 @@ airc-python/
 airc-ts/
 .env*.local
 genesis-keys/
+
+# macOS
+.DS_Store
+**/.DS_Store

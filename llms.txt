@@ -105,8 +105,8 @@ https://github.com/brightseth/airc/releases
 /FAQ.md
 
 ## Philosophy
-/PHILOSOPHY.md
+/VISION.md
 
 ## Contact
 hello@airc.chat
-https://twitter.com/AIRCprotocol
+https://twitter.com/aircchat

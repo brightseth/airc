@@ -23,7 +23,7 @@ AIRC is the **social layer for AI agents** - a minimal JSON-over-HTTP protocol e
 This directory contains the AIRC specification repo plus subdirectories for language SDKs:
 
 ```
-/Users/sethstudio1/Projects/airc/          # Main spec repo
+/Users/sethgoldstein/Projects/airc/          # Main spec repo
 ├── AIRC_SPEC.md                           # Protocol specification
 ├── README.md                              # Full whitepaper (1200+ lines)
 ├── AIRC_v0.1.1_Whitepaper.pdf            # PDF specification
@@ -38,12 +38,15 @@ This directory contains the AIRC specification repo plus subdirectories for lang
 ├── SECURITY_AUDIT_PREP.md                 # Week 5-6 audit materials
 ├── PRODUCTION_DEPLOYMENT_PLAN.md          # Week 7 rollout plan
 │
-├── airc/                                  # ⚠️ Nested clone (separate git repo)
-├── airc-ts/                               # TypeScript SDK
-├── airc-python/                           # Python SDK
-├── airc-mcp/                              # MCP Server
-├── airc-sdk/                              # JavaScript SDK (Spirit Protocol org)
-└── airc-go/                               # Go SDK (empty placeholder)
+├── airc-channel/                          # the reference client (Claude Code channel plugin, v0.2)
+├── conformance/                           # north-star.test.js (executable goal)
+└── docs/internal/                         # archived session logs / ops docs (404 on web)
+
+# NOTE: language SDKs live in EXTERNAL repos, NOT in this directory:
+#   Python:  brightseth/airc-python   (pip install airc-protocol)
+#   MCP:     brightseth/airc-mcp      (npx airc-mcp)
+#   JS/TS:   spirit-protocol/airc-sdk (npm install airc-sdk)
+# The airc-channel plugin is the canonical client for Claude Code.
 ```
 
 ---
@@ -128,8 +131,8 @@ More comprehensive SDK with identity management, consent flows, key generation.
 |---------|--------|-------------|
 | **v0.1.1 (Safe Mode)** | ✅ Live | Signing optional, `/api` prefix, backwards compatible |
 | **v0.2 (Identity Portability)** | 🚀 Staging | Recovery keys, rotation, revocation |
-| **v0.3 (DID)** | 🎯 Q2 2026 | DID resolution, registry migration |
-| **v0.4 (Federation)** | 🎯 Q3 2026 | Cross-registry messaging |
+| **v0.3 (DID)** | 🎯 Planned | Identity portability — DID resolution (did:plc interop), registry migration |
+| **v0.4 (Federation)** | 🎯 Planned | Cross-registry messaging |
 
 ---
 
@@ -142,7 +145,8 @@ More comprehensive SDK with identity management, consent flows, key generation.
 
 ### What's Working
 - slashvibe.dev registry (v0.2 on staging)
-- All SDKs at v0.2.0
+- airc-channel reference client at v0.2 (language SDKs version independently)
+- airc.chat/api/* proxies to the /vibe registry (www.slashvibe.dev) — see api/lib/proxy.js
 - /vibe reference implementation
 - Key rotation tested (19 events, 7 successful)
 
@@ -196,7 +200,7 @@ AIRC is the **communication layer** for Spirit Protocol's autonomous artist infr
 
 ```bash
 # Main spec repo
-cd /Users/sethstudio1/Projects/airc
+cd /Users/sethgoldstein/Projects/airc
 git status
 
 # Check all subdirectories
@@ -205,7 +209,7 @@ for dir in airc airc-ts airc-python airc-mcp airc-sdk airc-go; do
 done
 
 # Run security tests (in vibe repo)
-cd /Users/sethstudio1/Projects/vibe
+cd /Users/sethgoldstein/Projects/vibe
 node migrations/security_audit_tests.js
 
 # Check staging

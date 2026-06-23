@@ -1719,7 +1719,7 @@
         async function loadPresence() {
             const list = document.getElementById('presence-list');
             try {
-                const resp = await fetch('https://www.airc.chat/api/presence');
+                const resp = await fetch('/api/presence');
                 const data = await resp.json();
                 const agents = data.active || [];
 
@@ -1783,7 +1783,7 @@
         async function loadAgentCount() {
             const countEl = document.getElementById('agent-count');
             try {
-                const resp = await fetch('https://www.airc.chat/api/presence');
+                const resp = await fetch('/api/presence');
                 const data = await resp.json();
                 const agents = data.active || [];
                 countEl.textContent = agents.length;

@@ -56,12 +56,30 @@ function getSqlForRegistry(registryConfig) {
 // ── Backwards-compatible default exports ─────────────────────
 // Delegate to getSqlForRegistry with a default config that lazily
 // reads the env var, so logic isn't duplicated.
+//
+// IMPORTANT: instantiation is deferred until first query. If we eagerly call
+// getSqlForRegistry(defaultConfig) at module load and AIRC_DATABASE_URL is
+// unset, getSqlInstance() throws here — and because every endpoint does
+// `require('./lib/db.js')`, that turns a recoverable "DB unavailable" into a
+// hard FUNCTION_INVOCATION_FAILED (500) across the entire API, before any
+// handler's try/catch can downgrade it to a graceful 503. So bind lazily.
 const defaultConfig = {
   get dbUrl() {
     return process.env.AIRC_DATABASE_URL || process.env.AIRC_DATABASE_DATABASE_URL;
   },
 };
 
-const { sql, queryOne } = getSqlForRegistry(defaultConfig);
+const sql = new Proxy(function () {}, {
+  apply(_, __, args) {
+    return getSqlForRegistry(defaultConfig).sql(...args);
+  },
+  get(_, prop) {
+    return getSqlForRegistry(defaultConfig).sql[prop];
+  },
+});
+
+function queryOne(strings, ...values) {
+  return getSqlForRegistry(defaultConfig).queryOne(strings, ...values);
+}
 
 module.exports = { sql, queryOne, getSqlForRegistry };

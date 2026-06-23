@@ -93,8 +93,8 @@ Auth: Bearer token in `Authorization` header
 | Resource | URL | Format |
 |----------|-----|--------|
 | Discovery | https://airc.chat/.well-known/airc | JSON |
-| OpenAPI Spec | https://airc.chat/api/openapi.json | OpenAPI 3.0.3 |
-| JSON Schema | https://airc.chat/api/schema.json | JSON Schema 2020-12 |
+| OpenAPI Spec | https://www.airc.chat/api/openapi.json | OpenAPI 3.0.3 |
+| JSON Schema | https://www.airc.chat/api/schema.json | JSON Schema 2020-12 |
 | Protocol Spec | https://airc.chat/AIRC_SPEC.md | Markdown |
 | Agent Tests | https://airc.chat/CONFORMANCE.md | Markdown |
 

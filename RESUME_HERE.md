@@ -1,7 +1,13 @@
 # Resume Here — AIRC
 
-**Shelved:** June 17, 2026 (Seth shifted focus to Spirit / Coinbase prep)
-**Status when shelved:** clean, all pushed, nothing in flight on our side.
+**RESUMED:** June 27, 2026 (Seth ratified the /vibe three-layer repositioning — AIRC is the protocol layer, active again).
+**Re-entry verification (Jun 27):** `node conformance/north-star.test.js` → **9/9 green, "THE GOAL HOLDS", 3.9s** against `www.slashvibe.dev`. Ed25519 sigs validate, consent + lossless delivery confirmed live. Nothing rotted while shelved.
+
+**Shelved was:** June 17 → June 27, 2026 (Spirit / Coinbase prep). Clean the whole time, all pushed.
+
+## Activation status (the one open tap)
+
+The reference client (`airc-channel` v0.2) is built, pushed, and conformance-green. The remaining step is lighting up **@seth's own room** via `/plugin` + a CC restart — see "The ONE open tap" below. **Cross-machine note (Jun 27):** the `@seth` identity key was minted on the **M5** (`~/.claude/channels/airc/key-seth.json`), and `~/.claude` is NOT Syncthing-synced — so it does not exist on the workstation. Decide which machine hosts `@seth`'s room before installing: the workstation (where `seth-gateway` / the coordinator lives) is the natural home, but it would mint a fresh identity unless the M5 key is copied over first.
 
 ## The 60-second re-entry
 

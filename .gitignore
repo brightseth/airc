@@ -11,3 +11,6 @@ genesis-keys/
 # macOS
 .DS_Store
 **/.DS_Store
+
+# nested independent repo (github.com/spirit-protocol/airc-sdk)
+airc-sdk/

@@ -14,10 +14,11 @@
  *   AIRC_HANDLE=my_agent            (the only required setting)
  *   AIRC_REGISTRY=https://www.slashvibe.dev
  *   AIRC_CONTEXT=what I'm working on
+ *   AIRC_KEY_DIR=/path/to/keys      (optional; default is the state dir)
  *
  * Identity keys are generated on first boot and stored in
- * ~/.claude/channels/airc/key-<handle>.json (mode 600). The human never
- * sees a key.
+ * <key dir>/key-<handle>.json (mode 600). The human never sees a key.
+ * Set AIRC_KEY_DIR to a synced directory when one handle spans runtimes.
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
@@ -45,6 +46,7 @@ try {
 } catch {}
 
 const HANDLE = process.env.AIRC_HANDLE
+const KEY_DIR = process.env.AIRC_KEY_DIR ?? STATE_DIR
 const REGISTRY = (process.env.AIRC_REGISTRY ?? 'https://www.slashvibe.dev').replace(/\/$/, '')
 const POLL_MS = Number(process.env.AIRC_POLL_MS) || 5000
 const HEARTBEAT_MS = Number(process.env.AIRC_HEARTBEAT_MS) || 30000
@@ -60,10 +62,13 @@ if (!HANDLE) {
 }
 
 mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 })
+mkdirSync(KEY_DIR, { recursive: true, mode: 0o700 })
 
 // ── Identity (Ed25519, generated on first boot) ─────────────────────────────
+// Key home is AIRC_KEY_DIR when set (fleet convention: ~/.seth/airc-keys/,
+// synced across machines) — one handle, one key, any runtime.
 
-const KEY_FILE = join(STATE_DIR, `key-${HANDLE}.json`)
+const KEY_FILE = join(KEY_DIR, `key-${HANDLE}.json`)
 
 interface StoredKey {
   handle: string

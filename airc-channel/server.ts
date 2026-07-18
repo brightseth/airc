@@ -310,9 +310,12 @@ async function consentAction(action: 'request' | 'accept' | 'block', to: string,
 // ── Lossless message polling ────────────────────────────────────────────────
 
 async function fetchThreads(): Promise<any[] | null> {
+  const t = await ensureToken()
+  if (!t) return null
   try {
     const res = await fetch(
       `${REGISTRY}/api/messages?to=${encodeURIComponent(HANDLE!)}&user=${encodeURIComponent(HANDLE!)}`,
+      { headers: { Authorization: `Bearer ${t}` } },
     )
     if (!res.ok) return null
     const data = await res.json() as any

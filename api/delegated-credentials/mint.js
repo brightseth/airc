@@ -8,5 +8,6 @@ const { proxy } = require('../lib/proxy.js');
 module.exports = (req, res) => proxy(
   req,
   res,
-  '/api/airc/v1/delegated-credentials/mint'
+  '/api/airc/v1/delegated-credentials/mint',
+  { delegated: true, operation: 'mint' }
 );

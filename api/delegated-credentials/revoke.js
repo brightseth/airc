@@ -8,5 +8,6 @@ const { proxy } = require('../lib/proxy.js');
 module.exports = (req, res) => proxy(
   req,
   res,
-  '/api/airc/v1/delegated-credentials/revoke'
+  '/api/airc/v1/delegated-credentials/revoke',
+  { delegated: true, operation: 'revoke' }
 );

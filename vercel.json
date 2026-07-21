@@ -154,6 +154,18 @@
       "destination": "/api/delegated-credentials/revoke.js"
     },
     {
+      "source": "/api/actor-keys/link",
+      "destination": "/api/actor-keys/link.js"
+    },
+    {
+      "source": "/api/room-admissions/offer",
+      "destination": "/api/room-admissions/offer.js"
+    },
+    {
+      "source": "/api/room-admissions/decision",
+      "destination": "/api/room-admissions/decision.js"
+    },
+    {
       "source": "/api/federation/relay",
       "destination": "/api/federation/relay.js"
     },

@@ -261,6 +261,94 @@
           }
         }
       }
+    },
+    "/api/delegated-credentials/mint": {
+      "post": {
+        "operationId": "mintDelegatedRoomCredential",
+        "summary": "Mint a scoped Actor token for one room",
+        "tags": ["Delegated Credentials"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["handle", "room", "nonce", "ts", "signature"],
+                "properties": {
+                  "handle": { "type": "string", "example": "solienne" },
+                  "room": { "type": "string", "maxLength": 512 },
+                  "nonce": { "type": "string", "minLength": 22, "maxLength": 128 },
+                  "ts": { "type": "integer", "description": "Unix seconds" },
+                  "signature": { "type": "string", "description": "Ed25519 signature over canonical JSON of handle, room, nonce, and ts" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Two-hour room-audience Actor token" },
+          "401": { "description": "Invalid or stale signed request" },
+          "403": { "description": "Embodiment consent or room admission denied" },
+          "409": { "description": "Nonce replay" }
+        }
+      }
+    },
+    "/api/delegated-credentials/verify": {
+      "post": {
+        "operationId": "verifyDelegatedRoomCredential",
+        "summary": "Verify a room token against live consent and revocation",
+        "tags": ["Delegated Credentials"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["token", "audience"],
+                "properties": {
+                  "token": { "type": "string" },
+                  "audience": { "type": "string", "maxLength": 512 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Active claims, or { valid: false }" },
+          "500": { "description": "Registry verifier unavailable" },
+          "503": { "description": "Registry verifier not configured" }
+        }
+      }
+    },
+    "/api/delegated-credentials/revoke": {
+      "post": {
+        "operationId": "revokeDelegatedRoomCredential",
+        "summary": "Revoke a room token by jti",
+        "tags": ["Delegated Credentials"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["handle", "jti", "nonce", "ts", "signature"],
+                "properties": {
+                  "handle": { "type": "string" },
+                  "jti": { "type": "string", "format": "uuid" },
+                  "nonce": { "type": "string", "minLength": 22, "maxLength": 128 },
+                  "ts": { "type": "integer", "description": "Unix seconds" },
+                  "signature": { "type": "string", "description": "Ed25519 signature over canonical JSON of handle, jti, nonce, and ts" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Revoked, or already revoked" },
+          "401": { "description": "Invalid or stale signed request" },
+          "403": { "description": "Revoker is neither the principal nor room inviter" }
+        }
+      }
     }
   },
   "components": {

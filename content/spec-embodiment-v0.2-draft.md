@@ -514,3 +514,15 @@ whatever the host's trust policy says that registry's word is worth.
   declaration time; nothing proves the entity presenting the credential is
   that human *now*. Out of scope for embodiment-of-agents; becomes real if
   human principals dock through the Body Service.
+- **Admission-level revocation:** §5.2 revokes single tokens by `jti`, but a
+  standing accepted admission can re-mint. The reference implementation
+  (delegated-credentials seam, 2026-07-22 review) added atomic
+  admission-level revocation — admission and all its live tokens die in one
+  operation, re-mint structurally blocked. Likely belongs in §5 as a
+  normative second revocation level at the next rev.
+- **Accept-time scope sealing:** §8.2 defines invite scopes as an offered
+  ceiling intersected at mint; the reference implementation found the
+  ceiling-∩-live-consent form widenable across a consent upgrade, and
+  hardened to `accepted_scopes = ceiling ∩ consent-at-accept` signed into
+  the accept, minted as `accepted_scopes ∩ live-consent`. Candidate
+  normative tightening of §8.2 at the next rev.

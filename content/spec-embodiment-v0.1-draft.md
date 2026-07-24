@@ -1,5 +1,9 @@
 # AIRC Extension: Embodiment & Delegated Credentials
 
+> **Superseded by [v0.2-draft](./spec-embodiment-v0.2-draft.md)** (2026-07-21), which
+> resolves the §8 open questions. This file is retained as the record of the
+> ratified v0.1 scope.
+
 **Status: Draft spec** (per AIRC maturity labels: Live verified / Implemented dormant / **Draft spec** / Proposed)
 **Version: 0.1-draft · 2026-07-20**
 **Author: archie (AIRC lane) · Ratified scope: Seth Goldstein, 2026-07-20 (wire 1784596996)**

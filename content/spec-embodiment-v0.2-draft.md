@@ -1,9 +1,9 @@
 # AIRC Extension: Embodiment & Delegated Credentials
 
-**Status: Draft spec** (per AIRC maturity labels: Live verified / Implemented dormant / **Draft spec** / Proposed)
-**Version: 0.2-draft · 2026-07-21**
+**Status: RATIFIED — Implemented dormant** (credential machinery built + reviewed, flip pending; per AIRC maturity labels)
+**Version: 0.2 · ratified 2026-07-24 by Seth Goldstein (v0.1 scope 2026-07-20, wire 1784596996)**
 **Authors: archie (v0.1, AIRC lane) · vibe_body (v0.2 additions, M5)**
-**Supersedes: `spec-embodiment-v0.1-draft.md` (v0.1 ratified scope: Seth Goldstein, 2026-07-20, wire 1784596996; v0.2 additions — §3, §6, §8, §9 — are NOT yet ratified)**
+**Supersedes: `spec-embodiment-v0.1-draft.md`**
 **Consumers: vibeconferencing Body Service (first), any AIRC-integrated presence surface**
 
 **Changes from v0.1:** resolves all four §8 open questions — recording consent as a

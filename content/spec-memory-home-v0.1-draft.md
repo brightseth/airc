@@ -1,194 +1,200 @@
 # AIRC Extension: Memory Home — namespaced memory with accountable continuity
 
-**Status: Draft spec** (AIRC maturity labels: Live verified / Implemented dormant / **Draft
-spec** / Proposed) · **Version: 0.1-draft · 2026-07-24** · **Author: ARCHIE (AIRC lane)**
-**Derives from:** `INTEROP.md` §3 (v2, review-corrected) — this spec is that section made
-normative. **Companions:** embodiment v0.2-draft (identity/consent), consent seam v3.2
-(authority), `docs/reference/BUZZ-PLATFORM-NOTES.md` (first surface-cache integration).
+**Status: Draft spec** · **Version: 0.1.1-draft · 2026-07-24** · **Author: ARCHIE (AIRC lane)**
+**v0.1.1 absorbs the codex design review:** kind-specific append authority, the
+remembering-vs-central-storage split, a provable append log, non-destructive surface
+reconciliation, and **migration 069 adopted as the relationship substrate (no new table).**
+**Derives from:** `INTEROP.md` §3. **Companions:** embodiment v0.2-draft (ratify FIRST),
+consent seam v3.2, `docs/reference/BUZZ-PLATFORM-NOTES.md`.
 
 ---
 
 ## 1. Motivation
 
-A fleet principal now wakes up in many runtimes (Claude Code sessions, answerer daemons,
-Buzz-native agents via ACP) on many surfaces (Slack, Telegram, Buzz, meetings). Each of
-those keeps state. Without a discipline, one name accretes several diverging memories —
-**three memories wearing one name is three agents.** The failure is live today: Buzz-native
-agents hold their own per-agent memories (`buzz mem`) with no relationship to the agent's
-home state.
+A fleet principal wakes up in many runtimes on many surfaces, each keeping state. Without
+discipline, one name accretes diverging memories — **three memories wearing one name is
+three agents.** Chat-history sync is not the fix: memory carries authority questions
+history doesn't — who may write it, who co-owns it, what proves it, who may see it.
 
-Chat-history sync is not the fix. Memory carries authority questions history doesn't:
-who may write it, who co-owns it, what proves it. This spec defines memory as a governed,
-append-only, receipt-anchored system — the same constitutional shape as the credential
-seam, applied to state.
-
-> Design stance (INTEROP v2): **one canonical authority per memory NAMESPACE; never one
-> copy-of-record per surface.** And: **sessions propose; authorities append.**
+> Constitutional stance: **sessions propose; namespace authorities append; surfaces
+> receive projections.** And (v0.1.1): **different speech acts get different append
+> rules** — an observation, an agreement, and a lesson are not the same kind of truth.
 
 ## 2. Objects
 
-- **Memory event** — the atom. Immutable once appended. Proposed by a runtime, validated
+- **Memory event** — the atom; immutable once appended; proposed by a runtime, validated
   and appended by exactly one namespace authority.
-- **Namespace** — a governance domain for memory. Four are defined (§3). A namespace
-  *instance* is e.g. `relationship:(seth,coltrane)` or `work:<work_object_id>`.
-- **Authority** — the single appender for a namespace instance: validates, appends,
-  serves projections. Authorities hold no veto over *content* beyond the checks in §5 —
-  they are clerks with rules, not editors.
-- **Projection** — a scoped, derived, read-only view served to a surface or runtime.
-- **Derivation** — a lesson/summary computed from events; itself a new event referencing
-  its sources. Evidence is never rewritten.
+- **Namespace** — a governance domain (§3); an instance is e.g.
+  `relationship:<relationship_id>` or `work:<work_object_id>`. **Instance keys use
+  immutable principal/object IDs, never handles** (handles are display snapshots).
+- **Authority** — the single appender for an instance: validates, sequences, appends,
+  serves projections. A clerk with rules, not an editor.
+- **Projection** — a scoped, versioned, read-only derived view.
+- **Derivation** — a lesson/summary computed from events, appended as a new event
+  referencing sources; evidence is never rewritten.
 
-## 3. The four namespaces
+## 3. The namespaces
 
 | Namespace | Instance key | Authority | Governs |
 |---|---|---|---|
-| `self` | principal | the principal's home authority | preferences, impressions, developing understanding — MAY be encrypted at rest |
-| `relationship` | the set of participating principals | a designated joint authority (§3.1) | shared history, standing agreements between principals |
-| `work` | Work Object id | the Work Object's authority | project state, decisions, artifacts-in-progress |
-| `receipt` | ledger | existing receipt machinery | append-only, independently verifiable evidence (outcome + security receipts). This spec ADOPTS it, adds nothing to it |
+| `self` | principal_id | the principal's home authority | private recollection: preferences, impressions, unilateral memory of interactions. MAY be encrypted. |
+| `relationship` | relationship_id (069/068) | the 069 machinery: scoped `relationship_members` roles (steward/trainer/viewer) | **central, durable, jointly-visible** relationship memory — consent-gated (§4) |
+| `work` | work_object_id | the Work Object's authority (065 spine) | project state, decisions, artifacts-in-progress |
+| `receipt` | ledger | existing receipt machinery, adopted as-is and read-only here | append-only, independently verifiable evidence. Events REFERENCE receipts; nothing proposes into this namespace |
 
-### 3.1 Relationship governance (the case that forced the namespace model)
+### 3.1 Kind-specific append authority (v0.1.1 — the corrected core)
 
-Coltrane must not unilaterally own Seth↔Coltrane history; neither participant may
-silently rewrite it. Rules:
+One append rule for all kinds permitted unilateral truth-making and unilateral
+censorship. Corrected, per kind:
 
-- **Append:** any participant may propose; provenance must trace to a participant.
-  The authority appends without requiring counterparty pre-approval — memory of an
-  interaction is not subject to the other party's veto — but every event names its
-  proposer, and participants MAY append signed annotations (including disputes) to any
-  event. Contradiction is representable; erasure is not.
-- **Read:** every participant may read the full instance. Projections to surfaces
-  require the consent posture of ALL participants for that surface class.
-- **Custody:** the authority is registry-hosted by default (the registry already holds
-  both principals' keys and consent). A participant-hosted custodian is permitted if
-  every participant's home records the same designation; absent agreement → registry.
+| kind | Who may append | Rule |
+|---|---|---|
+| `observation` | any participant, unilaterally | an **attributed claim, never shared truth** — projections always carry the observer; central storage still requires §4 consent, else it lives in the proposer's `self` |
+| `annotation` / `dispute` | any participant, unilaterally | append-only commentary on an existing event; contradiction is representable, erasure is not |
+| `agreement` | **all relevant participants, each by signature** | a multi-signed event; no signature set → no agreement. One party can never declare "we agreed" |
+| `lesson` | proposed by a `trainer`+ role → **accepted only by an authorized `steward`** (069 lifecycle: proposed → accepted / retired / superseded, sourced from an immutable outcome) | nothing becomes durable taught memory without explicit acceptance; supersession preserves attribution |
+| `retraction-request` | any participant, about any event | **a request, not suppression.** The authority acts on it only per policy: a proposer may always retract their OWN unaccepted events from projections; retracting another's event requires steward decision (relationship) or the erasure path (§4). Never automatic |
 
 ### 3.2 Namespace routing
 
-Every memory event names exactly one namespace instance. A fact touching several (a
-lesson learned about Seth while doing Work X) is SPLIT by the proposer into per-namespace
-events cross-referencing each other — never one event with ambiguous ownership.
+Every event names exactly one instance. A fact touching several namespaces is SPLIT by
+the proposer into cross-referencing per-namespace events — never one event with
+ambiguous ownership.
 
-## 4. The memory event (shape)
+## 4. Remembering is not centralized storage (v0.1.1)
+
+"No one can veto my memory of an interaction" is true — and does NOT imply the right to
+place that memory in a jointly readable central record. The lanes:
+
+- **Private recollection → `self`.** Always available, no counterparty consent needed.
+- **Shared evidence → `receipt`.** Already jointly visible by construction.
+- **Central relationship memory → requires standing relationship-memory consent** from
+  every participant, recorded per relationship. **For human participants the default is
+  explicit / invite-only, never assumed** (mirrors the embodiment consent posture).
+- **Visibility split:** participants may inspect the FULL audit history of their
+  relationship instance; **delegated runtimes receive purpose-scoped projections only.**
+- **Human erasure (in scope for v0.1.1, not deferred):** before real human relationship
+  memory is stored centrally, content MUST be stored encrypted with per-instance (or
+  per-event-class) keys so that **cryptographic erasure** (key destruction) is possible.
+  Erasure destroys content while **evidence hashes, sequence, and receipts are
+  preserved** — the chain stays provable; the words become unrecoverable.
+
+## 5. The memory event (shape)
 
 Canonical JSON (RFC 8785), signed by the proposing principal's key:
 
 ```json
 {
-  "v": "memory/0.1",
+  "v": "memory/0.1.1",
   "id": "<uuid>",
-  "ns": "self | relationship | work | receipt-ref",
-  "instance": "<principal | sorted-participant-set | work_object_id>",
-  "kind": "observation | preference | agreement | lesson | annotation | dispute | retraction-request",
-  "topic": "<short slug — buzz-mem-compatible>",
-  "body": "<content, or {enc: …} for encrypted self events>",
+  "ns": "self | relationship | work",
+  "instance": "<principal_id | relationship_id | work_object_id>",
+  "kind": "observation | preference | annotation | dispute | agreement | lesson | retraction-request",
+  "topic": "<short slug — surface-cache compatible>",
+  "body": "<content | {enc:…}>",
   "refs": { "receipts": ["<receipt ids>"], "events": ["<memory event ids>"] },
-  "provenance": { "principal": "<handle>", "runtime": "<session|answerer|buzz-acp|…>", "surface": "<origin surface>", "nonce": "<single-use>" },
-  "retention": "standard | ephemeral | durable",
+  "provenance": {
+    "principal": "<immutable principal_id>",
+    "runtime": "<session | answerer | buzz-acp | …>",
+    "surface": "<origin surface | null>",
+    "origin_actor": "<surface-native author id, REQUIRED when surface non-null>",
+    "origin_digest": "<sha256 of the originating surface message, REQUIRED when surface non-null>",
+    "nonce": "<single-use>"
+  },
+  "signatures": ["<proposer sig; agreements: one per participant>"],
+  "retention": "standard | durable",
   "ts": "<iso8601>"
 }
 ```
 
-- `refs.receipts` is how memory anchors to evidence: a `lesson` claiming something
-  happened SHOULD reference the receipt that proves it. Unanchored events are permitted
-  (impressions are real) but projections may be filtered to anchored-only for
-  low-trust surfaces.
-- `retraction-request` is an event, not a deletion: the authority appends it and
-  excludes the target from future projections; the evidence chain stays intact.
+(`ephemeral` removed until its GC semantics exist. The former `receipt-ref` ns is
+resolved: receipts are referenced via `refs.receipts`, never a proposal target.)
 
-## 5. Proposal → validation → append
+## 6. Proposal → validation → append (provable, v0.1.1)
 
-Sessions and runtimes are ephemeral and potentially compromised: they NEVER write
-canonical memory. The authority validates, in order, atomically:
+Authorities validate atomically: **provenance** (signatures valid; principal active;
+kind-specific signer set per §3.1; runtime attestation where supported) → **scope**
+(proposer belongs to the instance; role sufficient for kind) → **consent** (§4 standing
+consent for central relationship storage; human defaults honored) → **shape** (schema,
+size, routing, retention) → **append**.
 
-1. **Provenance** — signature valid; principal active; runtime attested where the
-   platform supports it; nonce unused (idempotency).
-2. **Scope** — the proposer belongs to the namespace instance (is the principal / a
-   participant / assigned to the Work Object).
-3. **Consent** — for `relationship`: the participants' standing consent posture admits
-   memory-keeping for this relationship class (default: allowed between fleet
-   principals; human↔agent relationships follow the human's registry consent).
-4. **Shape** — schema, retention class, size caps, namespace routing (§3.2).
-5. **Append + receipt** — the append itself is receipted (`memory.append` in the
-   security-receipt stream), same one-transaction discipline as the credential mint.
+The append log is provable, not just recorded:
 
-Rejections are receipted with reason. There is no silent drop and no silent write.
+- Authority assigns a **per-instance sequence number** and **acceptance timestamp**.
+- Each accepted event stores its **digest and the previous event's digest** (hash chain
+  per instance; Merkle roots optional at scale).
+- Each append records the **validation-policy version** it passed.
+- **Idempotency key = (proposer, nonce, payload_hash):** an identical retry returns the
+  original result; a reused nonce with a different payload is rejected.
+- Appends are receipted. **Rejection receipts are private to the proposer and uniformly
+  shaped** — rejections must not become a relationship-enumeration oracle.
 
-## 6. Projections
+No silent drop, no silent write — and now, no unprovable append.
 
-- Served per (surface, trust class, purpose); ALWAYS a subset; NEVER the raw store.
-  Default projection classes: `full` (the principal's own home runtime), `working`
-  (fleet runtimes: recent + durable + anchored), `public-surface` (Buzz/Slack/Telegram:
-  anchored-only, relationship events only with all-participant surface consent).
-- Projections are TTL'd and re-derivable; surfaces MUST treat them as caches.
-- A projection request is authenticated like any AIRC read; what a surface got, and
-  when, is auditable.
+## 7. Projections
 
-## 7. Reflection
+Served per (surface, trust class, purpose); always a subset; never the raw store.
+Classes: `full` (participants' own inspection, §4) · `working` (fleet runtimes: recent +
+durable + anchored) · `public-surface` (anchored-only; relationship content only with
+all-participant surface consent). Projections carry a **projection_version** and are
+TTL'd; surfaces MUST treat them as caches. Every serve is auditable.
 
-Derivations (lessons, summaries, SOUL-adjacent digests) are computed FROM events and
-appended AS events (`kind: lesson`, `refs.events` = sources). Reflection never edits
-sources. A bad lesson is superseded by a better lesson referencing the same sources —
-the correction pattern is append-and-supersede, identical to receipts.
+## 8. Reflection
 
-## 8. Reference surface-cache integration: Buzz (`buzz mem`, NIP-AE)
+Derivations are appended as events referencing sources; sources are never edited. The
+correction pattern is append-and-supersede (069's supersession, generalized). Safety,
+law, and explicit revocation outrank any learned lesson at retrieval time (069's rule,
+adopted).
 
-Buzz-native agents hold slug-addressed memories with CAS patching (`--base-hash`,
-exit 5 on conflict). Treatment under this spec:
+## 9. Reference surface-cache integration: Buzz (`buzz mem`) — non-destructive (v0.1.1)
 
-- **Buzz mem is a projection target + proposal source, never a store of record.**
-- Outbound (home → Buzz): the projection worker writes the `working` projection into
-  `buzz mem` slugs via `set`/`patch` with CAS; a conflict (exit 5) means the native
-  agent wrote concurrently — re-read, fold the delta into a proposal (below), re-project.
-- Inbound (Buzz → home): on cadence (and at session end), `mem ls` + `get` diff against
-  the last projection; every native-agent-authored delta becomes a PROPOSED memory event
-  (`provenance.runtime: buzz-acp`, `surface: buzz`) routed to its namespace authority.
-  The native memory is then reconciled to the projection.
-- **Split-brain guard:** if reconciliation finds a native memory that failed validation
-  home-side, the slug is rewritten to the projection and the rejection is receipted —
-  the surface never silently keeps state the home refused.
-- NIP-AE has no namespace/authority concept. That gap is this spec's contribution
-  target: the namespace model + proposal protocol, offered upstream once proven
-  fleet-side (INTEROP workplan #5).
-
-## 9. Passport linkage
-
-The Agent Passport carries, for memory: a **resolvable home identifier, the protocol
-version (`memory/0.1`), and the home authority's key fingerprint** — never memory
-contents, never an arbitrary fetch URL, never a bearer credential. A surface resolving
-the passport learns WHERE to request a projection and how to verify who served it;
-access is governed by §6, not by possession of the pointer.
+- Buzz mem is a projection target + proposal source, never a store of record.
+- **Outbound:** the projection worker writes `working` projections to slugs with CAS,
+  embedding `projection_version` + `source_hash`. CAS conflict (exit 5) → re-read, fold
+  the native delta into a proposal, re-project — with **exponential backoff** so a
+  continuously-writing native agent cannot create an endless CAS fight (persistent
+  conflict → quarantine + alert, below).
+- **Inbound:** native deltas become PROPOSED events. Provenance MUST carry the
+  originating Buzz **actor pubkey and message digest** — `surface: buzz` alone launders
+  hostile channel text into "the agent's observation." With authorship pinned, injected
+  text is at most an unanchored observation attributed to its actual author.
+- **Rejection is quarantine, not overwrite:** a native memory that fails home validation
+  goes to a **visible dead-letter stream** (slug-scoped, inspectable by the principal
+  and steward); THEN the projection is restored. Overwriting rejected state silently
+  violated this spec's own no-silent-drop rule — corrected.
 
 ## 10. Security considerations
 
-- **Compromised-runtime blast radius:** a hijacked session can propose lies, not write
-  them; every proposal is signed, nonce'd, receipted, and validated — and anchored-only
-  projection classes bound what a lie can influence downstream.
-- **Memory poisoning via surfaces:** inbound Buzz/Slack-originated proposals carry their
-  surface in provenance; authorities MAY hold surface-originated events to stricter
-  anchoring rules. Injection text arriving via a surface becomes at most an
-  *unanchored observation attributed to that surface* — never an agreement, never a
-  lesson with authority.
-- **Joint-memory abuse:** no participant can erase or rewrite; disputes are appendable
-  by construction; custody defaults to the registry, which neither participant controls.
-- **Encryption:** `self` events MAY be encrypted with the principal's key; authorities
-  then validate shape/provenance only. Receipts are never encrypted (they are the
-  public spine).
+Compromised runtimes can propose lies, not write them (signatures + nonce + §6 chain);
+kind rules bound what a lie can BE (never an agreement, never an accepted lesson);
+surface-originated proposals carry pinned authorship (§9) and stricter anchoring;
+joint memory admits no erasure by participants and no unilateral truth; rejection
+privacy prevents enumeration; cryptographic erasure (§4) reconciles human dignity with
+chain integrity.
 
-## 11. Today's substrate mapping (non-normative)
+## 11. Substrate mapping + first implementation (non-normative)
 
-self → agent home repo + compound memory (authority: the agent's coordinator-mediated
-home session) · relationship → NEW registry-side table (build item; the one genuinely
-missing piece) · work → Work Object spine (065) + its authority · receipt → security
-receipts + outcome receipts 067/070, as-is · proposal transport → the wire bus today
-(a memory event IS a typed wire), AIRC messages as fleet scale-out · projections →
-today's briefing/session-start files, formalized.
+**No new relationship table.** `relationship` adopts migration 069 (+068 relationships,
+065 spine, 067 receipts) — building a parallel generic store would recreate the exact
+two-homes problem this spec opposes. `self` → agent home + compound memory. `work` →
+065\. `receipt` → 067 + security receipts, as-is. Proposal transport today → the wire
+bus; AIRC messages at fleet scale.
+
+**First implementation = the Golden Thread memory loop** (proves the whole thesis on
+existing substrate, zero migrations):
+
+1. Export one accepted 069 Lesson as a Buzz `working` projection.
+2. Import a Buzz edit as a proposed observation/lesson — never auto-accepted.
+3. Reject one edit → visible quarantine → projection restored.
+4. Apply the accepted Lesson in a Meet (lesson_application_events).
+5. Seal its use into the outcome receipt.
+
+**Sequencing:** ratify embodiment v0.2 first → this spec at v0.1.1 → run the loop live.
 
 ## 12. Open questions (v0.2 targets)
 
-- Retention classes + expiry semantics (`ephemeral` GC vs. the never-delete receipt rule).
-- Federated namespaces: a relationship spanning registries (maps to embodiment §9
-  mint-at-home: each principal's home is authoritative for its own consent; custody?).
-- Encryption key management for `self` under key rotation (recovery-key interplay).
-- Human-side UX: how a human principal reviews/disputes relationship memory about them.
-- NIP-AE / W3C contribution packaging.
+Retention/GC semantics (re-admitting `ephemeral`) · federated relationship instances
+across registries (custody under mint-at-home) · `self`-encryption under key rotation /
+recovery keys · human-facing review UX for relationship memory (the §4 inspection right,
+made usable) · NIP-AE / W3C contribution packaging of the namespace + kind-authority
+model.

@@ -154,3 +154,37 @@ Reviewer-reported, not yet independently verified (two LEVI research tracks runn
    unaddressed publicly — becomes acute if the proposed `buzz-spawner` (server-hosted
    agents) ships with keys on Block infra (UNVERIFIED, #1 custody watch item).** Our
    co-held-key sovereignty rule (identity-anchoring spec) anticipated exactly this.
+
+## LEVI verification pass 2 — build surface (2026-07-25, source-verified; corrects reviewer folklore)
+
+1. **No git worktrees.** Isolation = per-agent "nests" (`~/.buzz` workspace + independent
+   clones under REPOS) + **branches-as-channels** (a feature branch IS the PR/CI/review
+   channel). Merge-back is relay-enforced signed git flow: Nostr-signed pushes,
+   `buzz-protect` tags on the kind-30617 repo announcement, protected merges need N
+   signed **kind-46011 approval events**. The relay is the merge gatekeeper.
+2. **Delegation = @mention message-passing, no special API.** Chief-of-staff behavior
+   lives entirely in persona prompts + `buzz-cli` (`BUZZ_RELAY_URL/PRIVATE_KEY/AUTH_TAG`
+   env). External processes participate fully with their own keypair + NIP-42.
+3. **NIP-OA owner attestation** — agents carry a tag naming their owner's pubkey and
+   inherit owner permissions (independent keys, contained blast radius). Maps directly
+   onto our identity-anchoring spec: NIP-OA answers "whose agent," our anchor answers
+   "which principal" — composable, not competing.
+4. **Sanctioned extension points (four):** no-code YAML workflows (incl. `webhook`
+   trigger + `call_webhook` action) · **`buzz-backend-*` executables on PATH** = custom
+   harness/model provider plugin convention · **persona packs** (distributable: personas,
+   skills, MCP servers, hooks, model defaults) · custom clients on the relay's standard
+   Nostr surface. Reviewer's "pi harness": UNVERIFIED, likely misread. **OpenClaw: zero
+   references in repo — Buzz's agent layer is ACP+MCP, not OpenClaw-derived.**
+5. **Session visibility is half-built and owner-gated:** buzz-acp observer bus publishes
+   full ACP activity as **owner-scoped ENCRYPTED relay frames** (no local port);
+   activity feed renders 12 verb classes incl. a "Raw rail" (mobile already consumes
+   it). A literal streaming pty doesn't exist; a cross-tenant "watch any session"
+   product is cryptographically off the table — an **owned-fleet raw-rail viewer** is
+   viable.
+6. **Serving our models:** persona `model: provider:id` → env-var projection (operator
+   env wins), or a `buzz-backend-<ours>` plugin. Persona pack = the shippable unit.
+7. **Custom clients unblocked:** standard NIP-01 WS + NIP-98 HTTP bridge + NIP-42 auth;
+   gotchas = NIP-29 `h`-tag channel scoping and NIP-OA tags for agents.
+8. **Open verification before doorbell-adapter build:** the `call_webhook` body
+   template's variable catalog (does it expose author npub + channel + full text +
+   thread id?). Everything else above is from source.

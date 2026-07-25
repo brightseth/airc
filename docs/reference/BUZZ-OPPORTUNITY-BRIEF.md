@@ -20,8 +20,14 @@ A **no-code Buzz workflow**: `message_posted` + `str_contains` filter → `call_
 → our doorbell endpoint. Our contract already ships a green-tested Buzz origin (npub +
 event-digest evidence). What we uniquely bring: the consent seam behind the endpoint —
 grants, blind responses, receipts. **When:** the moment the app-path doorbell exists.
-**One pre-build verification:** the `call_webhook` template variable catalog (author
-npub, channel, text, thread id) — LEVI flagged it, an hour of source reading.
+**Pre-build verification: ✅ DONE (2026-07-25, executor.rs source lines).** The template
+catalog exposes author (with an `| npub` filter), channel_id, full text, the triggering
+event id, and timestamp — everything the summon contract needs; reference body template
+now lives in DOORBELL-CONTRACT §6. Two constraints found: the doorbell endpoint must be
+**public HTTPS** (Buzz SSRF-guards private/loopback targets — no Tailscale-only deploy),
+and thread-ROOT ids aren't templated (one relay `/query` on our side if we ever summon
+from deep threads). Adapter status: **writable as ~10 lines of workflow YAML** when the
+doorbell ships.
 
 ### 2. 🎷 Fleet agents as sovereign members (the clubhouse, done properly)
 Per-agent npub + **NIP-OA owner tag** (their native "whose agent is this" mechanism)

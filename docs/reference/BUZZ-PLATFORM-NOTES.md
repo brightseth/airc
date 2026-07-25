@@ -129,3 +129,28 @@ Reviewer-reported, not yet independently verified (two LEVI research tracks runn
    updates through compile/commit/deploy) — matches our observed chief-of-staff pattern.
 6. **Shared-compute economics framing**: "community pools funds for one beefy machine" —
    the perk-of-membership model, now appearing in independent reviews.
+
+## LEVI verification pass 1 — ecosystem/economics (2026-07-25, corrects day-3 signals)
+
+1. **PAYMENTS: the layer is EMPTY — correction to the "Lightning future" signal.** Buzz
+   has no Lightning, no zaps, no NIP-57, none on the roadmap (verified against
+   README/VISION/ARCHITECTURE). Nostr is transport+identity ONLY; zaps are NOT
+   inherited. Closest primitive is pending "web-of-trust reputation" — reputation, not
+   money. **Implication: the reviewer-imagined payments future is unclaimed ground, and
+   AIRC's x402 extension is the same shape. This is a wedge, not a convergence.**
+2. **Shared compute = "Buzz Mesh"**: mesh-llm over iroh (QUIC p2p), membership-gated,
+   encrypted p2p, "relay never sees a token." Sharding depth UNVERIFIED (true
+   distributed inference vs routing unclear). **No metering, no incentives — a gift
+   economy by choice.** Compute *market* = also empty ground.
+3. **Ecosystem week one: thin.** No plugin API — extension = bring-your-own-agent
+   (buzz-acp / buzz-cli / REST). Proof point: community member ran OpenClaw + Claude
+   Agent SDK agents as first-class members from a home lab. No notable forks/tools yet.
+4. **Gap list (validated + extended):** no terminal view · slower than raw CC ·
+   engineering-only IA · YAML workflows deterministic-not-intelligent · no data
+   layer/CRM · per-service MCP friction · markdown-only rendering · unsigned binaries ·
+   mDNS setup trap. Herdr is the terminal-native foil.
+5. **Risk register:** single-relay = single point of trust (hosted relay sees all) ·
+   shared-compute isolation/threat model undocumented · **hosted-agent key custody
+   unaddressed publicly — becomes acute if the proposed `buzz-spawner` (server-hosted
+   agents) ships with keys on Block infra (UNVERIFIED, #1 custody watch item).** Our
+   co-held-key sovereignty rule (identity-anchoring spec) anticipated exactly this.

@@ -104,3 +104,28 @@ storage; every hit is re-authorized before delivery.
 - **Native-agent evaluation** (INTEROP workplan #3): buzz-acp's owner-gate, mention
   replay, and session rotation are the behaviors to test for split-brain and identity
   continuity.
+
+---
+
+## Day-3 signals (community review intel, 2026-07-25 — LEVI verification in flight)
+
+Reviewer-reported, not yet independently verified (two LEVI research tracks running):
+
+1. **Agents work in parallel in git worktrees** — if true, Buzz ships multi-agent
+   parallel code work as a first-class pattern. Verify mechanism + merge-back story.
+2. **"Slack + OpenClaw + Herdr in one tool"** — the market positions Buzz as unifying
+   chat + agent-manager + agent-runtime. Verify the OpenClaw relationship (derived,
+   integrated, or parallel?).
+3. **Lightning/zaps future** — Nostr's substrate ties to Bitcoin Lightning (NIP-57);
+   reviewers see community tipping + paid compute/agent tasks coming. AIRC-lane
+   relevance: our x402 payments extension is the same shape on HTTP — potential
+   convergence or bridge target.
+4. **Named product gaps (= build opportunities):**
+   - **No terminal view of agent sessions** — activity view "feels abstracted."
+     A "watch your agent's terminal" surface may be buildable on their APIs. Probe live.
+   - **Feels slower than direct Claude Code** — users fall back to terminal for
+     one-off tasks. Latency budget matters for anything we build on it.
+5. **Delegation-in-threads UX validated** by reviewers (tag an agent → threaded status
+   updates through compile/commit/deploy) — matches our observed chief-of-staff pattern.
+6. **Shared-compute economics framing**: "community pools funds for one beefy machine" —
+   the perk-of-membership model, now appearing in independent reviews.

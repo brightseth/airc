@@ -22,8 +22,20 @@ read it first; this file is only the state of play.
 - **Draft specs, awaiting ratification/consumers:**
   - `spec-memory-home-v0.1-draft.md` (v0.1.1 — absorbs codex review; INTEROP §3 made real)
   - `spec-identity-anchoring-v0.1-draft.md` (one principal across key systems; Nostr/Buzz first)
-  - `spec-bot-announce-v0.1-draft.md` (vibeconf bot chat-line verification; requested by
-    vibe-platform wire 1785007873; **delivered — reply wire 1785008738 sent**)
+  - `spec-bot-announce-v0.1-draft.md` (**v0.1.1** — vibeconf bot chat-line verification;
+    requested by vibe-platform wire 1785007873. v0.1.1 closed codex finding #7: added
+    dock-attested `body_instance` sender binding for the same-room copy flaw + normative
+    `announce_id` minting rule. Implementation still owed by the build lane.)
+- **codex review dispositioned** (2026-07-26):
+  `docs/reference/CODEX-REVIEW-DISPOSITION-2026-07-26.md` — 8 findings triaged
+  spec-vs-build. AIRC-lane items #7 (bot-announce v0.1.1) and #8 (slashvibe-mcp 0.6.1)
+  both fixed. Doorbell P0s #1–3 are build non-compliance with ratified embodiment v0.2
+  MUSTs (NOT spec defects) — routed to coltrane with §-citations; they gate the 0.7
+  `vibe_invite_to_meet` verb (codex: FAIL-to-enable until fixed).
+- **slashvibe-mcp**: 0.6.0 published to npm; **0.6.1** (packaging fix for the
+  `tools/analytics.js` leak) pushed to **PR #61**, needs `npm publish` (Seth 2FA) after
+  merge. Trojan-horse canon: the published server is vibeconf's distribution wedge via
+  ONE consent verb `vibe_invite_to_meet` (memory: [[slashvibe-mcp-trojan-horse]]).
 - **Buzz lane** (memory: buzz-airc-integration): platform verified over two LEVI passes
   (`BUZZ-PLATFORM-NOTES.md`), six opportunities ranked in the brief. Doorbell-adapter
   precondition **verified against executor.rs** — writable as ~10 lines of workflow YAML

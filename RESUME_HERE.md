@@ -9,6 +9,11 @@ read it first; this file is only the state of play.
 1. `INTEROP.md` — thesis, landscape, four planes, workplan (the frame).
 2. `docs/reference/BUZZ-OPPORTUNITY-BRIEF.md` — the six ranked Buzz plays + sequencing.
 3. `node conformance/north-star.test.js` — should still print "THE GOAL HOLDS" 9/9.
+   **Caveat (learned 2026-07-25):** the registry rate-limits registrations per-IP; a
+   local run right after other registry traffic 429s silently and prints "THE GOAL IS
+   BROKEN" (registration → no tokens → all delivery checks cascade-fail, consent still
+   passes). Before believing a red local run, check the daily CI north-star job — it
+   runs from a fresh IP and is the source of truth.
 
 ## Current state (what's landed, all pushed)
 
@@ -58,5 +63,7 @@ Nothing sensitive to the hosted relay.
 - Production `/api/identity` is 404 despite well-known advertising it (plugin falls back
   to presence).
 - Unverified handles expire in 7 days unless GitHub-linked.
+- slashvibe well-known lacks `registry_url`; federation fields incomplete (legacy suite
+  flags these; vibe-repo fixes, tracked in the CI continue-on-error lane).
 - ~90s between per-handle registrations or the registry 429s; hyphens normalize to
   underscores in handles.

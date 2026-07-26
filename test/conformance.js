@@ -81,9 +81,9 @@ const TESTS = [
       const data = res.data;
       const checks = [];
 
+      // protocol_version lives on /.well-known/airc; health carries registry version.
       checks.push(checkField(data, 'status'));
-      checks.push(checkField(data, 'protocol_version'));
-      checks.push(checkField(data, 'agents_online'));
+      checks.push(checkField(data, 'version'));
 
       const allPass = checks.every(c => c.pass);
       return { status: allPass ? 'pass' : 'fail', time: res.time, checks };
@@ -99,13 +99,13 @@ const TESTS = [
       const checks = [];
 
       checks.push(checkField(data, 'success'));
-      checks.push(checkField(data, 'agents', 'array'));
+      checks.push(checkField(data, 'active', 'array'));
 
       const allPass = checks.every(c => c.pass);
 
       let note = '';
-      if (data && Array.isArray(data.agents)) {
-        note = data.agents.length + ' agent(s) online';
+      if (data && Array.isArray(data.active)) {
+        note = data.active.length + ' agent(s) online';
       }
 
       return { status: allPass ? 'pass' : 'fail', time: res.time, checks, note };

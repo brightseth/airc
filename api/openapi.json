@@ -33,7 +33,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "users": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "active": {
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/User"

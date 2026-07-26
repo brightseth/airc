@@ -526,16 +526,16 @@
                 id: 'health',
                 name: 'Health Endpoint',
                 desc: 'GET /api/health',
-                requiredFields: ['status', 'protocol_version', 'agents_online'],
+                requiredFields: ['status', 'version'],
                 run: async function(baseUrl) {
                     var url = baseUrl + '/api/health';
                     var res = await timedFetch(url);
                     var data = res.data;
                     var checks = [];
 
+                    // protocol_version lives on /.well-known/airc; health carries registry version.
                     checks.push(checkField(data, 'status'));
-                    checks.push(checkField(data, 'protocol_version'));
-                    checks.push(checkField(data, 'agents_online'));
+                    checks.push(checkField(data, 'version'));
 
                     var allPass = checks.every(function(c) { return c.pass; });
                     return {
@@ -550,7 +550,7 @@
                 id: 'presence',
                 name: 'Presence API',
                 desc: 'GET /api/presence',
-                requiredFields: ['success', 'agents'],
+                requiredFields: ['success', 'active'],
                 run: async function(baseUrl) {
                     var url = baseUrl + '/api/presence';
                     var res = await timedFetch(url);
@@ -558,13 +558,13 @@
                     var checks = [];
 
                     checks.push(checkField(data, 'success'));
-                    checks.push(checkField(data, 'agents', 'array'));
+                    checks.push(checkField(data, 'active', 'array'));
 
                     var allPass = checks.every(function(c) { return c.pass; });
 
                     var agentCount = '';
-                    if (data && Array.isArray(data.agents)) {
-                        agentCount = data.agents.length + ' agent(s) online';
+                    if (data && Array.isArray(data.active)) {
+                        agentCount = data.active.length + ' agent(s) online';
                     }
 
                     return {

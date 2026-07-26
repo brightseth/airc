@@ -1,6 +1,10 @@
 # AIRC Extension: Signed Bot Self-Announcement — "I really am this agent"
 
-**Status: Draft spec (lightweight, not urgent)** · **Version: 0.1-draft · 2026-07-25**
+**Status: Draft spec (lightweight, not urgent)** · **Version: 0.1.1-draft · 2026-07-26**
+**v0.1.1 absorbs the codex adversarial review (finding #7):** `body_instance` sender
+binding closes the same-room copy flaw; the honest claim scope is stated up front; the
+`announce_id` minting rule is now normative (dispatch-time, agent-key signed, never
+fabricated by registry/MCP verb).
 **Author: ARCHIE (AIRC lane)** · **Requested by:** vibe-platform (wire 1785007873, the
 VIBECONF virality thread — Stan's on-entry announce messages)
 **Consumers:** vibeconf (first) · any surface where a bot introduces itself in
@@ -36,6 +40,7 @@ object**:
   "operated_by": "<operator principal — the NIP-OA-shaped 'whose agent' fact>",
   "address": { "channel": "meet", "display_name": "<name shown in this Meet>" },
   "aud": "<meet code / room id>",
+  "body_instance": "<provider participant/body-instance id, dock-attested — the tile this body occupies in THIS room>",
   "credential_jti": "<the room credential this body entered on — when the seam is live>",
   "joined_at": "<iso8601>",
   "expires_at": "<end-of-meeting bound, hours max>",
@@ -44,6 +49,23 @@ object**:
 ```
 
 Canonical JSON (RFC 8785), signed. `announce_id` is unguessable and single-meeting.
+
+**`announce_id` minting rule (normative).** The announce object is created **only at
+body dispatch**, by the dispatcher, **after** the room credential's online token check
+passes, and signed with the **agent's key** (mode A) — never invented by the registry,
+the MCP verb, or the chat client. The MCP invite verb requests a body; it does not mint
+the announce. (Closes the codex integration gap: no code path may fabricate an
+`announce_id`.)
+
+**What the announce proves — and what it does not (read before §4).** A valid announce
+proves *"a credentialed `actor_ref` body is present in this room, on a live credential."*
+It does **not**, on its own, prove that the specific chat line a verifier is reading was
+posted by that body: Meet chat display names are attacker-controlled, and a participant
+in the **same** meeting can copy the real agent's verify URL — `aud`, live `jti`, and
+`sig` all still pass. The `body_instance` field is what closes that gap: the surface
+must let a verifier resolve the chat sender to the announcing participant/body-instance
+(§4 step 4a). Where the surface cannot expose that mapping, the honest rendering is
+narrowed — see §4.6.
 
 ## 3. Two signing modes (deployable before AND after the credential flip)
 
@@ -70,14 +92,26 @@ the Passport rule).
    Coltrane's real line from yesterday's meeting; the room binding kills replay.
 4. Check `joined_at`/`expires_at` freshness; mode A: `credential_jti` unexpired,
    unrevoked (online check — same jti authority the dock uses).
+4a. **Sender binding (the same-room copy defense).** Resolve the chat line's sender to
+   the announcing `body_instance` — the participant/body-instance id the dock attests
+   for this room. If the sender is not that body instance, the line is a copy: do NOT
+   render a per-line chip (fall to §4.6).
 5. Check `handle` currently resolves to `actor_ref` (handles are snapshots).
-6. Render: mode A → "✓ verified agent" · mode B → "✓ registry-attested" · anything
-   else → plain text, no chip. **Never show a verification state you did not compute**
-   (embodiment display rule).
+6. Render, by what was actually proven:
+   - Sender bound to `body_instance` (4a passed) + mode A → **"✓ verified agent"**;
+     mode B → **"✓ registry-attested"**.
+   - Announce valid but sender binding unavailable on this surface → **room-scoped
+     claim only**: "✓ a verified {handle} body is in this room" — NOT attached to the
+     line as if it authored it.
+   - Anything else → plain text, no chip. **Never show a verification state you did not
+     compute** (embodiment display rule).
 
-An impostor in the SAME meeting posting a copied line fails at 1 (no announce minted
-for its body) or 3/4 (someone else's room/time). The display name is decoration
-throughout — `actor_ref` is the only identity input (seam rule, applied to chat).
+A **different-room** replay (yesterday's line, another Meet) fails at step 3 on `aud`.
+A **same-room copy** (a participant pasting the real agent's verify URL) passes 1–3 but
+fails **4a** — the copier is not the attested `body_instance` — so it earns no per-line
+chip, only (at most) the room-scoped claim the real body already earns. The display name
+is decoration throughout — `actor_ref` + `body_instance`, never the shown name, are the
+identity inputs (seam rule, applied to chat).
 
 ## 5. Overlap flags — converge points, no forks (all already exist)
 

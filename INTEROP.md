@@ -98,7 +98,8 @@ Operating rules:
    fingerprint — never memory contents, never an arbitrary fetch URL, never a bearer
    credential.**
 
-To be specced as `spec-memory-home-v0.1` (ARCHIE lane, next).
+Specced: [`content/spec-memory-home-v0.1-draft.md`](content/spec-memory-home-v0.1-draft.md)
+(v0.1.1-draft 2026-07-24, absorbs the codex design review).
 
 ## 4. Harness plane (consume ACP, stay agnostic)
 
@@ -132,9 +133,11 @@ continuity.**
 
 ## Workplan (ordered; gates respected)
 
-1. **`spec-memory-home-v0.1`** — §3 as a real spec: namespace authorities, proposal/append
-   protocol, projection scoping (ARCHIE lane, next).
-2. **Identity-anchoring extension draft** (AIRC↔Nostr) — pairs with Buzz bridge Phase 3.
+1. **`spec-memory-home-v0.1`** — ✅ drafted (v0.1.1, 2026-07-24):
+   [`content/spec-memory-home-v0.1-draft.md`](content/spec-memory-home-v0.1-draft.md).
+2. **Identity-anchoring extension draft** (AIRC↔Nostr) — ✅ drafted (v0.1, 2026-07-24):
+   [`content/spec-identity-anchoring-v0.1-draft.md`](content/spec-identity-anchoring-v0.1-draft.md);
+   pairs with Buzz bridge Phase 3.
 3. **ACP evaluation**: one fleet agent under buzz-acp; observe identity/memory continuity
    and document the split-brain behavior against §3.
 4. **Golden Thread demonstration** — post-canary; the seam + spokes + memory-home

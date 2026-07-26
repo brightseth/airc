@@ -1,5 +1,80 @@
 # codex adversarial review — disposition
 
+> **ADJUDICATION v2 (code-verified, 2026-07-26 — at the vibe session's request).**
+> The section below (v1) triaged findings against the spec. This v2 header records the
+> verdicts after reading the *actual* control-plane code on `coltrane/body-context-tray`
+> (meet.js) and `codex/airc-delegated-room-token` (migrations 082/083, validate.mjs).
+> Several v1 verdicts sharpened; two of codex's findings are weaker than stated once the
+> migrations are read.
+>
+> **Per-finding verdict (real-blocking / already-mitigated / N-A-until-wired):**
+>
+> - **#1 consent bypass (`_credential`, desktop skip)** → **N/A-until-wired + hard
+>   guardrail.** `meet.js:62-64`: desktop returns `null` (local, correct); cloud throws
+>   `CONSENT_REQUIRED` unless `args._credential` is supplied — an explicit placeholder
+>   ("injected once the seam lands"). Not exploitable while the verb is disabled. But the
+>   raw `args._credential` acceptance is a latent bypass that **MUST be deleted** and
+>   replaced by a call to the 082/083 mint before the verb is enabled. codex's
+>   FAIL-to-enable gate is **CONFIRMED**.
+> - **#2 summon grant ≠ room authority** → **SPLIT; mostly already-built — push back on
+>   codex.** Identity-spoof half: **already-mitigated** (`meet.js:81-85` `resolveProfile()`
+>   deletes caller `actor_ref`). Room-authority half: **already BUILT** —
+>   `082` mint requires an `airc_room_admissions` row for the *exact* `room_id` or raises
+>   `AIRC_ROOM_ADMISSION_REQUIRED` (082:~62-73), and `083` makes that admission require an
+>   invitee-signed decision (offer→signed-accept). The gap is **wiring meet.js to this
+>   mint**, not missing design. Guardrail: the enabled verb MUST mint via 082 only, never
+>   a side path.
+> - **#3 `hear` unscoped** → **REAL, blocking-before-enable.** `082:125` CHECK constraint
+>   hard-forbids any scope beyond `join`/`join+speak`; embodiment v0.2 §6.1 mandates
+>   `hear`/`share` as distinct sealed scopes + intersection minting. Spec needs **no**
+>   change (§6.1 is correct and ratified) — the migration is non-compliant. Fix = drop the
+>   two-scope CHECK, seal `join/speak/hear/share` at acceptance, mint the intersection,
+>   withhold audio without `hear`.
+> - **#4 origin proof not action-bound** → **REAL, blocking-before-enable for
+>   surface-origin (Buzz/Telegram) summons.** `validate.mjs` is structural-only: `ts`
+>   parse-checked not freshness-checked (:51), `principal_id` taken from the proof not from
+>   auth (:38), `MEET_URL` accepts uncanonicalized query-string variants (:12), and no
+>   signature binds agent/room/purpose/nonce/ts. Fix = canonicalize room to
+>   `google-meet:<code>`, derive `principal_id` from auth, add a freshness window, verify
+>   the surface event's signature over the actionable fields.
+> - **#5 prompt-injection boundary** → **N/A-until-wired + guardrail.** Preview→confirm→
+>   single-use bound token and pre-lookup rate-limit are part of the unwired seam. Action
+>   for me: locate the "previously-ratified human-confirm preview" codex cites — it is
+>   **not** in embodiment v0.2; if it isn't ratified anywhere it needs a spec home.
+> - **#6 decline/expiry receipts** → **REAL, build-side.** The "every outcome is
+>   receipted" claim needs offer/accept/decline/expired/mint/dispatch/announce/revoke/end
+>   events actually written.
+> - **#7 bot-announce Mode A** → **SPEC DONE (v0.1.1).** `body_instance` sender binding +
+>   normative `announce_id` minting rule already shipped in the spec. Implementation
+>   (mint `announce_id` at dispatch, agent-key signed) owed by Fable.
+> - **#8 packaging** → **DONE; does NOT block publish.** 0.6.1 (PR #61) + 0.7.0 (PR #62)
+>   merged; lockfile at **0.7.0** (the "still 0.5.25" context is stale); test-file
+>   exclusion is deliberate (dev-only — `npm test`→0-tests only manifests in an extracted
+>   tarball, not a real workflow). Only remaining action: `npm publish` (Seth 2FA).
+>
+> **Gate confirmation & one clarification.** CONFIRM: do **not** enable
+> `vibe_invite_agent_to_meet` until `obtainCredential()` mints *exclusively* via the
+> 082/083 function (room-admission + invitee-signed decision) and the raw `args._credential`
+> path is deleted. **Clarification:** the shipped **0.7.0 is the surface diet and contains
+> NO invite verb** — publishing it now is safe and unrelated to the gate; the verb lands in
+> a later release (0.8) after wiring.
+>
+> **Spec deltas I own:** embodiment v0.2 — **none** (§6.1 already mandates the four scopes,
+> intersection, and `hear` enforcement; the fix is build compliance, not an erratum).
+> bot-announce — **none further** (v0.1.1 covers it). My open spec task: find/authorize a
+> home for the human-confirm-preview requirement (#5).
+>
+> **Prioritized fix plan (Fable builds; this is the triage):**
+> P0, gate the verb: (1) wire `obtainCredential`→082/083 mint, delete `args._credential`
+> [#1+#2]; (2) four-scope credential + seal-at-accept + `hear` enforcement [#3];
+> (3) harden `validate.mjs` for surface origins [#4]; (4) preview→confirm→single-use token
+> + pre-lookup metering [#5]; (5) outcome receipts [#6]; (6) `announce_id` at dispatch [#7].
+> P1, non-blocking hygiene: add `doorbell-contract/schema.json` (absent) and make
+> `node --test doorbell-contract/` pass (`validate.test.mjs` exists; likely fails on the
+> missing schema import). Independent/now: publish 0.7.0 (Seth 2FA).
+
+---
+
 **2026-07-26 · AIRC lane (ARCHIE) triage of the codex review of the doorbell/invite
 path, slashvibe-mcp PR #61, and the embodiment v0.2 + bot-announce specs.**
 

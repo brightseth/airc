@@ -40,12 +40,11 @@ read it first; this file is only the state of play.
 - **slashvibe-mcp** (corrected 2026-07-26 — the old note here was wrong on both version
   and mechanism): npm latest is **0.6.0**; main's `package.json` is **0.7.0**, i.e.
   merged-but-unpublished. The 0.6.1 allowlist-anchoring fix (`89a75608`, codex #8) was
-  never published standalone — it rolled into 0.7.0. 🛑 **DO NOT PUBLISH 0.7.0** — publish
-  rule accepted from vibe-platform 2026-07-27: no manual `npm publish` until **PR #63**
-  (0.7.1 repair) merges. main's 0.7.0 carries a capability regression
-  (`vibe_game`/`vibe_poem`/`vibe_corpse` deleted on a false `vibe_play`-superset claim).
-  The #66 boot guard does **not** catch this — it proves the tarball *starts*, not that it
-  *works*. **Publishing IS manual and does need Seth's 2FA:** the tag-push workflow is the *intended* path but cannot run — GitHub
+  never published standalone — it rolled into 0.7.0, which was then repaired by **#63
+  (MERGED 2026-07-27, squash `d95e3de09`)**. ✅ **main is now 0.7.1 and publishable** —
+  verified on merged main: `pack:check` green (56 reachable / 61-file tarball), 27/27 unit,
+  4/4 hermetic pack. The publish rule that blocked 0.7.0 is satisfied; ship **0.7.1**, never
+  0.7.0. **Publishing IS manual and does need Seth's 2FA:** the tag-push workflow is the *intended* path but cannot run — GitHub
   Actions on `VibeCodingInc/vibe-platform` has not succeeded since 2026-07-07 (fresh
   workflow died in 3s with no runner allocated; likely org billing). 0.6.0 itself was
   published by hand — no run, no tag. So: `npm publish` from main, after PR #66, which

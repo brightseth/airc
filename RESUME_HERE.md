@@ -37,10 +37,21 @@ read it first; this file is only the state of play.
   both fixed. Doorbell P0s #1–3 are build non-compliance with ratified embodiment v0.2
   MUSTs (NOT spec defects) — routed to coltrane with §-citations; they gate the 0.7
   `vibe_invite_to_meet` verb (codex: FAIL-to-enable until fixed).
-- **slashvibe-mcp**: 0.6.0 published to npm; **0.6.1** (packaging fix for the
-  `tools/analytics.js` leak) pushed to **PR #61**, needs `npm publish` (Seth 2FA) after
-  merge. Trojan-horse canon: the published server is vibeconf's distribution wedge via
-  ONE consent verb `vibe_invite_to_meet` (memory: [[slashvibe-mcp-trojan-horse]]).
+- **slashvibe-mcp** (corrected 2026-07-26 — the old note here was wrong on both version
+  and mechanism): npm latest is **0.6.0**; main's `package.json` is **0.7.0**, i.e.
+  merged-but-unpublished. The 0.6.1 allowlist-anchoring fix (`89a75608`, codex #8) was
+  never published standalone — it rolled into 0.7.0. **Publishing needs no 2FA:**
+  `.github/workflows/npm-publish.yml` fires on a `v*` tag push using `secrets.NPM_TOKEN`,
+  so the release action is `git tag v0.7.0 && git push origin v0.7.0` — after PR #66.
+- **PR #66 `archie/pack-closure-guard`** (VibeCodingInc/vibe-platform → main): refuses to
+  publish a tarball that can't boot. `index.js` requires `./tools/meet` unconditionally on
+  the meet branch, so a file missing from the hand-pinned `files` allowlist is
+  MODULE_NOT_FOUND at boot for every install, not a dormant feature. Adds `pack:check`
+  (static closure ⊆ tarball) + `pack:smoke` (pack → clean install → boot), wired to
+  `prepack`, CI, and pre-publish. Proven red and green; 132/132 tests pass.
+- **Trojan-horse canon CORRECTED:** the desktop app does **not** bundle slashvibe-mcp — it
+  vendors its own `vibeconferencing-mcp` v0.1.0 (verified, 2 `gh api` calls). See
+  `docs/reference/DISTRIBUTION-ROADMAP.md` and memory [[slashvibe-mcp-trojan-horse]].
 - **Buzz lane** (memory: buzz-airc-integration): platform verified over two LEVI passes
   (`BUZZ-PLATFORM-NOTES.md`), six opportunities ranked in the brief. Doorbell-adapter
   precondition **verified against executor.rs** — writable as ~10 lines of workflow YAML

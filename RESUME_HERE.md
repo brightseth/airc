@@ -53,8 +53,10 @@ read it first; this file is only the state of play.
   refuses to publish a tarball that can't boot. `index.js` requires `./tools/meet` unconditionally on
   the meet branch, so a file missing from the hand-pinned `files` allowlist is
   MODULE_NOT_FOUND at boot for every install, not a dormant feature. Adds `pack:check`
-  (static closure ⊆ tarball) + `pack:smoke` (pack → clean install → boot), wired to
-  `prepack`, CI, and pre-publish. Proven red and green; 132/132 tests pass.
+  (static closure ⊆ tarball) wired to `prepack` and both workflows. Proven red and green.
+  **#67 MERGED** (squash `e731625e3`) then removed the duplicate `pack:smoke` in favour of
+  #63's hermetic `test:pack` — one boot test, not two. Final `main`: 0.7.1, 58 file entries,
+  `pack:check` + `prepack` + `test:pack`, publish-path dry run green, 27/27 + 4/4.
 - **Trojan-horse canon CORRECTED:** the desktop app does **not** bundle slashvibe-mcp — it
   vendors its own `vibeconferencing-mcp` v0.1.0 (verified, 2 `gh api` calls). See
   `docs/reference/DISTRIBUTION-ROADMAP.md` and memory [[slashvibe-mcp-trojan-horse]].

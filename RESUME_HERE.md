@@ -40,9 +40,12 @@ read it first; this file is only the state of play.
 - **slashvibe-mcp** (corrected 2026-07-26 — the old note here was wrong on both version
   and mechanism): npm latest is **0.6.0**; main's `package.json` is **0.7.0**, i.e.
   merged-but-unpublished. The 0.6.1 allowlist-anchoring fix (`89a75608`, codex #8) was
-  never published standalone — it rolled into 0.7.0. **Publishing needs no 2FA:**
-  `.github/workflows/npm-publish.yml` fires on a `v*` tag push using `secrets.NPM_TOKEN`,
-  so the release action is `git tag v0.7.0 && git push origin v0.7.0` — after PR #66.
+  never published standalone — it rolled into 0.7.0. **Publishing IS manual and does need
+  Seth's 2FA:** the tag-push workflow is the *intended* path but cannot run — GitHub
+  Actions on `VibeCodingInc/vibe-platform` has not succeeded since 2026-07-07 (fresh
+  workflow died in 3s with no runner allocated; likely org billing). 0.6.0 itself was
+  published by hand — no run, no tag. So: `npm publish` from main, after PR #66, which
+  makes `prepack` run the boot check on the one path that actually executes.
 - **PR #66 `archie/pack-closure-guard`** (VibeCodingInc/vibe-platform → main): refuses to
   publish a tarball that can't boot. `index.js` requires `./tools/meet` unconditionally on
   the meet branch, so a file missing from the hand-pinned `files` allowlist is

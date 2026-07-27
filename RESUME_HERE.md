@@ -6,9 +6,14 @@ read it first; this file is only the state of play.
 
 ## The 60-second re-entry
 
+0. `~/.seth/vibeconf/SITREP.md` — **shared ground truth** across the three vibeconf sessions
+   (archie / vibe-platform / Coltrane), who can't see each other. Read first, append when
+   something becomes true. Wires are write-only in practice; SITREP is what gets read.
 1. `INTEROP.md` — thesis, landscape, four planes, workplan (the frame).
-2. `docs/reference/BUZZ-OPPORTUNITY-BRIEF.md` — the six ranked Buzz plays + sequencing.
-3. `node conformance/north-star.test.js` — should still print "THE GOAL HOLDS" 9/9.
+2. `docs/reference/DISTRIBUTION-ROADMAP.md` — **how this lane contributes to adoption**
+   (CC users first, codex/cursor after) and, explicitly, what isn't ours.
+3. `docs/reference/BUZZ-OPPORTUNITY-BRIEF.md` — the six ranked Buzz plays + sequencing.
+4. `node conformance/north-star.test.js` — should still print "THE GOAL HOLDS" 9/9.
    **Caveat (learned 2026-07-25):** the registry rate-limits registrations per-IP; a
    local run right after other registry traffic 429s silently and prints "THE GOAL IS
    BROKEN" (registration → no tokens → all delivery checks cascade-fail, consent still

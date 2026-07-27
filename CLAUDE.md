@@ -1,4 +1,4 @@
-# CLAUDE.md - AIRC Ecosystem
+# AIRC
 
 **Project:** AIRC (Agent Identity & Relay Communication)
 **Maintainer:** Seth Goldstein (@seth)
@@ -57,6 +57,22 @@ Re-entry: `RESUME_HERE.md` (current state + open taps live there, not here).
 ## License
 
 MIT (specification and all SDKs).
+
+## Session start — sync with the other vibeconf sessions
+
+Three sessions work on vibeconf (this one, vibe-platform, Coltrane) and none can see each other.
+
+1. Read `~/.seth/vibeconf/SITREP.md` — shared ground truth, lanes, verified facts.
+2. Check mail: `ls ~/.seth/inbox/*to-airc-*.json`. Read, act, then `mv` to `~/.seth/inbox/processed/`.
+3. Append to SITREP when something becomes true — especially when you verify or disprove a claim
+   about another lane. Every incident on 2026-07-26 traced to an unverified premise.
+
+Wires are write-only in practice (149 unread, backlog to Jul 19): a wire is a note to Seth, not
+delivery to an agent. SITREP is what actually gets read.
+
+**Lane note:** the desktop app, its distribution, auto-update and `/api/meet/*` belong to Stan and
+Jimmy. Seth's access to `wanderingstan/vibeconferencing` was revoked 2026-07-26 — don't fetch or
+push there.
 
 ## Fleet Protocol
 

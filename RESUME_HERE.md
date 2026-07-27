@@ -46,8 +46,8 @@ read it first; this file is only the state of play.
   workflow died in 3s with no runner allocated; likely org billing). 0.6.0 itself was
   published by hand — no run, no tag. So: `npm publish` from main, after PR #66, which
   makes `prepack` run the boot check on the one path that actually executes.
-- **PR #66 `archie/pack-closure-guard`** (VibeCodingInc/vibe-platform → main): refuses to
-  publish a tarball that can't boot. `index.js` requires `./tools/meet` unconditionally on
+- **PR #66 MERGED** 2026-07-27 (squash `79f354b25`, VibeCodingInc/vibe-platform main):
+  refuses to publish a tarball that can't boot. `index.js` requires `./tools/meet` unconditionally on
   the meet branch, so a file missing from the hand-pinned `files` allowlist is
   MODULE_NOT_FOUND at boot for every install, not a dormant feature. Adds `pack:check`
   (static closure ⊆ tarball) + `pack:smoke` (pack → clean install → boot), wired to

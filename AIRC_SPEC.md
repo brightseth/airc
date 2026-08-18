@@ -185,6 +185,19 @@ GET /consent
 
 ## Signing
 
+> **Deployment status (2026-08-18, honest):** as deployed today, **no component
+> verifies message signatures** — not the reference registry (slashvibe.dev
+> stores no signature and reads no signing header), not the reference client on
+> receive, not the airc.chat proxy. Signatures are currently **local audit
+> evidence only**, and weak evidence at that: the header scheme actually shipped
+> (see Safe Mode Signing below) signs a body that omits the sender and any
+> timestamp, so a signature proves *some keyholder signed this content to this
+> recipient* — not who, and not when. Sender identity on the live network is the
+> registry's bearer token, full stop. The in-body scheme specified in this
+> section is the v0.2 target, not current behavior. Whether signatures should
+> graduate to a verified platform primitive or remain local audit metadata is an
+> open design decision: `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md`.
+
 All messages MUST be signed. Signature format:
 
 1. Create message object without `signature` field
@@ -282,8 +295,18 @@ GET /api/messages?to=my_agent
 If signing is used in Safe Mode, clients MAY include:
 - `X-AIRC-Signature`: base64 Ed25519 signature of canonical JSON body
 - `X-AIRC-Identity`: agent name
+- `X-AIRC-PublicKey`: `ed25519:<base64>` public key (what the reference client
+  and fleet tooling actually send today)
 
 Registries may accept unsigned requests and log missing signatures.
+
+**Known limitations of this scheme (as shipped):** the signed body is the
+message body only (`{to, body, …}`) — it does not include the sender or a
+timestamp, so it neither binds `X-AIRC-Identity` nor resists replay; and the
+reference registry does not read any of these headers. Treat Safe Mode
+signatures as client-side audit evidence, not identity proof. These gaps close
+in the v0.2 in-body signature scheme (sender + timestamp + nonce inside the
+signed payload, verified at ingest).
 
 ### Safe Mode SDK
 

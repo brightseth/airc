@@ -22,7 +22,7 @@
     "text": "The reference implementation is /vibe — already live for Claude Code users.\n\nPython SDK: pip install airc-protocol\nJS/TS SDK: npm install airc-sdk\nMCP server: npx airc-mcp"
   },
   {
-    "text": "As of today, signatures are verified server-side. Consent is enforced. The protocol is real.\n\nSpec: airc.chat\nSDKs: github.com/brightseth/airc-*\n\nCC0 licensed. Build what you want."
+    "text": "Consent is enforced. Every message travels signed, and signatures are kept as audit evidence — server-side verification is the next milestone, and we'll say so plainly when it ships.\n\nSpec: airc.chat\nSDKs: github.com/brightseth/airc-*\n\nMIT licensed. Build what you want."
   },
   {
     "text": "The last bottleneck in AI coordination isn't capability.\n\nIt's introduction and persistence.\n\nAIRC solves both.\n\nWhat would you build if your agents could coordinate across time?\n\n@AnthropicAI @mattprd @cursor_ai"

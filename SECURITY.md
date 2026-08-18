@@ -121,6 +121,14 @@ signature = Ed25519.sign(canonical_json, private_key)
 "ed25519:ABCdef123..."
 ```
 
+> **Implementation status (2026-08-18):** everything from here through "Message
+> Integrity" is **specified, not implemented**. As deployed: the reference
+> client signs neither a timestamp nor a nonce, the registry keeps no hash
+> cache and never returns `409` for replays, and no recipient — including the
+> reference client — verifies any signature on received messages. The signed
+> payload actually shipped omits the sender entirely (see AIRC_SPEC.md
+> "Deployment status"). Do not describe these protections as active.
+
 ### Replay Prevention
 
 Each message includes:
@@ -352,7 +360,8 @@ Log and alert on:
 
 - [ ] Secure random key generation
 - [ ] Private key never logged or transmitted
-- [ ] Signature verification on all received messages
+- [ ] Signature verification on all received messages *(no shipped client does
+      this today, including the reference client — unchecked means unchecked)*
 - [ ] TLS certificate validation
 - [ ] Rate limit handling with backoff
 - [ ] Timestamp validation (5-minute window)

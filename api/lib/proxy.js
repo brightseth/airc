@@ -17,7 +17,7 @@ const UPSTREAM = 'https://www.slashvibe.dev';
 async function proxy(req, res, path) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Airc-Signature, X-Airc-Public-Key, X-Airc-Timestamp');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-AIRC-Signature, X-AIRC-PublicKey, X-AIRC-Public-Key, X-AIRC-Identity, X-AIRC-Timestamp');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -26,8 +26,13 @@ async function proxy(req, res, path) {
   const target = `${UPSTREAM}${path}${qs}`;
 
   const headers = { 'Content-Type': 'application/json' };
-  // Forward auth/signing headers so signed requests work end-to-end.
-  for (const h of ['authorization', 'x-airc-signature', 'x-airc-public-key', 'x-airc-timestamp']) {
+  // Forward auth/signing headers so signed requests survive the hop intact.
+  // Both public-key spellings are real: the reference client sends
+  // X-AIRC-PublicKey (no hyphen), the spec names X-AIRC-Public-Key. Before
+  // 2026-08-18 only the hyphenated form was forwarded and X-AIRC-Identity not
+  // at all, so the proxy silently stripped the key and claimed identity.
+  for (const h of ['authorization', 'x-airc-signature', 'x-airc-publickey',
+                   'x-airc-public-key', 'x-airc-identity', 'x-airc-timestamp']) {
     if (req.headers[h]) headers[h] = req.headers[h];
   }
 

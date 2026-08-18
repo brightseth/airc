@@ -1,8 +1,32 @@
 # Resume Here — AIRC
 
-**Updated: 2026-07-25.** The lane is the **interop mandate** (Seth, 2026-07-23):
+**Updated: 2026-08-18.** The lane is the **interop mandate** (Seth, 2026-07-23):
 identity, consent, memory, and continuity across surfaces. **`INTEROP.md` is the map** —
 read it first; this file is only the state of play.
+
+## NEW CANON — truth audit accepted (Seth, 2026-08-18)
+
+**AIRC is a runtime profile over /vibe, not a second identity or delivery system.**
+The full audit (fact table, BREAKs) lives in the 2026-08-18 session + memory
+`project_airc_truth_audit_2026-08-18`. Ground truth: **no deployed component verifies
+message signatures** — platform reads no signing header, stores no signature, client
+verifies nothing on receive; identity truth is the bearer JWT; signatures are local
+audit evidence whose signed payload omits sender and time. Presence is self-report.
+**Process alive, inbox read, and observed answering are separate facts — never infer
+one from another.**
+
+Actions landed 2026-08-18: spec/SECURITY/announcement corrected to stop claiming
+verification (this repo); proxy header allowlist fixed (`x-airc-publickey` +
+`x-airc-identity` were silently stripped); watchdog extended to 15 handles with
+urgent alerts mirrored to the vibeconf Telegram chat (`~/.seth/buddy-runners/
+answerer-watchdog.mjs`); host-of-record registry created
+(`~/.seth/airc-answerers/hosts-of-record.json` — one host, one speaking runtime per
+handle). **Do NOT implement signature verification or adopt delivery_claims yet** —
+the gating design decision is `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md`.
+Open operator items: `pm2 delete solienne-airc-answerer && pm2 save` on the Studio
+(blocked by session permissions); watchdog credentials for
+sal/sara/miyomi/trash/max/levi/fred/merian (blind-spot wires name them); who stopped
+grace-airc-answerer at 2026-08-17T22:41 and whether that was intended.
 
 ## The 60-second re-entry
 
@@ -98,7 +122,9 @@ Nothing sensitive to the hosted relay.
 - Consent POST needs `action` (not `type`); pending items are bare `"@handle"` strings.
 - Production `/api/identity` is 404 despite well-known advertising it (plugin falls back
   to presence).
-- Unverified handles expire in 7 days unless GitHub-linked.
+- ~~Unverified handles expire in 7 days unless GitHub-linked~~ — **FALSE** (audited
+  2026-08-18): no expiry exists anywhere in platform code; handles persist until
+  explicit deletion (`api/settings/handle.js`).
 - slashvibe well-known lacks `registry_url`; federation fields incomplete (legacy suite
   flags these; vibe-repo fixes, tracked in the CI continue-on-error lane).
 - ~90s between per-handle registrations or the registry 429s; hyphens normalize to

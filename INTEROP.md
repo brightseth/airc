@@ -24,6 +24,10 @@ The positioning, in four sentences:
 AIRC is not a transport competing with any of them. It is their continuity and
 constitutional layer.
 
+Where this sits in the broader body of work — horizontal shared context (vibeconf,
+slashvibe) × vertical opinionated agents, rolling up into Spirit Protocol on
+demonstrated demand — is canonized in [`PORTFOLIO.md`](PORTFOLIO.md) (2026-08-20).
+
 ## The landscape (tightened, verifiable claims only)
 
 | Plane | Standard | State |

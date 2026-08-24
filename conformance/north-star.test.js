@@ -3,9 +3,24 @@
 /**
  * AIRC North Star Harness
  *
- * Executable form of the goal in GOAL.md: two rooms, given nothing but a
- * handle, become addressable, verifiable, consented, expressive, and
- * lossless — in well under five minutes.
+ * Executable form of the goal in GOAL.md: two rooms become addressable,
+ * verifiable, consented, expressive, and lossless — in well under five
+ * minutes.
+ *
+ * 2026-08-23 REVISION — credentialed registration. The registry closed open
+ * registration on 2026-07-29 (pre-launch anti-spam: unauthenticated register
+ * let an attacker rotate fresh handles and DM everyone). "A handle is the
+ * only input" is therefore no longer the network's promise and no longer
+ * this harness's premise. The rooms are now two DEDICATED test principals,
+ * northstar_a / northstar_b, enrolled with per-agent mint credentials (G8:
+ * BUDDY_AGENT_MINT_<HANDLE> on the registry, x-agent-mint header here) —
+ * the same bootstrap every house agent uses. The addressable claim tested
+ * is: a CREDENTIALED room gets a token and an inbox. Everything downstream
+ * (consent, typed payloads, losslessness, round trip) is unchanged.
+ *
+ * Credentials, in order of precedence:
+ *   env NORTHSTAR_A_MINT / NORTHSTAR_B_MINT   (CI: GitHub Actions secrets)
+ *   ~/.seth/northstar_a/vibe-mint-credential  (local fleet convention)
  *
  * Usage: node north-star.test.js [registry_url]
  * Default: https://www.slashvibe.dev
@@ -13,12 +28,15 @@
  */
 
 const crypto = require('crypto');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
 const REGISTRY = (process.argv[2] || 'https://www.slashvibe.dev').replace(/\/$/, '');
 const RUN = Date.now().toString(36).slice(-6);
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
-// ── Room: handle + auto-generated Ed25519 identity ─────────────────────────
+// ── Room: fixed credentialed handle + fresh per-run Ed25519 identity ───────
 
 function canonical(o) {
   if (o === null || typeof o !== 'object') return JSON.stringify(o);
@@ -27,11 +45,22 @@ function canonical(o) {
     .map(k => JSON.stringify(k) + ':' + canonical(o[k])).join(',') + '}';
 }
 
+function mintCredentialFor(handle, envName) {
+  if (process.env[envName]) return process.env[envName].trim();
+  try {
+    return fs.readFileSync(path.join(os.homedir(), '.seth', handle, 'vibe-mint-credential'), 'utf8').trim();
+  } catch {
+    return null;
+  }
+}
+
 function makeRoom(name) {
+  const handle = `northstar_${name}`;
   const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
   const raw = publicKey.export({ type: 'spki', format: 'der' }).subarray(-32);
   return {
-    handle: `ns_${name}_${RUN}`,
+    handle,
+    mint: mintCredentialFor(handle, `NORTHSTAR_${name.toUpperCase()}_MINT`),
     publicKey: `ed25519:${raw.toString('base64')}`,
     privateKey,
     rawPublic: raw,
@@ -45,6 +74,11 @@ function signedHeaders(room, body) {
     'X-AIRC-Signature': crypto.sign(null, Buffer.from(canonical(body)), room.privateKey).toString('base64'),
     'X-AIRC-Identity': room.handle,
     'X-AIRC-PublicKey': room.publicKey,
+    // Registration/identity ops need the room's own mint credential since the
+    // registry closed open registration (enrolled handles leave the open
+    // bootstrap path entirely — presenting the credential is what makes this
+    // room a citizen rather than a stranger).
+    ...(room.mint ? { 'x-agent-mint': room.mint } : {}),
     ...(room.token ? { Authorization: `Bearer ${room.token}` } : {}),
   };
 }
@@ -87,7 +121,14 @@ async function main() {
   const a = makeRoom('a');
   const b = makeRoom('b');
 
-  // 1. ADDRESSABLE — register both rooms; handle is the only input
+  if (!a.mint || !b.mint) {
+    console.error('missing mint credential(s): set NORTHSTAR_A_MINT / NORTHSTAR_B_MINT ' +
+      'or provide ~/.seth/northstar_{a,b}/vibe-mint-credential — cannot distinguish ' +
+      '"network broken" from "harness unprovisioned", so refusing to render a verdict.');
+    process.exit(2);
+  }
+
+  // 1. ADDRESSABLE — both credentialed rooms register and receive tokens
   for (const room of [a, b]) {
     const reg = await post(room, '/api/presence', {
       action: 'register',
@@ -99,8 +140,9 @@ async function main() {
       human_present: false,
     });
     if (reg.json && reg.json.token) room.token = reg.json.token;
+    if (!room.token) console.error(`  register @${room.handle}: HTTP ${reg.status} ${JSON.stringify(reg.json || {}).slice(0, 160)}`);
   }
-  check('addressable: both rooms registered with tokens', !!(a.token && b.token));
+  check('addressable: both credentialed rooms registered with tokens', !!(a.token && b.token));
 
   // 2. VERIFIABLE — signature over canonical JSON verifies against published key
   const probe = { to: b.handle, body: 'verify me' };
@@ -130,21 +172,24 @@ async function main() {
   check('consent: B accepts', accept.status === 200 && accept.json && accept.json.success !== false);
 
   // 4. EXPRESSIVE — typed payload arrives byte-identical
+  // The rooms are persistent now, so every assertion must be run-scoped:
+  // payloadData carries RUN and the match requires canonical equality, or an
+  // earlier day's message would satisfy (or poison) the check.
   const payloadData = { question: 'A or B?', options: ['A', 'B'], run: RUN };
   await post(a, '/api/messages', {
-    to: b.handle, body: 'decision needed',
+    to: b.handle, body: `decision needed ${RUN}`,
     type: 'decision:request',
     payload: { type: 'decision:request', data: payloadData },
   });
   const thread1 = await get(b, `/api/messages?user=${b.handle}&with=${a.handle}`);
-  const typed = ((thread1.json && thread1.json.messages) || [])
-    .find(m => m.payload && m.payload.type === 'decision:request');
-  check('expressive: typed payload arrived intact',
-    !!typed && canonical(typed.payload.data) === canonical(payloadData),
-    typed ? null : 'payload missing from thread fetch');
+  const typedOk = ((thread1.json && thread1.json.messages) || []).some(m =>
+    m.payload && m.payload.type === 'decision:request' &&
+    canonical(m.payload.data) === canonical(payloadData));
+  check('expressive: typed payload arrived intact', typedOk,
+    typedOk ? null : 'this run\'s payload missing from thread fetch');
 
-  // 5. LOSSLESS — rapid-fire messages all arrive
-  const burst = ['burst 1', 'burst 2', 'burst 3'];
+  // 5. LOSSLESS — rapid-fire messages all arrive (run-scoped bodies)
+  const burst = [`burst 1 ${RUN}`, `burst 2 ${RUN}`, `burst 3 ${RUN}`];
   for (const text of burst) {
     await post(a, '/api/messages', { to: b.handle, body: text });
   }
@@ -169,7 +214,7 @@ async function main() {
   const failedChecks = results.filter(r => !r.ok);
   console.log(`\n${results.length - failedChecks.length}/${results.length} checks passed in ${(elapsed / 1000).toFixed(1)}s`);
   if (failedChecks.length === 0) {
-    console.log('\x1b[32mTHE GOAL HOLDS\x1b[0m — any room with a handle can join the network.\n');
+    console.log('\x1b[32mTHE GOAL HOLDS\x1b[0m — a credentialed room joins, consents, and converses losslessly.\n');
     process.exit(0);
   } else {
     console.log(`\x1b[31mTHE GOAL IS BROKEN\x1b[0m — ${failedChecks.map(f => f.name.split(':')[0]).join(', ')}.\n`);

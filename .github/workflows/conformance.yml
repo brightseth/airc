@@ -16,7 +16,31 @@ jobs:
           node-version: '20'
 
       - name: North star harness — the goal holds (slashvibe.dev)
+        env:
+          # Credentialed registration (2026-08-23): the registry closed open
+          # registration on 2026-07-29, so the harness runs as two dedicated
+          # enrolled principals. Missing secrets = exit 2 (unprovisioned),
+          # deliberately distinct from exit 1 (the goal is broken).
+          NORTHSTAR_A_MINT: ${{ secrets.NORTHSTAR_A_MINT }}
+          NORTHSTAR_B_MINT: ${{ secrets.NORTHSTAR_B_MINT }}
         run: node conformance/north-star.test.js https://www.slashvibe.dev
+
+      # A source of truth only works if something alarms when it goes red —
+      # this job failed silently for 3.5 weeks (Jul 29–Aug 23) before anyone
+      # looked. Best-effort: skips cleanly when the secrets are absent.
+      - name: Ring the bell on failure (Telegram)
+        if: failure()
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -n "$TG_TOKEN" ] && [ -n "$TG_CHAT" ]; then
+            curl -sS -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+              -H 'Content-Type: application/json' \
+              -d "{\"chat_id\": ${TG_CHAT}, \"text\": \"🚨 AIRC north-star is RED — the goal is broken (or the harness lost its credentials). ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" || true
+          else
+            echo "No Telegram secrets configured — failure rang no bell (set TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID)."
+          fi
 
   conformance:
     runs-on: ubuntu-latest

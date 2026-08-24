@@ -11,16 +11,23 @@ renamed:
    a document you *cite*, not a product you *ship*. Maintenance = keep
    `conformance/north-star.test.js` green. Nothing else. No SDK features, no adoption
    pushes, no v0.3 DID / v0.4 federation work unless a trigger fires.
-   ⚠️ **One open maintenance item (discovered at ratification, 2026-08-23):** the
-   north-star has been RED in CI daily since ~Jul 29 — the platform closed open
-   registration (pre-launch anti-spam, `presence-service.js` "Open registration is
-   CLOSED"), so the test's "handle is the only input" registration can never pass
-   again, and every delivery check cascades. This is the platform being MORE secure,
-   not less conformant. Fix = adapt the test to credentialed registration (two
-   dedicated `northstar_*` handles with `BUDDY_AGENT_MINT_*` credentials, secrets in
-   the GH Action) and reword the "addressable" claim. The old caveat here ("a red
-   local run may be 429s; CI is the source of truth") was itself stale — CI had been
-   red for weeks. A source of truth only works if something alarms when it goes red.
+   ⚠️ **North-star maintenance (2026-08-23, FIXED in code — provisioning pending):**
+   CI had been RED daily since ~Jul 29: the platform closed open registration
+   (pre-launch anti-spam), so "handle is the only input" could never pass again and
+   delivery checks cascaded. The old caveat here ("a red local run may be 429s; CI is
+   the source of truth") was itself stale — the source-of-truth job failed silently
+   for 3.5 weeks. Fixes landed: the harness now runs as two dedicated credentialed
+   principals (`northstar_a`/`northstar_b`, x-agent-mint; exit 2 = unprovisioned vs
+   exit 1 = broken; all assertions run-scoped since the rooms persist), and the
+   workflow rings Telegram on failure. To finish: Seth runs
+   `~/.seth/scripts/provision-northstar.sh` (credentials + GH secrets + platform
+   redeploy).
+   **Related regression, same root:** enrolling the 8 watchdog credentials
+   (2026-08-20) closed those handles' open bootstrap, 401-ing the Studio answerers'
+   token refresh (max caught red-handed). Engine fix landed in
+   `~/.seth/airc-answerers/answerer-engine.mjs` (register now presents the handle's
+   own x-agent-mint when the credential file exists); needs a pm2 restart of the
+   Studio answerer fleet.
 2. **/vibe owns the living parts.** Watchdog, hosts-of-record, answerer engine,
    occupancy leases — those are /vibe ops (in `~/.seth/`); this repo only documents
    why they exist.
@@ -161,9 +168,11 @@ Nothing sensitive to the hosted relay.
 - Consent POST needs `action` (not `type`); pending items are bare `"@handle"` strings.
 - Production `/api/identity` is 404 despite well-known advertising it (plugin falls back
   to presence).
-- ~~Unverified handles expire in 7 days unless GitHub-linked~~ — **FALSE** (audited
-  2026-08-18): no expiry exists anywhere in platform code; handles persist until
-  explicit deletion (`api/settings/handle.js`).
+- Unverified handles expire in 7 days unless GitHub-linked — **TRUE but narrower than
+  it sounds** (corrected twice: audit 2026-08-18 called it false; re-audit 2026-08-23
+  found it): `OPEN_TTL_DAYS = 7` applies only to handles claimed through the (now
+  credential-gated) open-registration bootstrap in `presence-service.js`; GitHub-linked
+  and pre-existing handles persist until explicit deletion.
 - slashvibe well-known lacks `registry_url`; federation fields incomplete (legacy suite
   flags these; vibe-repo fixes, tracked in the CI continue-on-error lane).
 - ~90s between per-handle registrations or the registry 429s; hyphens normalize to

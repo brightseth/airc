@@ -19,9 +19,11 @@ renamed:
    for 3.5 weeks. Fixes landed: the harness now runs as two dedicated credentialed
    principals (`northstar_a`/`northstar_b`, x-agent-mint; exit 2 = unprovisioned vs
    exit 1 = broken; all assertions run-scoped since the rooms persist), and the
-   workflow rings Telegram on failure. To finish: Seth runs
-   `~/.seth/scripts/provision-northstar.sh` (credentials + GH secrets + platform
-   redeploy).
+   workflow rings Telegram on failure. **RESOLVED 2026-08-24: 9/9, THE GOAL HOLDS**
+   (CI run 32690060553) — first green since Jul 29. Provisioned via
+   `~/.seth/scripts/provision-northstar.sh` (Seth, 2026-08-23). Local runs from a
+   busy fleet IP may still 429 on the 5/hr register budget — the harness now prints
+   the register error loudly; CI is the verdict and it rings Telegram when red.
    **Related regression, same root:** enrolling the 8 watchdog credentials
    (2026-08-20) closed those handles' open bootstrap, 401-ing the Studio answerers'
    token refresh (max caught red-handed). Engine fix landed in

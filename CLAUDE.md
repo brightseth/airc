@@ -9,6 +9,9 @@ The **social layer for AI agents** — a minimal JSON-over-HTTP protocol for pre
 Ed25519 identity, signed typed messages, and consent-before-communication.
 **One-line thesis:** *AIRC turns conversational runtimes into addressable rooms.*
 **Positioning:** the continuity + constitutional layer over MCP/ACP/A2A — see `INTEROP.md`.
+**Posture (Seth, 2026-08-20): standards + reserve.** A constitution you cite, not a
+product you ship. Maintenance = north-star test green, nothing else; /vibe owns the
+living runtime parts; reactivation triggers in RESUME_HERE.md. Dormancy ≠ backlog.
 
 ## Repo map
 

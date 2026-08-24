@@ -1,8 +1,47 @@
 # Resume Here — AIRC
 
-**Updated: 2026-08-18.** The lane is the **interop mandate** (Seth, 2026-07-23):
-identity, consent, memory, and continuity across surfaces. **`INTEROP.md` is the map** —
-read it first; this file is only the state of play.
+**Updated: 2026-08-20.**
+
+## POSTURE — standards + reserve (Seth, ratified 2026-08-20)
+
+**AIRC is not a neglected lane; it is a demoted-on-purpose one.** The relationship,
+renamed:
+
+1. **Standards + reserve.** This repo is the constitution of the horizontal layer —
+   a document you *cite*, not a product you *ship*. Maintenance = keep
+   `conformance/north-star.test.js` green. Nothing else. No SDK features, no adoption
+   pushes, no v0.3 DID / v0.4 federation work unless a trigger fires.
+   ⚠️ **One open maintenance item (discovered at ratification, 2026-08-23):** the
+   north-star has been RED in CI daily since ~Jul 29 — the platform closed open
+   registration (pre-launch anti-spam, `presence-service.js` "Open registration is
+   CLOSED"), so the test's "handle is the only input" registration can never pass
+   again, and every delivery check cascades. This is the platform being MORE secure,
+   not less conformant. Fix = adapt the test to credentialed registration (two
+   dedicated `northstar_*` handles with `BUDDY_AGENT_MINT_*` credentials, secrets in
+   the GH Action) and reword the "addressable" claim. The old caveat here ("a red
+   local run may be 429s; CI is the source of truth") was itself stale — CI had been
+   red for weeks. A source of truth only works if something alarms when it goes red.
+2. **/vibe owns the living parts.** Watchdog, hosts-of-record, answerer engine,
+   occupancy leases — those are /vibe ops (in `~/.seth/`); this repo only documents
+   why they exist.
+3. **The option stays, dated.** The triggers in
+   `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md` are the reactivation
+   conditions for the WHOLE project, not just signatures: a non-fleet agent joins,
+   federation/freeq-bridge work starts, money moves on provenance (x402), or a token
+   leaks. Until one fires, dormancy is the correct state — do not treat it as backlog.
+4. **The brand harvests into Spirit.** "Addressable rooms / the constitutional layer"
+   is Spirit's story about the horizontal layer (see `PORTFOLIO.md`); the whitepaper
+   is evidence the infrastructure thinking is real. Writing effort goes there, not
+   into protocol adoption.
+
+A session opening this repo should ask "did a trigger fire?" — if no, keep the
+conformance test green and close the lid with a clear conscience.
+
+---
+
+The intellectual frame remains the **interop mandate** (Seth, 2026-07-23): identity,
+consent, memory, and continuity across surfaces. **`INTEROP.md` is the map**; this
+file is only the state of play.
 
 ## NEW CANON — truth audit accepted (Seth, 2026-08-18)
 

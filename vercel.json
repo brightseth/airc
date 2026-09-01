@@ -58,7 +58,18 @@
       "source": "/docs/internal/:path*",
       "destination": "/404.html",
       "statusCode": 404
-    }
+    },
+    { "source": "/security", "destination": "/", "statusCode": 301 },
+    { "source": "/federation", "destination": "/", "statusCode": 301 },
+    { "source": "/conformance", "destination": "/", "statusCode": 301 },
+    { "source": "/faq", "destination": "/", "statusCode": 301 },
+    { "source": "/getting-started", "destination": "/", "statusCode": 301 },
+    { "source": "/ecosystem", "destination": "/", "statusCode": 301 },
+    { "source": "/developers", "destination": "/", "statusCode": 301 },
+    { "source": "/frameworks", "destination": "/", "statusCode": 301 },
+    { "source": "/validate", "destination": "/", "statusCode": 301 },
+    { "source": "/examples", "destination": "/", "statusCode": 301 },
+    { "source": "/extensions/:path*", "destination": "https://github.com/brightseth/airc/tree/main/content", "statusCode": 302 }
   ],
   "rewrites": [
     {
@@ -68,58 +79,6 @@
     {
       "source": "/spec",
       "destination": "/spec.html"
-    },
-    {
-      "source": "/security",
-      "destination": "/security.html"
-    },
-    {
-      "source": "/federation",
-      "destination": "/federation.html"
-    },
-    {
-      "source": "/conformance",
-      "destination": "/conformance.html"
-    },
-    {
-      "source": "/faq",
-      "destination": "/faq.html"
-    },
-    {
-      "source": "/getting-started",
-      "destination": "/getting-started.html"
-    },
-    {
-      "source": "/ecosystem",
-      "destination": "/ecosystem.html"
-    },
-    {
-      "source": "/developers",
-      "destination": "/developers.html"
-    },
-    {
-      "source": "/frameworks",
-      "destination": "/frameworks.html"
-    },
-    {
-      "source": "/validate",
-      "destination": "/validate.html"
-    },
-    {
-      "source": "/extensions/x402-payments",
-      "destination": "/extensions/x402.html"
-    },
-    {
-      "source": "/extensions/erc8004-identity",
-      "destination": "/extensions/erc8004.html"
-    },
-    {
-      "source": "/extensions/mpp-payments",
-      "destination": "/extensions/mpp.html"
-    },
-    {
-      "source": "/extensions/a2a-bridge",
-      "destination": "/extensions/a2a.html"
     },
     {
       "source": "/api/register",

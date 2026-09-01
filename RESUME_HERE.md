@@ -1,6 +1,51 @@
 # Resume Here — AIRC
 
-**Updated: 2026-08-20.**
+**Updated: 2026-09-01 (overnight session — READ THIS BLOCK FIRST).**
+
+## 2026-09-01 — TRIGGER #1 FIRED: first non-fleet citizen. Resume here.
+
+Seth's directive: grokbots (xAI, persistent VMs, curl-capable) talk to CC/codex
+sessions via /vibe; end state = DM any grokbot (e.g. Spirit Sedona) from any
+surface and invite it into a Google Meet by one AIRC message. Dormancy is OVER —
+"a non-fleet agent joins" fired by Seth's own hand (he provisioned @grokbot).
+
+**State (all pushed):**
+- **@grokbot provisioned + registered** (mint: `~/.seth/grokbot/vibe-mint-credential`,
+  env `BUDDY_AGENT_MINT_GROKBOT` on vibe-public). Brief: `docs/GROKBOT-ONBOARDING-BRIEF.md`
+  — Part 1 is pasted into the bot; it holds a knock for **brightseth** (this
+  session's handle). Bot conduct exemplary: refuses to DM around broken consent.
+- **⛔ THE ONE BLOCKING ITEM: PR VibeCodingInc/vibe-platform#358 awaits Seth's
+  merge** (`gh pr merge 358 --squash --delete-branch`; classifier blocks CC).
+  Merging auto-deploys prod (Vercel git integration confirmed live). It moves
+  consent to Postgres authority (Upstash KV was provider-throttled → /api/consent
+  500ed network-wide; still down at session end). 3 codex adversarial rounds
+  absorbed; 20 tests; hermetic gate 854/854; full knock→accept arc proven on
+  preview against real Neon. After deploy: grokbot knocks brightseth → accept →
+  first Grok↔Claude contact over AIRC.
+- **airc.chat consolidated 16 pages → 1** and live (re-aliased). Leads with:
+  not-an-app-not-a-platform (Seth's framing, IRC analogy), five-moves curl
+  quickstart, "Identity, honestly" (bearer token is live identity; consent is
+  the mandatory part, not crypto).
+- **`content/spec-meet-invite-v0.1-draft.md`** — one AIRC message puts a partner
+  bot in your Google Meet (bot's own browser does the joining); operator-only,
+  announce-on-arrival, leave-on-command. Awaiting ratification.
+- **`~/.seth/scripts/provision-partner-bot.sh <handle>`** — generalized enrollment
+  for spirit_sedona and successors (Seth runs it; credential gen classifier-blocked).
+- Upstash: DB `alive-gnat-13375` throttled, owning account UNFOUND (not Seth's
+  gmail Upstash; likely GitHub-SSO or Samer). Post-#358 it only affects caches.
+  Legacy consent backfill: `platform/scripts/backfill-consent-from-kv.mjs` when readable.
+
+**Next moves in order:** ① Seth merges #358 → verify prod `/api/consent` 200 →
+tell grokbot (via Seth's Grok chat) to knock → accept from brightseth → run the
+full first-contact arc incl. a typed payload. ② Provision `spirit_sedona` the
+same way. ③ meet:invite live test (DM a Meet URL, bot joins by browser).
+④ Signature-value decision memo comes off the shelf (external runtime = its
+trigger). ⑤ #349 consent auth (pre-existing hole, named in consent.js).
+Full session record: SITREP 2026-09-01 entries.
+
+---
+
+**(Prior state, 2026-08-20 — posture context still true except dormancy:)**
 
 ## POSTURE — standards + reserve (Seth, ratified 2026-08-20)
 

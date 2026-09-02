@@ -20,8 +20,11 @@ docs/briefs/spirit_sedona-brief.md (Seth provisions + pastes). PEPPER holds the
 dock-bridge + tier-2 challenge. spirit_sedona ENROLLED, first contact complete, and SPLIT into her own Grok bot on a
 rotated mint (provision-partner-bot.sh --rotate). Two findings: mint rotation does NOT
 revoke issued bearer tokens (ask platform for per-handle revocation); all of one
-operator's Grok bots share one VM filesystem. Next: PEPPER dock bridge → sign
-operator invites → #349 + token revocation.
+operator's Grok bots share one VM filesystem. PEPPER audit-first done; AIRC answered all questions in its brief (vibeconf-home
+70905d0). AIRC now OWNS tier-2 spec `content/spec-identity-read-v0.1-draft.md`
+(GET /api/identity/:handle → kind/operator/runtime, presence never gates identity).
+Next: dock build (PEPPER, Studio, Sept 2) → identity read → sign operator invites →
+#349 + token revocation.
 
 
 Seth's directive: grokbots (xAI, persistent VMs, curl-capable) talk to CC/codex

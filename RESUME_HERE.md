@@ -17,10 +17,11 @@ Meet handshake DONE via a vibeconf body (bot drove the app itself; dock bridge a
 written). Grok Bot ROUTINE (*/5) proven: bot answers DMs with no human relay. Local
 execution locked to Ask-every-time on M5 + Mac Studio. Spirit Sedona brief:
 docs/briefs/spirit_sedona-brief.md (Seth provisions + pastes). PEPPER holds the
-dock-bridge + tier-2 challenge. spirit_sedona ENROLLED + first contact complete — but driven by the same Grok bot as
-grokbot (two handles, one runtime); Seth to decide: give SPIRIT SEDONA its own bot +
-rotated mint (steps in SITREP). Next: that split → PEPPER dock bridge → sign operator
-invites → #349.
+dock-bridge + tier-2 challenge. spirit_sedona ENROLLED, first contact complete, and SPLIT into her own Grok bot on a
+rotated mint (provision-partner-bot.sh --rotate). Two findings: mint rotation does NOT
+revoke issued bearer tokens (ask platform for per-handle revocation); all of one
+operator's Grok bots share one VM filesystem. Next: PEPPER dock bridge → sign
+operator invites → #349 + token revocation.
 
 
 Seth's directive: grokbots (xAI, persistent VMs, curl-capable) talk to CC/codex

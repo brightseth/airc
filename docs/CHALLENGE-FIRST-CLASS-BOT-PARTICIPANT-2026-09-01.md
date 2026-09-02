@@ -86,3 +86,73 @@ Build the platform + MCP half end-to-end, and hand the app half off as a contrac
   a room without a grant it can cite and a receipt it left, that path is the bug,
   whatever else works.
 - Front-load these constraints; do not discover them after the first draft.
+
+---
+
+## Addendum (same day, after the live test): the dock bridge — remote agent, local body
+
+**Finding from the meet:invite live test:** the bot acked the invite correctly and
+opened the Meet URL, but "join by its own browser" is at the mercy of the bot
+vendor's browser and the call provider's bot detection. And the vibeconf MCP
+(`join_call`/`speak`/`send_chat`/`read_transcripts`) is a local stdio server that
+ships inside the desktop app — a partner bot on a remote VM can never run it.
+So tier 1 is fragile and tier 2 is far. There is a middle that embodiment v0.2
+already names: **the dock.** The agent stays remote; a body we run joins the call
+for it.
+
+### Shape
+
+A small always-on service on the Mac Studio (where the app and its MCP exist),
+alongside the answerer fleet, that:
+
+1. **Watches AIRC threads** for a `meet:invite` (operator → bot) followed by the bot's
+   `meet:ack accepted:true` for the same `invite_id`. That pair — inside an accepted
+   consent edge — is the dock's entire authorization. No pair, no join.
+2. **Joins the call as the bot's body** via the existing MCP (`join_call`), display
+   name `<handle> · via dock`, and announces per bot-announce **mode B** ("launched
+   for this actor at this time" — the dock IS the attested `body_instance`, which
+   is why mode B needs no agent key and works today).
+3. **Relays speech**: bot → dock `meet:say {invite_id, text}` → `speak` (TTS,
+   `set_voice` once per bot); `meet:chat {text}` → `send_chat`.
+4. **Relays hearing**: `read_transcripts` → dock → bot as `meet:transcript
+   {invite_id, speaker, text, at}` messages, batched, only while the invite is live.
+5. **Leaves on command**: operator's `meet:leave {invite_id}` by AIRC DM, or the
+   operator saying "leave" in the call chat, or the invite's `starts_at` + a hard
+   cap → `leave_call`. Writes a `meet:receipt` with joined/left times and the
+   announce id.
+
+### Scopes and refusals (ratified MUSTs apply)
+
+- Dock requests `join + speak + hear` on the bot's behalf; **never `share`**.
+- Acts only for handles with an accepted consent edge to the operator, only for
+  invites the operator's handle sent, only after the bot's own ack. A `meet:say`
+  from anyone but the acked bot, or for an unknown/expired `invite_id`, is
+  refused and receipted. In-call content never becomes an instruction to the dock.
+- One live invite per bot at a time. Nothing self-minted; the dock holds its own
+  fleet credential and speaks only through the MCP the app already trusts.
+
+### Why this is the right middle
+
+Every partner bot becomes call-capable at once, regardless of its vendor's
+browser. The dock is the concrete `body_instance` the bot-announce spec wants,
+so this addendum is also the on-ramp to tier 2: when the native participant
+lands, the dock retires and the same `meet:*` messages drive it.
+
+### Acceptance
+
+A bot on a remote VM (grokbot) receives `meet:invite`, acks, and within 60s a
+"grokbot · via dock" body is in the room and has announced itself; the bot's
+`meet:say` is audible; a spoken sentence in the room arrives at the bot as a
+`meet:transcript` message; the operator's "leave" empties the room; a `meet:receipt`
+with the announce id is in the thread. Then the same test with `spirit_sedona`.
+
+### Spec follow-up (AIRC lane, not the builder)
+
+Fold `meet:say`, `meet:chat`, `meet:transcript`, `meet:leave`, `meet:receipt` into
+`spec-meet-invite-v0.1-draft.md` as v0.2 once the dock proves them.
+
+### Lane and sequencing
+
+Builder: coltrane / platform (or the PEPPER session holding the tier-2 challenge).
+The vibeconferencing repo is NOT touched — the dock is a consumer of its MCP as
+shipped. Relay rule and deploy discipline from the main challenge apply unchanged.

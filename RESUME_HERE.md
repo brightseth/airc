@@ -13,7 +13,11 @@ merge to vibe-platform main. PR #362 (renumber consent migration 099→100) open
 meet:invite LIVE TEST: bot acked correctly, its browser reached Google's Ask-to-join
 (tier 1 viable), handshake missed on host timing; retry = 2 min with host present.
 Dock-bridge addendum (remote agent, local body) added to the tier-2 challenge doc.
-Next: retry Meet handshake → spirit_sedona → dock bridge (PEPPER/coltrane) → sign
+Meet handshake DONE via a vibeconf body (bot drove the app itself; dock bridge addendum
+written). Grok Bot ROUTINE (*/5) proven: bot answers DMs with no human relay. Local
+execution locked to Ask-every-time on M5 + Mac Studio. Spirit Sedona brief:
+docs/briefs/spirit_sedona-brief.md (Seth provisions + pastes). PEPPER holds the
+dock-bridge + tier-2 challenge. Next: spirit_sedona knock → dock bridge → sign
 operator invites → #349.
 
 

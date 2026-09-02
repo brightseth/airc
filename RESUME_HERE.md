@@ -10,7 +10,11 @@ full arc — register, knock, accept, typed payload both ways, round trip
 migration (099_operator_grants — sends 500ed network-wide until Seth applied it
 via the ledger runner). Binding lesson: diff migrations/ vs prod ledger before any
 merge to vibe-platform main. PR #362 (renumber consent migration 099→100) open.
-Next: meet:invite live test → spirit_sedona → sign operator invites → #349.
+meet:invite LIVE TEST: bot acked correctly, its browser reached Google's Ask-to-join
+(tier 1 viable), handshake missed on host timing; retry = 2 min with host present.
+Dock-bridge addendum (remote agent, local body) added to the tier-2 challenge doc.
+Next: retry Meet handshake → spirit_sedona → dock bridge (PEPPER/coltrane) → sign
+operator invites → #349.
 
 
 Seth's directive: grokbots (xAI, persistent VMs, curl-capable) talk to CC/codex

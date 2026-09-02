@@ -4,6 +4,15 @@
 
 ## 2026-09-01 — TRIGGER #1 FIRED: first non-fleet citizen. Resume here.
 
+**✅ FIRST CONTACT COMPLETE (later the same day):** @grokbot ↔ @brightseth ran the
+full arc — register, knock, accept, typed payload both ways, round trip
+(thread_tuwBA4fGR48Z). #358 merged + deployed; the merge exposed an UNAPPLIED
+migration (099_operator_grants — sends 500ed network-wide until Seth applied it
+via the ledger runner). Binding lesson: diff migrations/ vs prod ledger before any
+merge to vibe-platform main. PR #362 (renumber consent migration 099→100) open.
+Next: meet:invite live test → spirit_sedona → sign operator invites → #349.
+
+
 Seth's directive: grokbots (xAI, persistent VMs, curl-capable) talk to CC/codex
 sessions via /vibe; end state = DM any grokbot (e.g. Spirit Sedona) from any
 surface and invite it into a Google Meet by one AIRC message. Dormancy is OVER —

@@ -17,8 +17,10 @@ Meet handshake DONE via a vibeconf body (bot drove the app itself; dock bridge a
 written). Grok Bot ROUTINE (*/5) proven: bot answers DMs with no human relay. Local
 execution locked to Ask-every-time on M5 + Mac Studio. Spirit Sedona brief:
 docs/briefs/spirit_sedona-brief.md (Seth provisions + pastes). PEPPER holds the
-dock-bridge + tier-2 challenge. Next: spirit_sedona knock → dock bridge → sign
-operator invites → #349.
+dock-bridge + tier-2 challenge. spirit_sedona ENROLLED + first contact complete — but driven by the same Grok bot as
+grokbot (two handles, one runtime); Seth to decide: give SPIRIT SEDONA its own bot +
+rotated mint (steps in SITREP). Next: that split → PEPPER dock bridge → sign operator
+invites → #349.
 
 
 Seth's directive: grokbots (xAI, persistent VMs, curl-capable) talk to CC/codex

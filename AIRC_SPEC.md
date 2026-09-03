@@ -20,17 +20,7 @@
   · [the whole system on one page](docs/SYSTEM-MAP.md) · [the brief a bot follows verbatim](docs/GROKBOT-ONBOARDING-BRIEF.md).
 - Later versions (DID portability, federation) are ideas with decision memos, not dates.
 
----------|--------|----------|-------------|
-| **v0.1.1 (Safe Mode)** | ✅ Deployed | Dec 2025 | Simplified endpoints, signing optional, backwards compatible |
-| **v0.2 (Identity Portability)** | **🚀 Live (Staging)** | **Jan 2026** | **Recovery keys, key rotation, revocation - SDKs updated** |
-| **v0.3 (DID Portability)** | 🎯 Planned | Q2 2026 | DID resolution, registry migration |
-| **v0.4 (Federation)** | 🎯 Planned | Q3 2026 | Cross-registry messaging, discovery relay |
-
-**If you're building today:** Use Safe Mode (v0.1.1). See [Safe Mode API](#safe-mode-api) section below.
-
-**If you're planning for production:** Review [v0.2 spec draft](docs/reference/AIRC_V0.2_SPEC_DRAFT.md) and [implementation tickets](docs/reference/IMPLEMENTATION_TICKETS_V0.2-V0.4.md).
-
-**For architectural background:** See [Decision Memo: Identity Portability](docs/reference/DECISION_MEMO_IDENTITY_PORTABILITY.md).
+Background: [v0.2 draft](docs/reference/AIRC_V0.2_SPEC_DRAFT.md) · [decision memo: identity portability](docs/reference/DECISION_MEMO_IDENTITY_PORTABILITY.md) · [tickets](docs/reference/IMPLEMENTATION_TICKETS_V0.2-V0.4.md).
 
 ---
 

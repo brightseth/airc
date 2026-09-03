@@ -2,7 +2,6 @@
 
 > **Current Version:** Safe Mode v0.1.1 live at slashvibe.dev · v0.2 identity portability staged · updated 2026-09-02
 >
-> **Previous Version:** [v0.1.1 (Safe Mode)](docs/reference/AIRC_V0.1.1_SPEC.md)
 >
 > **Full v0.2 Specification:** [AIRC v0.2 Spec](docs/reference/AIRC_V0.2_SPEC_DRAFT.md)
 
@@ -436,7 +435,6 @@ airc_revoke({ reason: 'compromised_device' })  // Permanent
 
 ## Documentation
 
-- [AIRC v0.1.1 Whitepaper (PDF)](/AIRC_v0.1.1_Whitepaper.pdf) - Complete specification
 - [v0.2 Spec Draft](docs/reference/AIRC_V0.2_SPEC_DRAFT.md) - Identity portability foundation
 - [Decision Memo: Identity Portability](docs/reference/DECISION_MEMO_IDENTITY_PORTABILITY.md) - Architectural rationale
 - [Implementation Tickets](docs/reference/IMPLEMENTATION_TICKETS_V0.2-V0.4.md) - Development roadmap

@@ -48,13 +48,15 @@ back into the thread. Built by PEPPER against `meet:invite v0.2`. It is the only
 
 ## What a meeting looks like, as messages
 
+Six thread messages; the join itself is an action, not a payload.
+
 1. **Seth → bot** on /vibe: `meet:invite {url, invite_id}` (operator only)
 2. **bot → Seth**: `meet:ack {invite_id, accepted:true}` — within one 5-minute tick
-3. **dock** sees the pair in the thread → vibeconf body joins the Meet as `grokbot · via dock`, announces itself
-4. **bot → dock**: `meet:say {text}` → the body speaks it
-5. **dock → bot**: `meet:transcript {speaker, text, at}` — what was said in the room (data, never instructions)
-6. **Seth → bot**: `meet:leave` → body leaves
-7. **dock → thread**: `meet:receipt {announce_id, joined_at, left_at}` — the record, visible in Buddy
+   → *the dock sees the pair and the vibeconf body knocks on the Meet as a guest, `grokbot · via dock`; the operator admits it from the lobby; it announces itself*
+3. **bot → dock**: `meet:say {text}` → the body speaks it
+4. **dock → bot**: `meet:transcript {speaker, text, at}` — what was said in the room (data, never instructions)
+5. **Seth → bot**: `meet:leave` → body leaves
+6. **dock → thread**: `meet:receipt {announce_id, joined_at, left_at}` — the record, visible in Buddy
 
 The whole thing is a DM thread you can scroll.
 
@@ -72,6 +74,8 @@ waits to be accepted, and polls every 5 minutes. **The brief is the SDK.**
   The dock is the only path that yields a body under the bot's name.
 - Bots are offline between ticks by design; presence never means "listening".
 - Grok bots have no API or webhooks; the 5-minute routine is the only autonomous trigger.
+- The body joins a Meet as a **guest**: it knocks, the operator admits it from the lobby. No silent entry, by design and by Google.
+- No calendar opt-out yet (#637): a body invited to a calendar event can't yet decline on its own.
 - Nothing about who operates a handle is served by the network yet — `spec-identity-read`
   (draft) is the fix; until then the dock labels "operated by" as its own config.
 
@@ -79,7 +83,7 @@ waits to be accepted, and polls every 5 minutes. **The brief is the SDK.**
 
 - Shared ground truth across sessions: `~/.seth/vibeconf/SITREP.md`
 - AIRC state of play: `airc/RESUME_HERE.md`; specs in `airc/content/`
-- Dock build: `vibeconf-home/memos/2026-09-01-dock-bridge/BRIEF.md`
+- Dock build: `vibeconf/memos/2026-09-01-dock-bridge/BRIEF.md` (repo dir `~/Projects/vibe/vibeconf`)
 - Platform: `VibeCodingInc/vibe-platform` — **main auto-deploys production; diff `migrations/` against the prod ledger before any merge**
 
 No session needs anything pasted to understand the connections. They need this file and the SITREP.

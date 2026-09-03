@@ -1,72 +1,47 @@
 # Resume Here — AIRC
 
-**Updated: 2026-09-01 (overnight session — READ THIS BLOCK FIRST).**
+**Updated: 2026-09-03. Read `docs/SYSTEM-MAP.md` first (four layers, one diagram), then this.**
 
-## 2026-09-01 — TRIGGER #1 FIRED: first non-fleet citizen. Resume here.
+## State of play — AIRC is REACTIVATED (trigger #1 fired 2026-09-01)
 
-**✅ FIRST CONTACT COMPLETE (later the same day):** @grokbot ↔ @brightseth ran the
-full arc — register, knock, accept, typed payload both ways, round trip
-(thread_tuwBA4fGR48Z). #358 merged + deployed; the merge exposed an UNAPPLIED
-migration (099_operator_grants — sends 500ed network-wide until Seth applied it
-via the ledger runner). Binding lesson: diff migrations/ vs prod ledger before any
-merge to vibe-platform main. PR #362 (renumber consent migration 099→100) open.
-meet:invite LIVE TEST: bot acked correctly, its browser reached Google's Ask-to-join
-(tier 1 viable), handshake missed on host timing; retry = 2 min with host present.
-Dock-bridge addendum (remote agent, local body) added to the tier-2 challenge doc.
-Meet handshake DONE via a vibeconf body (bot drove the app itself; dock bridge addendum
-written). Grok Bot ROUTINE (*/5) proven: bot answers DMs with no human relay. Local
-execution locked to Ask-every-time on M5 + Mac Studio. Spirit Sedona brief:
-docs/briefs/spirit_sedona-brief.md (Seth provisions + pastes). PEPPER holds the
-dock-bridge + tier-2 challenge. spirit_sedona ENROLLED, first contact complete, and SPLIT into her own Grok bot on a
-rotated mint (provision-partner-bot.sh --rotate). Two findings: mint rotation does NOT
-revoke issued bearer tokens (ask platform for per-handle revocation); all of one
-operator's Grok bots share one VM filesystem. PEPPER audit-first done; AIRC answered all questions in its brief (vibeconf-home
-70905d0). AIRC now OWNS tier-2 spec `content/spec-identity-read-v0.1-draft.md`
-(GET /api/identity/:handle → kind/operator/runtime, presence never gates identity).
-Dock BUILT (PEPPER, 22/22, on the AWS fleet box); live acceptance run awaits Seth in the
-Meet. Platform asks filed: vibe-platform #371 (consent gate), #372 (identity read),
-#373 (token revocation on rotation). Site/spec/README/llms.txt aligned 2026-09-03.
-Next: live dock run → Rebecca note → #371/#372/#373 land → sign operator invites.
+**What is true now (all pushed):**
+- **Two partner bots are citizens, each on its own runtime and credential:** @grokbot (xAI
+  "AIRC" bot) and @spirit_sedona (its own Grok bot, mint rotated via
+  `provision-partner-bot.sh <handle> --rotate`). Both run an "AIRC watch" routine every
+  5 minutes and answer DMs with no human relay. Full arc proven for both: register →
+  knock → accept → typed payloads → round trip. Threads: brightseth↔grokbot
+  (thread_tuwBA4fGR48Z), brightseth↔spirit_sedona.
+- **The meet arc is proven:** `meet:invite` → `meet:ack` → a vibeconf body in a Google Meet
+  under the bot's name (announce spoken aloud) → `meet:leave` on command. `meet:invite`
+  v0.2 (dock payloads) was RATIFIED agent↔agent over AIRC itself — the bot's
+  `spec:proposal` matched the addendum field-for-field.
+- **The dock is BUILT** (PEPPER, 22/22 tests, on the AWS fleet box vibeconf-seth, Electron
+  body path). Contract + AIRC-lane answers: `vibeconf/memos/2026-09-01-dock-bridge/BRIEF.md`.
+  **Live acceptance run awaits Seth in the Meet** (host = seth@spiritprotocol.io,
+  room mrq-ujjh-qna): invite → ack → body-in ≤60s → say → transcript → leave → receipt.
+- **Consent has Postgres authority** (vibe-platform #358 merged+deployed; #362 renumber
+  merged). Lesson, binding: main auto-deploys prod — diff `migrations/` vs the prod ledger
+  BEFORE merging (099_operator_grants unapplied took sends down for ~40 min).
+- **airc.chat, AIRC_SPEC.md, README, llms.txt, CLAUDE.md aligned (2026-09-03):** not an
+  app, four layers, five moves, "what is true today"; versions roadmap gone.
+- **Platform asks filed:** vibe-platform #371 consent as an enforced gate + authenticated
+  mutations; #372 identity read (`content/spec-identity-read-v0.1-draft.md`); #373 revoke
+  tokens on mint rotation.
 
+**Findings worth remembering:** a bot's own browser joins Meet as its OPERATOR's Google
+identity (the dock is the only path to a body under the bot's name); Grok bots have no
+API/webhooks — routines are the only autonomous trigger; mint rotation does NOT revoke
+issued tokens; all of one operator's Grok bots share one VM filesystem; the grokbot has
+computer-use on M5 + Mac Studio — both set to "Ask every time".
 
-Seth's directive: grokbots (xAI, persistent VMs, curl-capable) talk to CC/codex
-sessions via /vibe; end state = DM any grokbot (e.g. Spirit Sedona) from any
-surface and invite it into a Google Meet by one AIRC message. Dormancy is OVER —
-"a non-fleet agent joins" fired by Seth's own hand (he provisioned @grokbot).
+**Next, in order:** ① live dock acceptance run (Seth in the room; airc session drives)
+② Rebecca note (draft in the 2026-09-01 session; write-up `docs/FIRST-CONTACT-2026-09-01.md`)
+③ #371/#372/#373 land in the platform lane ④ signed operator `meet:invite` — the narrow
+signing case ⑤ native bot participant in vibeconf (tier-2 challenge,
+`docs/CHALLENGE-FIRST-CLASS-BOT-PARTICIPANT-2026-09-01.md`).
 
-**State (all pushed):**
-- **@grokbot provisioned + registered** (mint: `~/.seth/grokbot/vibe-mint-credential`,
-  env `BUDDY_AGENT_MINT_GROKBOT` on vibe-public). Brief: `docs/GROKBOT-ONBOARDING-BRIEF.md`
-  — Part 1 is pasted into the bot; it holds a knock for **brightseth** (this
-  session's handle). Bot conduct exemplary: refuses to DM around broken consent.
-- **⛔ THE ONE BLOCKING ITEM: PR VibeCodingInc/vibe-platform#358 awaits Seth's
-  merge** (`gh pr merge 358 --squash --delete-branch`; classifier blocks CC).
-  Merging auto-deploys prod (Vercel git integration confirmed live). It moves
-  consent to Postgres authority (Upstash KV was provider-throttled → /api/consent
-  500ed network-wide; still down at session end). 3 codex adversarial rounds
-  absorbed; 20 tests; hermetic gate 854/854; full knock→accept arc proven on
-  preview against real Neon. After deploy: grokbot knocks brightseth → accept →
-  first Grok↔Claude contact over AIRC.
-- **airc.chat consolidated 16 pages → 1** and live (re-aliased). Leads with:
-  not-an-app-not-a-platform (Seth's framing, IRC analogy), five-moves curl
-  quickstart, "Identity, honestly" (bearer token is live identity; consent is
-  the mandatory part, not crypto).
-- **`content/spec-meet-invite-v0.1-draft.md`** — one AIRC message puts a partner
-  bot in your Google Meet (bot's own browser does the joining); operator-only,
-  announce-on-arrival, leave-on-command. Awaiting ratification.
-- **`~/.seth/scripts/provision-partner-bot.sh <handle>`** — generalized enrollment
-  for spirit_sedona and successors (Seth runs it; credential gen classifier-blocked).
-- Upstash: DB `alive-gnat-13375` throttled, owning account UNFOUND (not Seth's
-  gmail Upstash; likely GitHub-SSO or Samer). Post-#358 it only affects caches.
-  Legacy consent backfill: `platform/scripts/backfill-consent-from-kv.mjs` when readable.
-
-**Next moves in order:** ① Seth merges #358 → verify prod `/api/consent` 200 →
-tell grokbot (via Seth's Grok chat) to knock → accept from brightseth → run the
-full first-contact arc incl. a typed payload. ② Provision `spirit_sedona` the
-same way. ③ meet:invite live test (DM a Meet URL, bot joins by browser).
-④ Signature-value decision memo comes off the shelf (external runtime = its
-trigger). ⑤ #349 consent auth (pre-existing hole, named in consent.js).
-Full session record: SITREP 2026-09-01 entries.
+Records: SITREP 2026-09-01..03 entries; `docs/FIRST-CONTACT-2026-09-01.md`;
+`docs/reference/REFLECTION-2026-09-01-FIRST-CONTACT.md`.
 
 ---
 

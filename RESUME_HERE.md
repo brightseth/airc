@@ -41,8 +41,11 @@ handed to platform — #371 (`docs/reference/CONSENT-GATE-CONTRACT-371.md`), #37
 real tests; well-known fix PR #379; per-runtime briefs (`docs/briefs/make-brief.py`).
 Daily one-liner to cc-seth: proven / held / blocked; wire Seth only for decisions.
 
-**Next, in order:** ① live dock acceptance run (Seth says "go" from the Meet; airc +
-PEPPER drive; run sheet in the dock brief) ② Rebecca note ③ #371/#372/#373/#379 land in
+**Dock run attempted 2026-09-03 evening — HELD:** bot acked in 93s; the dock never put a body
+in the room (PEPPER unsticking). Both invites closed; nothing live. Re-run needs PEPPER's
+"dock watching" then one fresh invite from this session.
+
+**Next, in order:** ① re-run the dock acceptance (see above) ② Rebecca note ③ #371/#372/#373/#379 land in
 the platform lane ④ signed operator `meet:invite` ⑤ native bot participant in vibeconf
 (`docs/CHALLENGE-FIRST-CLASS-BOT-PARTICIPANT-2026-09-01.md`).
 

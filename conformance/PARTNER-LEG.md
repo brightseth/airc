@@ -67,13 +67,20 @@ advances the generation; re-registering the same handle is NOT a takeover; chang
 model inside the same executor does NOT advance it. The leg runs replacement **while the old
 runtime is still alive** and asserts the superseded generation's callbacks produce nothing.
 
-## Dependencies (blocked until these exist)
+## Dependencies — three separate things, none of which substitutes for another
 
-1. Platform merges the corpus branch and the action record with server-issued `expires_at`
-   and executor generation (#368). The corpus itself is already bound (above).
-2. The call-input channel exists for the retention/revocation cases (#368).
-3. `northstar_p` provisioned (Seth's hands; classifier-gated credential generation).
-4. A body adapter for the admission-dependent cases (vibeconf lane's dock, after its fixes).
+1. **Contract and corpus publication** (Platform). The current pin
+   (`contracts/action-lifecycle/v0.1.json` @ `34b1d8fa`, branch
+   `docs/action-lifecycle-contract-368`) is a **development fixture** for building the loader.
+   Merging that branch (#386) publishes the contract; it does **not** implement anything.
+   Conformance claims are made only against the completed, published corpus and its pin.
+2. **Served Action implementation and the partner executor.** The server-held action record
+   with `expires_at` and executor generation, and the call-input channel (#368 build work),
+   plus this leg's executor bound to the corpus `then` schema (AIRC build work). Neither
+   exists yet; publication of (1) does not create them.
+3. **Credentials and adapter-dependent execution.** `northstar_p` provisioned (Seth), and a
+   body adapter for admission-dependent cases (vibeconf lane). **Provisioning alone does not
+   unblock execution** — (2) must exist first.
 
 Labels used in reports: **implemented** (code exists) · **deployed** (running where it must)
 · **verified** (a case passed with evidence). Nothing in this leg is verified yet.

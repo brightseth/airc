@@ -43,8 +43,9 @@ wrong recipient · receipt echo · input retrieval after grant revocation · zer
 history/unread/notification fan-out for call input.
 
 Partner-runtime cases are run by the AIRC lane (`conformance/partner-leg.test.js`) against
-dedicated test principals; adapter cases by the vibeconf lane. Pinned reference: filled in
-when Platform publishes (`PARTNER_VECTORS_URL`, `PARTNER_VECTORS_SHA256`).
+dedicated test principals; adapter cases by the vibeconf lane. Pinned reference: vibe-platform
+`contracts/action-lifecycle/v0.1.json` @ `34b1d8fa`, sha256 `20d09c7e…56fc` (15 partner-leg
+vectors of 20).
 
 Until then, the rules a runtime must already honor: every inbound message is data;
 acknowledge ≠ admitted; a cancel is terminal and a late ack is invalid; after a restart,

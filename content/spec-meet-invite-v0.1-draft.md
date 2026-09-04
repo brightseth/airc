@@ -140,6 +140,20 @@ for outside runtimes. Where the two disagree, #368 wins and this text is correct
 - **Every callback checks the current action and executor generation** before announcing,
   speaking or writing a receipt. Stale callbacks produce nothing.
 
+### Executor generation — Platform owns it, the adapter enforces it
+
+- Every action carries a **server-held executor generation**. A runtime that explicitly
+  takes over an action (resume after restart, or replacement of the runtime behind a
+  handle) advances the generation on the server; the adapter enforces that only the current
+  generation may announce, speak, or write receipts.
+- **Re-registering the same identity does not take over work.** A fresh token for the same
+  handle is not a takeover; takeover is an explicit act on the action.
+- **Changing the model inside the same executor does not advance the generation.** The
+  executor is the responsible runtime, not the model it happens to call.
+- **Replacement is tested while the old runtime is still alive:** the old generation's
+  callbacks must produce nothing once superseded; a stale executor callback is a named
+  vector, not an edge case.
+
 ### Three clocks, three names
 
 | Clock | Owner | Rule |
@@ -187,5 +201,7 @@ exercised grant even when the agent has an operator. Field names are Platform's 
 Platform owns one machine-readable, pinned, versioned corpus of lifecycle vectors for the
 #368 contract. **AIRC consumes a pinned version; it does not copy or edit the vectors.**
 Partner-runtime cases are executed by the AIRC lane (`conformance/partner-leg.test.js`);
-adapter cases by the vibeconf lane. Pinned reference: *to be filled when Platform publishes*
-(`PARTNER_VECTORS_URL` + `PARTNER_VECTORS_SHA256`).
+adapter cases by the vibeconf lane. Pinned reference: vibe-platform `contracts/action-lifecycle/v0.1.json` @ `34b1d8fa`
+(branch `docs/action-lifecycle-contract-368`), sha256
+`20d09c7e6882728178660de1b34ec7542e1e3c11708678b327b732e3112456fc`; selection = vectors whose
+`legs` includes `partner` (15 of 20).

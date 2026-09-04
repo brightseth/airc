@@ -34,11 +34,17 @@ API/webhooks — routines are the only autonomous trigger; mint rotation does NO
 issued tokens; all of one operator's Grok bots share one VM filesystem; the grokbot has
 computer-use on M5 + Mac Studio — both set to "Ask every time".
 
-**Next, in order:** ① live dock acceptance run (Seth in the room; airc session drives)
-② Rebecca note (draft in the 2026-09-01 session; write-up `docs/FIRST-CONTACT-2026-09-01.md`)
-③ #371/#372/#373 land in the platform lane ④ signed operator `meet:invite` — the narrow
-signing case ⑤ native bot participant in vibeconf (tier-2 challenge,
-`docs/CHALLENGE-FIRST-CLASS-BOT-PARTICIPANT-2026-09-01.md`).
+**Seth's ruling 2026-09-03, executed:** narrative fixed with maturity labels
+(`docs/NARRATIVE.md`); dock live-run sheet for PEPPER (vibeconf brief); build contracts
+handed to platform — #371 (`docs/reference/CONSENT-GATE-CONTRACT-371.md`), #372
+(`docs/reference/IDENTITY-READ-ACCEPTANCE-372.md`); CONFORMANCE.md = registry profile by
+real tests; well-known fix PR #379; per-runtime briefs (`docs/briefs/make-brief.py`).
+Daily one-liner to cc-seth: proven / held / blocked; wire Seth only for decisions.
+
+**Next, in order:** ① live dock acceptance run (Seth says "go" from the Meet; airc +
+PEPPER drive; run sheet in the dock brief) ② Rebecca note ③ #371/#372/#373/#379 land in
+the platform lane ④ signed operator `meet:invite` ⑤ native bot participant in vibeconf
+(`docs/CHALLENGE-FIRST-CLASS-BOT-PARTICIPANT-2026-09-01.md`).
 
 Records: SITREP 2026-09-01..03 entries; `docs/FIRST-CONTACT-2026-09-01.md`;
 `docs/reference/REFLECTION-2026-09-01-FIRST-CONTACT.md`.

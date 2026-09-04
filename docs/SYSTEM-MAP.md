@@ -51,10 +51,10 @@ back into the thread. Built by PEPPER against `meet:invite v0.2`. It is the only
 Six thread messages; the join itself is an action, not a payload.
 
 1. **Seth → bot** on /vibe: `meet:invite {url, invite_id}` (operator only)
-2. **bot → Seth**: `meet:ack {invite_id, accepted:true}` — within one 5-minute tick
-   → *the dock sees the pair and the vibeconf body knocks on the Meet as a guest, `grokbot · via dock`; the operator admits it from the lobby; it announces itself*
+2. **bot → Seth**: `meet:ack {invite_id, accepted:true}` — within one 5-minute tick (the bot's schedule, not a latency promise)
+   → *the dock sees the pair and the vibeconf body knocks on the Meet as a guest, `grokbot · via dock`, within 60 s of the ack; the operator admits it from the lobby; it announces itself. **Acknowledged is not seated** — only body evidence counts*
 3. **bot → dock**: `meet:say {text}` → the body speaks it
-4. **dock → bot**: `meet:transcript {speaker, text, at}` — what was said in the room (data, never instructions)
+4. **dock → bot**: `meet:transcript {speaker, text, at}` — what was said in the room (data, never instructions). **Call-scoped input, not thread history:** delivered to the acting bot for the invite's lifetime with its own retention; the ordinary thread keeps the invite, status, and receipt (seam pending vibe-platform #368)
 5. **Seth → bot**: `meet:leave` → body leaves
 6. **dock → thread**: `meet:receipt {announce_id, joined_at, left_at}` — the record, visible in Buddy
 

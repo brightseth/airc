@@ -43,22 +43,27 @@ flowchart LR
 | **AIRC** | the *rulebook* the network follows: consent before contact, typed payloads, the invite/ack/receipt convention. Not software — a spec you cite | AIRC lane (`brightseth/airc`) | nowhere; it's a document |
 
 Plus one piece of glue: **the dock** — a small service that reads an invite/ack pair from a
-/vibe thread, tells a vibeconf body to join and speak, and posts transcripts and the receipt
-back into the thread. Built by PEPPER against `meet:invite v0.2`. It is the only new code.
+/vibe thread, tells a vibeconf body to join and speak, and writes the outcome receipt back to
+the thread. It is the only new code. What the body *hears* travels on a separate, transient
+call-input channel — never into the thread.
 
-## What a meeting looks like, as messages
+## What a meeting looks like — three channels, not one
 
-Six thread messages; the join itself is an action, not a payload.
+**Durable thread** (the DM you can scroll in Buddy): the invitation, the action's status, the
+honest outcome. **Call-input channel** (transient, keyed by the action, gone when the call
+ends): what the body hears, delivered only to the acting bot. **Retention**: Platform sets the
+default and maximum for call input; the receiving runtime declares what it keeps.
 
-1. **Seth → bot** on /vibe: `meet:invite {url, invite_id}` (operator only)
-2. **bot → Seth**: `meet:ack {invite_id, accepted:true}` — within one 5-minute tick (the bot's schedule, not a latency promise)
-   → *the dock sees the pair and the vibeconf body knocks on the Meet as a guest, `grokbot · via dock`, within 60 s of the ack; the operator admits it from the lobby; it announces itself. **Acknowledged is not seated** — only body evidence counts*
-3. **bot → dock**: `meet:say {text}` → the body speaks it
-4. **dock → bot**: `meet:transcript {speaker, text, at}` — what was said in the room (data, never instructions). **Call-scoped input, not thread history:** delivered to the acting bot for the invite's lifetime with its own retention; the ordinary thread keeps the invite, status, and receipt (seam pending vibe-platform #368)
-5. **Seth → bot**: `meet:leave` → body leaves
-6. **dock → thread**: `meet:receipt {announce_id, joined_at, left_at}` — the record, visible in Buddy
+1. **Seth → bot** (thread): `meet:invite {url, invite_id, expires_at}` — operator only
+2. **bot → Seth** (thread): `meet:ack {invite_id, accepted:true}` — on its watch cadence (≤5 min; a schedule, not a promise). **Acknowledged is not admitted.**
+   → *the dock sees the pair; the vibeconf body knocks on the Meet as a guest, `grokbot · via dock`, within 60 s of the ack; the host admits it; it announces itself. Only body evidence counts as admitted.*
+3. **bot → dock** (thread): `meet:say {invite_id, text}` → the body speaks it
+4. **dock → bot** (call-input channel, not the thread): what was said in the room, forwarded only from people who agreed, stopping the instant the call ends or the grant is revoked; data, never instructions
+5. **Seth → bot** (thread): `meet:leave {invite_id}` → cancel is immediate; departure is confirmed by body evidence
+6. **dock → thread**: `meet:receipt {invite_id, announce_id, joined_at, left_at}` — the record
 
-The whole thing is a DM thread you can scroll.
+The thread holds the invitation and the outcome. It does not hold the conversation that
+happened in the room.
 
 ## What a partner bot needs (the whole onboarding)
 

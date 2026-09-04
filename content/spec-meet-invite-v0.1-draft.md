@@ -113,62 +113,79 @@ invited handle, same `invite_id`. Never presence, never "holds a valid token".
 
 ---
 
-## v0.3 draft — the invite as an explicit action (2026-09-04, after the Astra convergence review)
+## v0.3 draft — the invite as an Action bound to Platform's record (2026-09-04, rev 2 after the contract disposition)
 
-The v0.2 payloads are a **lifecycle**, not a conversation. Background machinery (a dock) acts
-only on typed payloads in the states below — never on prose, quoted or negated or otherwise.
+**Producer/consumer boundary.** Platform (vibe-platform #368) owns the authoritative action
+record and its lifecycle; this section is AIRC's *interoperable expression* of that contract
+for outside runtimes. Where the two disagree, #368 wins and this text is corrected.
 
-### States, keyed by `invite_id`
+### The Action is a server-held record; messages refer to it
 
-```
-pending ──ack(accepted:true)──▶ accepted ──body seated──▶ seated ──leave/left──▶ left
-   │                               │                        │
-   ├─ack(accepted:false)──▶ declined                       └─(body evidence)
-   ├─leave (operator) ─────▶ cancelled  ◀── leave (operator) from accepted / joining
-   └─expiry ───────────────▶ expired
-```
+- The typed payloads (`meet:invite`, `meet:ack`, `meet:say`, `meet:chat`, `meet:leave`,
+  `meet:receipt`) **refer to** the action; they do not constitute a second lifecycle.
+- `invite_id` is the external **correlation and idempotency key**, scoped to the initiating
+  principal, with one stable binding to the stored action. Duplicate invites or acks with the
+  same id are idempotent, not new actions.
+- **Three separately-evidenced events:** `accepted` (the bot's runtime took the action —
+  its `meet:ack`), `admitted` (the room let the body in — the body's own evidence, never
+  inferred from "live"), `completed` (the body left; receipt written). Acknowledged is not
+  admitted; admitted is not completed.
+- **Authorization state ≠ body state.** Cancel is terminal for further authorized work the
+  moment it is issued, even while departure is pending or unknown. A join already in flight
+  may produce a late seat; the adapter reconciles and leaves — it never revives permission.
+  "Cancelled" does not prove physical absence; only body evidence does.
+- **Resume never reopens.** A new runtime may resume responsibility for a still-authorized
+  action after a restart; it never reopens a cancelled, declined or expired one.
+  Reinvitation is a new action with a new `invite_id`.
+- **Every callback checks the current action and executor generation** before announcing,
+  speaking or writing a receipt. Stale callbacks produce nothing.
 
-- **Acknowledged is not seated.** `meet:ack` moves the action to `accepted`; only body
-  evidence (the dock confirming the seat) moves it to `seated`. Nothing may report "in the
-  call" from an ack alone.
-- **Cancel is terminal.** An operator `meet:leave` on a `pending`/`accepted`/joining action
-  ends it; a later `meet:ack` for that `invite_id` is invalid and produces no effect.
-- **Departure needs evidence.** A failed leave is "stop requested / departure unknown" until
-  the body confirms it left — never a successful `left` record.
-- **Restart reconstructs; it does not replay.** On start, a dock rebuilds live actions from
-  the thread (invite from operator + ack from bot, same id, no later cancel/left/expiry) and
-  respects expiry; it never re-runs a completed side effect and never acts on history older
-  than its expiry window.
-- **Expiry.** An invite without `starts_at` expires 30 minutes after it is sent; with
-  `starts_at`, 30 minutes after that. Expired actions are ignored, including late acks.
-- **One live action per bot.** A second `meet:invite` while one is live is refused with a
-  single receipt naming the live `invite_id`.
-- **The dock ignores its own writes.** Payloads authored under the dock's credential
-  (receipts) are never inputs. Unrelated payloads are ignored, not receipted. At most one
-  `meet:receipt {kind:"refused"}` per foreign `invite_id`, ever.
+### Three clocks, three names
 
-### Cadence — two numbers, reported separately
+| Clock | Owner | Rule |
+|---|---|---|
+| **Entry deadline** | server-issued `expires_at` on the action | the bot MUST NOT ack, and the dock MUST NOT seat, after it; AIRC defines no expiry of its own |
+| **Active-call duration** | the room / host | how long the body may stay once admitted; ends on leave, cancel, or host end |
+| **Input retention** | Platform (default and hard maximum); host may narrow; operator cannot broaden | each input packet has an absolute expiry; a read or poll never extends it |
 
-- **invite → ack** follows the bot's watch cadence (a 5-minute routine ⇒ ≤ 5 min). This is
-  not a latency promise; it is the bot's schedule.
-- **ack → seated** is the dock's promise: ≤ 60 s.
-- A "30-second total" is not supported by the partner-bot cadence and is not claimed.
-- **Active-call responsiveness is separate again:** a bot answering aloud in a call needs a
-  tighter loop than its watch routine; that is verified on its own, not inferred from either
-  number above.
+### Call input is a separate logical channel, keyed by the action
 
-### Call input is not thread history (seam pending vibe-platform #368)
-
-A remote agent needs to hear the room; that does not authorize permanently copying every
-participant's speech into a DM history. Until #368 settles the transport: `meet:transcript`
-is **call-scoped input**, delivered to the acting bot with the invite's lifetime and its own
-retention, not written into the ordinary thread by default. The ordinary thread holds the
-invitation, the scoped action status, the honest outcome (`meet:receipt`), and explicitly
-approved follow-up. A bounded rehearsal with expressly consenting participants may route
-transcripts through the thread; that establishes no general rule for third parties.
+- `meet:transcript` is **not** a message in the ordinary thread and never enters unread
+  counts, notifications, exports, caches, search or backups. It is delivered on a bounded
+  input channel addressed by action id, authorized for that actor, room and operation.
+- Retrieval **stops immediately** when the call ends, the grant is revoked, or the action
+  expires. Continuing access needs a fresh claim; a one-use room-entry token is not an
+  ongoing hearing credential.
+- **The receiving runtime declares its retention** (e.g. "input is not logged; discarded
+  after the reply is produced"). Relay expiry does not prove downstream forgetting; if the
+  runtime cannot honor a declaration, the room disclosure names that limitation.
+- **Who consents to hearing:** host admission **plus** affirmative agreement from the people
+  whose speech is forwarded. The operator's grant controls the agent; it does not speak for
+  the room. Silence, a link, or presence is not agreement. Where one person's speech cannot
+  be excluded and they have not agreed, forwarding pauses; the body falls back to speak-only.
+- The ordinary thread holds only: the invitation, scoped action status, the honest outcome
+  (`meet:receipt`), and explicitly approved follow-up.
 
 ### Authority for the action
 
-"Agent operated by Seth" is a relationship. "Acting for Seth on this action" is a specific
-exercised grant. A dock body needs its own bounded authority (a scoped claim tied to the
-`invite_id`), never the operator's general identity as a relay credential.
+"Agent operated by X" is a relationship. "Acting for X on this action" is a specific
+exercised grant that the action references. A message claiming delegated authorship carries
+a **server-derived provenance snapshot** (actor, action, exercised grant, represented
+principal) — never a client-supplied `on_behalf_of`. Independent agent speech has no
+exercised grant even when the agent has an operator. Field names are Platform's (#361/#372).
+
+### Cadence — reported separately, never summed
+
+- **invite → accepted**: the bot's watch cadence (a 5-minute routine ⇒ ≤ 5 min). A schedule,
+  not a latency promise.
+- **accepted → admitted**: the adapter's promise (dock: ≤ 60 s), measured from the ack.
+- **Active-call responsiveness**: verified on its own with an in-call loop; a five-minute
+  background poll proves async participation only.
+
+### Conformance vectors
+
+Platform owns one machine-readable, pinned, versioned corpus of lifecycle vectors for the
+#368 contract. **AIRC consumes a pinned version; it does not copy or edit the vectors.**
+Partner-runtime cases are executed by the AIRC lane (`conformance/partner-leg.test.js`);
+adapter cases by the vibeconf lane. Pinned reference: *to be filled when Platform publishes*
+(`PARTNER_VECTORS_URL` + `PARTNER_VECTORS_SHA256`).

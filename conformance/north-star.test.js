@@ -153,6 +153,15 @@ async function main() {
     crypto.verify(null, Buffer.from(canonical(probe)), pub, sig));
 
   // 3. CONSENTED — A knocks, B sees the knock, B accepts
+  // The rooms persist across runs and accepted each other yesterday. Consent
+  // authority (Postgres, vibe-platform #358) refuses to downgrade an accepted
+  // edge to pending — correctly — so exercise the knock for real: reset both
+  // directions to "none" first (block → unblock is the only path that clears
+  // an accepted edge; the store deletes only blocked edges on unblock).
+  for (const [x, y] of [[a, b], [b, a]]) {
+    await post(x, '/api/consent', { action: 'block', from: y.handle, to: x.handle });
+    await post(x, '/api/consent', { action: 'unblock', from: y.handle, to: x.handle });
+  }
   const knock = await post(a, '/api/consent', {
     action: 'request', from: a.handle, to: b.handle,
     message: 'north-star harness knock',

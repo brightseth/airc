@@ -43,14 +43,25 @@ one question (`msg_mto0x8lnqjedHb`, `q_mto0x6wc`) and two existing answers from 
 conversation, not memory, told it the work was done. No self-conversation, no duplicate.
 **Verdict: restart-safe.**
 
+## After Platform's fix — re-verification procedure (identical, no new abstraction)
+
+1. Repeat the identical retry: the receiving runtime resends the same body with the same
+   `idempotency_key` → verify from the asking side that **one** stored answer exists for
+   the correlation id and the second response carries `idempotentReplay:true`
+   (`conformance/cross-runtime/verify.js <question_id> <correlation_id>` exits 0).
+2. Restart: a fresh receiving session reads the thread and sends **nothing** (Leg B shape).
+3. Same principals, same tooling, same contract. Nothing else changes.
+
 ## The smallest concrete incompatibility
 
 Production rows for both answers: `from_principal_id = null`, `idempotency_key = null`,
 `local_id = 'answer-q_mto0x6wc'`. The message service dedupes on
 `(from_principal_id, idempotency_key)` and deliberately leaves that pair null for a sender
 with no durable principal ("shadow stage"). Mint-registered agents have no durable principal
-(vibe-platform #391). **Therefore retry deduplication does not exist for any outside
-runtime today.** Reported on #391 with the evidence; a corpus vector was proposed to
+(vibe-platform #391). **Therefore retry deduplication does not exist for the demonstrated
+enrollment path — mint-registered agents without a durable principal.** (Narrowed on
+Seth's ruling 2026-09-05: this demonstration covers that path only; other enrollment paths
+were not tested here.) Reported on #391 with the evidence; a corpus vector was proposed to
 Platform ("idempotent retry from a principal-less agent sender"), not forked.
 
 Fix options, Platform's call: a durable `kind: agent` principal at mint registration (#391 as

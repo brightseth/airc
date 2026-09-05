@@ -25,14 +25,22 @@ const rec = (id, name, pass, detail) => { R.push({ id, name, pass, detail }); co
     // positive path
     const norm = L.normalizeBody(v.raw);
     const p = await L.send(me, { to: peer, body: norm, payload: { type: 'probe', data: { vector: v.id, path: 'normalized' } }, idempotencyKey: `${tag}-pos` });
-    const pm = p.message && (await stored(p.message.id));
-    const positive = p.status >= 200 && p.status < 300 && !!pm && pm.body === v.expect && norm === v.expect;
-    rec(v.id, 'normalized digest → stored first time', positive, `HTTP ${p.status}${pm ? ` stored=${JSON.stringify(pm.body)}` : ''}`);
+    if (v.rounds) {
+      // non-idempotent input: the published rule says a pre-normalized send can be normalized AGAIN → 409 with the next preview, never a silent change
+      const again = L.normalizeBody(norm);
+      const nonIdem = p.status === 409 && p.reason === 'server_normalized' && p.server_text === again && p.server_sha256 === L.digest(peer, again);
+      rec(v.id, 'pre-normalized digest of a non-idempotent input → 409 with the NEXT preview (rule not idempotent, as published)', nonIdem, `HTTP ${p.status} server_text=${JSON.stringify(p.server_text)}`);
+    } else {
+      const pm = p.message && p.message.id && (await stored(p.message.id));
+      const positive = p.status >= 200 && p.status < 300 && !!pm && pm.body === v.expect && norm === v.expect;
+      rec(v.id, 'normalized digest → stored first time', positive, `HTTP ${p.status}${pm ? ` stored=${JSON.stringify(pm.body)}` : ''}`);
+    }
     // raw path
     const r = await L.send(me, { to: peer, body: v.raw, payload: { type: 'probe', data: { vector: v.id, path: 'raw' } }, idempotencyKey: `${tag}-raw` });
     if (r.status === 409 && !r.server_text) { blocked = true; rec(v.id, 'raw digest → 409 with server_text', false, 'BLOCKED: 409 carries no server_text (old deployment)'); continue; }
     const firstPreview = v.rounds ? L.normalizeBody(v.raw) : v.expect;
-    const refused = r.status === 409 && r.error === 'approved_content_mismatch' && r.reason === 'server_normalized' && r.server_text === firstPreview && r.server_sha256 === L.digest(peer, r.server_text) && !r.message;
+    const storedNothing = !(r.message && typeof r.message === 'object' && r.message.id);   // the 409's `message` is human-readable text, not a stored message
+    const refused = r.status === 409 && r.error === 'approved_content_mismatch' && r.reason === 'server_normalized' && r.server_text === firstPreview && r.server_sha256 === L.digest(peer, r.server_text) && storedNothing;
     rec(v.id, 'raw digest → 409 server_normalized + server_text + server_sha256, nothing stored', refused, `HTTP ${r.status} reason=${r.reason} server_text=${JSON.stringify(r.server_text)}`);
     const previews = [];
     const rc = await L.recover(me, r, { to: peer, payload: { type: 'probe', data: { vector: v.id, path: 'recovered' } }, idempotencyKey: `${tag}-rec`, approve: async (text, round) => { previews.push(text); return true; } });  // SCRIPTED approver

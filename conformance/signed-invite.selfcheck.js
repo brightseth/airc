@@ -18,10 +18,10 @@ function mkLedger(opts = {}) {
   // Durable fixture: mutate a COPY, persist atomically (tmp + rename), then swap — a failed
   // write leaves memory untouched; torn writes cannot happen. Retention is enforced on load.
   let st = { byNonce: {}, byInvite: {}, tomb: [], outcomes: {}, retain: {} }; let corrupt = false;
-  const load = () => { if (opts.file && fs.existsSync(opts.file)) { try { st = JSON.parse(fs.readFileSync(opts.file, 'utf8')); } catch { corrupt = true; return; } const t = opts.now ? opts.now() : Date.now(); for (const k of Object.keys(st.retain)) if (st.retain[k] < t) { delete st.byNonce[k]; delete st.outcomes[k]; delete st.retain[k]; } } };
+  const load = () => { if (opts.file && fs.existsSync(opts.file)) { try { const v = JSON.parse(fs.readFileSync(opts.file, 'utf8')); if (!v || typeof v !== 'object' || !v.byNonce || !v.byInvite || !Array.isArray(v.tomb) || !v.outcomes || !v.retain) throw new Error('shape'); st = v; } catch { corrupt = true; return; } const t = opts.now ? opts.now() : Date.now(); for (const k of Object.keys(st.retain)) if (st.retain[k] < t) { delete st.byNonce[k]; delete st.outcomes[k]; delete st.retain[k]; } } };
   load();
   const guard = () => { if (corrupt) throw new Error('ledger corrupt: refuse until an operator repairs it'); };
-  const persist = (next) => { if (opts.failWrite) throw new Error('disk full'); if (opts.file) { const tmp = opts.file + '.tmp'; const fd = fs.openSync(tmp, 'w'); fs.writeSync(fd, JSON.stringify(next)); fs.fsyncSync(fd); fs.closeSync(fd); fs.renameSync(tmp, opts.file); } st = next; };
+  const persist = (next) => { if (opts.failWrite) throw new Error('disk full'); if (opts.file) { const tmp = opts.file + '.tmp'; const fd = fs.openSync(tmp, 'w'); fs.writeSync(fd, JSON.stringify(next)); fs.fsyncSync(fd); fs.closeSync(fd); fs.renameSync(tmp, opts.file); try { const dfd = fs.openSync(path.dirname(opts.file), 'r'); fs.fsyncSync(dfd); fs.closeSync(dfd); } catch {} } st = next; };
   return {
     peek: (keyId, nonce) => { guard(); const k = `${keyId}:${nonce}`; return k in st.byNonce ? { canonical: st.byNonce[k], outcome: st.outcomes[k] } : null; },
     claim: ({ keyId, nonce, inviteId, type, canonical, retainUntil, tombstone }) => {
@@ -174,6 +174,10 @@ check('unsigned invite with expires_at as array → bad_shape', run(env({ ...bas
 check('ledger missing hasInvite → ledger_unavailable (signed invite)', run(env(base, OP), { ledger: { peek: () => null, claim: () => ({ status: 'new' }), isTombstoned: () => false } }), 'ledger_unavailable');
 check('claim-repeat race keeps the stored outcome', (() => { let calls = 0; const l = { peek: () => (calls++ === 0 ? null : { canonical: V.canonical(base), outcome: 'accepted' }), claim: () => ({ status: 'repeat' }), isTombstoned: () => false, hasInvite: () => false }; const r = run(env(base, OP), { ledger: l }); return { ok: r.ok && r.repeat === true && r.prior === 'accepted', provenance: 'repeat-with-prior', reason: JSON.stringify(r) }; })(), 'accepted:repeat-with-prior');
 check('corrupt ledger file → ledger_unavailable (refuse, no throw)', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger5-${process.pid}.json`); fs.writeFileSync(f, '{"byNonce":{"x'); const r = run(env(base, OP), { ledger: mkLedger({ file: f }) }); try { fs.unlinkSync(f); } catch {} return r; })(), 'ledger_unavailable');
+
+// ---- rev 6 fixture residue
+check('ledger file holding valid-but-wrong JSON (null) → ledger_unavailable', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger6-${process.pid}.json`); fs.writeFileSync(f, 'null'); const r = run(env(base, OP), { ledger: mkLedger({ file: f }) }); try { fs.unlinkSync(f); } catch {} return r; })(), 'ledger_unavailable');
+check('ledger file holding {} → ledger_unavailable', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger7-${process.pid}.json`); fs.writeFileSync(f, '{}'); const r = run(env(base, OP), { ledger: mkLedger({ file: f }) }); try { fs.unlinkSync(f); } catch {} return r; })(), 'ledger_unavailable');
 
 for (const [m, n, got, want] of R) console.log(`${m} ${n}${m === '✗' ? `  (got ${got}, want ${want})` : ''}`);
 const fails = R.filter((r) => r[0] === '✗').length; console.log(`\n${R.length - fails}/${R.length} pass`); process.exit(fails ? 1 : 0);

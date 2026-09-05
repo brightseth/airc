@@ -15,23 +15,26 @@ const OP = keyFromSeed('11'.repeat(32)), OP2 = keyFromSeed('22'.repeat(32)), MAL
 const T0 = Date.parse('2026-09-04T18:00:00Z'); const at = (iso) => () => Date.parse(iso); const clock = (ms) => () => ms;
 
 function mkLedger(opts = {}) {
-  // in-memory by default; opts.file makes it durable (a fresh mkLedger({file}) simulates a restart)
-  const st = { byNonce: {}, byInvite: {}, tomb: [], outcomes: {} };
-  if (opts.file && fs.existsSync(opts.file)) Object.assign(st, JSON.parse(fs.readFileSync(opts.file, 'utf8')));
-  const save = () => { if (opts.file) fs.writeFileSync(opts.file, JSON.stringify(st)); };
+  // Durable fixture: mutate a COPY, persist atomically (tmp + rename), then swap — a failed
+  // write leaves memory untouched; torn writes cannot happen. Retention is enforced on load.
+  let st = { byNonce: {}, byInvite: {}, tomb: [], outcomes: {}, retain: {} };
+  const load = () => { if (opts.file && fs.existsSync(opts.file)) { st = JSON.parse(fs.readFileSync(opts.file, 'utf8')); const t = opts.now ? opts.now() : Date.now(); for (const k of Object.keys(st.retain)) if (st.retain[k] < t) { delete st.byNonce[k]; delete st.outcomes[k]; delete st.retain[k]; } } };
+  load();
+  const persist = (next) => { if (opts.failWrite) throw new Error('disk full'); if (opts.file) { const tmp = opts.file + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(next)); fs.renameSync(tmp, opts.file); } st = next; };
   return {
     peek: (keyId, nonce) => { const k = `${keyId}:${nonce}`; return k in st.byNonce ? { canonical: st.byNonce[k], outcome: st.outcomes[k] } : null; },
-    claim: ({ keyId, nonce, inviteId, type, canonical, tombstone }) => {
+    claim: ({ keyId, nonce, inviteId, type, canonical, retainUntil, tombstone }) => {
       if (opts.fail) throw new Error('ledger down');
       if (opts.badResult !== undefined) return opts.badResult;
       const k = `${keyId}:${nonce}`;
       if (k in st.byNonce) return { status: st.byNonce[k] === canonical ? 'repeat' : 'conflict' };
       if (type === 'meet:invite' && inviteId in st.byInvite && st.byInvite[inviteId] !== canonical) return { status: 'invite_conflict' };
-      st.byNonce[k] = canonical; st.outcomes[k] = 'accepted'; if (type === 'meet:invite') st.byInvite[inviteId] = canonical;
-      if (tombstone && !st.tomb.includes(inviteId)) st.tomb.push(inviteId);   // atomic with the claim
-      save(); return { status: 'new' };
+      const next = JSON.parse(JSON.stringify(st));
+      next.byNonce[k] = canonical; next.outcomes[k] = 'accepted'; next.retain[k] = retainUntil; if (type === 'meet:invite') next.byInvite[inviteId] = canonical;
+      if (tombstone && !next.tomb.includes(inviteId)) next.tomb.push(inviteId);   // atomic with the claim
+      persist(next); return { status: 'new' };
     },
-    tombstone: (id) => { if (!st.tomb.includes(id)) st.tomb.push(id); save(); },
+    tombstone: (id) => { const next = JSON.parse(JSON.stringify(st)); if (!next.tomb.includes(id)) next.tomb.push(id); persist(next); },
     isTombstoned: (id) => st.tomb.includes(id), hasInvite: (id) => id in st.byInvite,
   };
 }
@@ -75,6 +78,7 @@ for (const name of EXPECTED) {
 }
 R.push([(golden.cases || []).length === EXPECTED.length ? '✓' : '✗', 'golden: exact case count', (golden.cases || []).length, EXPECTED.length]);
 R.push([golden.key_id === OP.keyId ? '✓' : '✗', 'golden: key id from fixed seed', golden.key_id, OP.keyId]);
+R.push([golden.profile === 'airc-meet-v1' && golden.operator_seed === '11'.repeat(32) ? '✓' : '✗', 'golden: profile + operator seed pinned', `${golden.profile}/${(golden.operator_seed || '').slice(0, 4)}…`, 'airc-meet-v1/1111…']);
 
 // ---- acceptance, pin states, keys
 check('signed invite accepted', run(env(base, OP)), 'accepted:signed');
@@ -150,6 +154,16 @@ check('cancel of a terminal action → effect none', run(env(cancel, OP), { expe
 check('second distinct cancel for an already-tombstoned id → effect none', (() => { const l = mkLedger(); run(env(cancel, OP), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z'), ledger: l }); return run(env({ ...cancel, nonce: 'GGGGGGGGGGGGGGGGGGGGGG' }, OP), { expect: 'meet:leave', now: at('2026-09-04T19:32:00Z'), ledger: l }); })(), 'accepted:signed:none');
 check('tombstone survives a restart (file-backed ledger)', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger-${process.pid}.json`); try { fs.unlinkSync(f); } catch {} run(env(cancel, OP), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z'), ledger: mkLedger({ file: f }) }); const r = run(env(base, OP), { ledger: mkLedger({ file: f }) }); fs.unlinkSync(f); return r; })(), 'action_not_pending');
 check('repeat survives a restart (file-backed ledger)', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger2-${process.pid}.json`); try { fs.unlinkSync(f); } catch {} run(env(base, OP), { ledger: mkLedger({ file: f }) }); const r = run(env(base, OP), { ledger: mkLedger({ file: f }) }); fs.unlinkSync(f); return r; })(), 'accepted:signed:repeat:none');
+
+// ---- rev 5: cancel ordering, unsigned cancels, unsigned binding, fixture durability, TTL
+check('cancel: Action lookup fails → refuse and NOTHING consumed; retry after recovery → cancel', (() => { const l = mkLedger(); let fail = true; const a = { get: () => { if (fail) throw new Error('db'); return { from: 'brightseth', to: 'grokbot', url: base.url, expires_at: base.expires_at, status: 'pending' }; } }; const first = run(env(cancel, OP), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z'), ledger: l, actions: a }); if (show(first) !== 'action_unavailable') return first; fail = false; return run(env(cancel, OP), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z'), ledger: l, actions: a }); })(), 'accepted:signed:cancel');
+check('unsigned cancel in pin state none → unsigned (every network cancel is signed)', run(env(cancel, null), { expect: 'meet:leave', pinStore: pins('none'), now: at('2026-09-04T19:31:00Z') }), 'unsigned');
+check('unsigned invite, Action from differs → action_mismatch', run(env(base, null), { pinStore: pins('none'), actions: actions({ [base.invite_id]: { from: 'mallory', to: 'grokbot', url: base.url, expires_at: base.expires_at, status: 'pending' } }) }), 'action_mismatch');
+check('unsigned invite, Action expired → expired', run(env(base, null), { pinStore: pins('none'), actions: actions({ [base.invite_id]: { from: 'brightseth', to: 'grokbot', url: base.url, expires_at: base.expires_at, status: 'pending' } }), now: at('2026-09-04T18:29:00Z') }), 'expired');
+check('unsigned invite claiming a different operator → not_my_operator', run(env({ ...base, from: 'mallory' }, null), { pinStore: pins('none') }), 'not_my_operator');
+check('ledger write fails → ledger_unavailable, memory untouched; retry → new (not repeat)', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger3-${process.pid}.json`); try { fs.unlinkSync(f); } catch {} const l1 = mkLedger({ file: f, failWrite: true }); const r1 = run(env(base, OP), { ledger: l1 }); if (show(r1) !== 'ledger_unavailable') return r1; const l2 = mkLedger({ file: f }); const r2 = run(env(base, OP), { ledger: l2 }); try { fs.unlinkSync(f); } catch {} return r2; })(), 'accepted:signed');
+check('retention: an entry past retainUntil is evicted on load; tombstone persists', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger4-${process.pid}.json`); try { fs.unlinkSync(f); } catch {} run(env(cancel, OP), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z'), ledger: mkLedger({ file: f }) }); const later = mkLedger({ file: f, now: at('2026-09-07T00:00:00Z') }); const evicted = later.peek(OP.keyId, cancel.nonce) === null; const tomb = later.isTombstoned(base.invite_id); try { fs.unlinkSync(f); } catch {} return { ok: evicted && tomb, provenance: 'evicted-and-tombstoned', reason: `evicted=${evicted} tomb=${tomb}` }; })(), 'accepted:evicted-and-tombstoned');
+check('ledger without peek → ledger_unavailable', run(env(base, OP), { ledger: { claim: () => ({ status: 'new' }), isTombstoned: () => false, hasInvite: () => false } }), 'ledger_unavailable');
 
 for (const [m, n, got, want] of R) console.log(`${m} ${n}${m === '✗' ? `  (got ${got}, want ${want})` : ''}`);
 const fails = R.filter((r) => r[0] === '✗').length; console.log(`\n${R.length - fails}/${R.length} pass`); process.exit(fails ? 1 : 0);

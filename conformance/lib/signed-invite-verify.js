@@ -115,14 +115,19 @@ function verify(p) {
   const { sig, ...signed } = data;
   if (!sig) {
     if (pin.state !== 'none') return refuse('unsigned');        // pending, pinned or retired: nothing unsigned
-    // unsigned is accepted only in state 'none' — and still subject to action/tombstone checks
-    if (typeof signed.invite_id !== 'string') return refuse('bad_shape');
-    if (expect === 'meet:invite') {
-      if (typeof signed.url !== 'string' || !/^https:\/\/[^\s"'<>]+$/.test(signed.url)) return refuse('bad_shape');
-      try { if (ledger.isTombstoned(signed.invite_id)) return refuse('action_not_pending'); } catch { return refuse('ledger_unavailable'); }
-      let action; try { action = actions ? actions.get(signed.invite_id) : null; } catch { return refuse('action_unavailable'); }
-      if (!action && p.actionsRequired) return refuse('action_unavailable');
-      if (action) { if (action.to !== me || action.url !== signed.url) return refuse('action_mismatch'); if (action.status !== 'pending') return refuse('action_not_pending'); }
+    if (expect !== 'meet:invite') return refuse('unsigned');    // every network cancel is signed, in every pin state
+    // an unsigned invite is accepted only in state 'none' — and still fully bound to tombstones and the Action
+    if (typeof signed.invite_id !== 'string' || typeof signed.url !== 'string' || !/^https:\/\/[^\s"'<>]+$/.test(signed.url)) return refuse('bad_shape');
+    if (signed.expires_at !== undefined) { const exp = strictIso(signed.expires_at); if (!Number.isFinite(exp)) return refuse('bad_time'); if (now + SKEW_MS >= exp) return refuse('expired'); }
+    if (typeof signed.from === 'string' && signed.from !== operator) return refuse('not_my_operator');
+    if (typeof signed.to === 'string' && signed.to !== me) return refuse('not_my_operator');
+    try { if (ledger.isTombstoned(signed.invite_id)) return refuse('action_not_pending'); } catch { return refuse('ledger_unavailable'); }
+    let action; try { action = actions ? actions.get(signed.invite_id) : null; } catch { return refuse('action_unavailable'); }
+    if (!action && p.actionsRequired) return refuse('action_unavailable');
+    if (action) {
+      if (action.from !== operator || action.to !== me || action.url !== signed.url || (signed.expires_at !== undefined && action.expires_at !== signed.expires_at)) return refuse('action_mismatch');
+      if (action.status !== 'pending') return refuse('action_not_pending');
+      const aexp = strictIso(action.expires_at); if (!Number.isFinite(aexp) || now + SKEW_MS >= aexp) return refuse('expired');
     }
     return { ok: true, provenance: 'unsigned', signed };
   }
@@ -145,7 +150,8 @@ function verify(p) {
   if (!NONCE_RE.test(signed.nonce)) return refuse('bad_nonce');
 
   // identical resend → the stored prior outcome, before any action-state check (idempotency beats staleness)
-  let prior; try { prior = ledger.peek ? ledger.peek(pin.keyId, signed.nonce) : null; } catch { return refuse('ledger_unavailable'); }
+  if (typeof ledger.peek !== 'function') return refuse('ledger_unavailable');   // peek is part of the ledger contract
+  let prior; try { prior = ledger.peek(pin.keyId, signed.nonce); } catch { return refuse('ledger_unavailable'); }
   if (prior && prior.canonical === canonical(signed)) return { ok: true, provenance: 'signed', repeat: true, signed, effect: 'none', prior: prior.outcome };
   if (prior) return refuse('replay');
 
@@ -167,6 +173,13 @@ function verify(p) {
     try { tombstoned = ledger.isTombstoned(signed.invite_id); } catch { return refuse('ledger_unavailable'); }
     retainUntil = Math.max(issued, now) + CANCEL_RETENTION_MS;   // retention counts from acceptance, never earlier
   }
+  // every read that can fail happens BEFORE the one atomic write, so a failed lookup never consumes a nonce
+  let known = false, terminal = tombstoned;
+  if (signed.type === 'meet:leave') {
+    try { known = ledger.hasInvite(signed.invite_id); } catch { return refuse('ledger_unavailable'); }
+    let a; try { a = actions ? actions.get(signed.invite_id) : null; } catch { return refuse('action_unavailable'); }
+    if (a) { known = true; if (a.status !== 'pending' && a.status !== 'accepted') terminal = true; }
+  }
   const VALID = new Set(['new', 'repeat', 'conflict', 'invite_conflict']);
   let claim; try { claim = ledger.claim({ keyId: pin.keyId, nonce: signed.nonce, inviteId: signed.invite_id, type: signed.type, canonical: canonical(signed), retainUntil, tombstone: signed.type === 'meet:leave' }); } catch { return refuse('ledger_unavailable'); }
   if (!claim || typeof claim !== 'object' || !VALID.has(claim.status)) return refuse('ledger_unavailable');   // an unknown result never accepts
@@ -174,8 +187,7 @@ function verify(p) {
   if (claim.status === 'conflict') return refuse('replay');
   if (claim.status === 'invite_conflict') return refuse('action_conflict');
   if (signed.type === 'meet:leave') {
-    // the claim persisted the tombstone atomically (tombstone:true); a cancel of an already-terminal action is a no-op
-    let known = false, terminal = tombstoned; try { known = ledger.hasInvite(signed.invite_id); const a = actions ? actions.get(signed.invite_id) : null; if (a) { known = true; if (a.status !== 'pending' && a.status !== 'accepted') terminal = true; } } catch { return refuse('ledger_unavailable'); }
+    // the claim persisted the tombstone atomically (tombstone:true); reads above already decided the effect
     return { ok: true, provenance: 'signed', signed, effect: terminal ? 'none' : known ? 'cancel' : 'tombstone' };
   }
   return { ok: true, provenance: 'signed', signed };

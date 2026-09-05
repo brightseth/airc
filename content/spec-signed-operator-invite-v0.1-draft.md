@@ -1,6 +1,6 @@
 # AIRC Extension: Signed operator `meet:invite` — v0.1 draft
 
-**Status:** Draft rev 4, 2026-09-04 (three codex adversarial rounds absorbed). Owner: AIRC lane. Verifier: the invited bot (and any dock
+**Status:** Draft rev 5, 2026-09-04 (four codex adversarial rounds absorbed). Owner: AIRC lane. Verifier: the invited bot (and any dock
 acting for it). Registry: unchanged — nothing here is verified at ingest.
 **Builds on:** `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md` — as a **deliberate
 variant** of its Option C: the memo's endpoint is verification at ingest once a trigger fires;
@@ -113,10 +113,13 @@ All checks run before any effect; any failure is a named refusal; no step throws
 input. Order:
 
 1. Parse strictly (duplicates, non-finite numbers, invalid Unicode, size, depth → `malformed`).
-2. Pin lookup for `(operator, registry)`. No `sig` in state `none` → accept as `provenance:
-   "unsigned"` — **still subject to the tombstone and Action checks of step 9** (an unsigned
-   invite cannot bypass `actionsRequired`). No `sig` in any other state → `unsigned`. `sig`
-   without a pin → `unknown_key` (never trust-on-first-use from the wire).
+2. Pin lookup for `(operator, registry)`. No `sig` in state `none` **and the command is an
+   invite** → accept as `provenance: "unsigned"` — still fully bound: `url` shape, any
+   `from`/`to`/`expires_at` present must match, the tombstone and Action checks of step 9
+   apply including the Action's `from` and expiry, and `actionsRequired` cannot be bypassed.
+   **An unsigned cancel refuses in every pin state** — every network cancel is signed. No
+   `sig` in any other state → `unsigned`. `sig` without a pin → `unknown_key` (never
+   trust-on-first-use from the wire).
 3. `sig.alg == "ed25519"`, `sig.key_id` equals the pinned full fingerprint (`key_mismatch`),
    pinned key not retired (`key_retired`), signature value is exactly 64 bytes of strict
    base64 (`bad_signature`).
@@ -145,8 +148,12 @@ input. Order:
     `(key_id, nonce)` **and by `invite_id`**, holding the canonical bytes and the outcome,
     retained until `max(expires_at, accepted_at) + 24 h` for invites and `accepted_at + 24 h`
     for cancels — retention counts from acceptance, never from a timestamp already in the
-    past. For a cancel, the claim **persists the tombstone in the same durable write**; a
-    tombstone can never be lost between claim and effect. Claim outcomes: `new` → proceed; `repeat` (same nonce, same bytes) → idempotent repeat of the
+    past. **Every read that can fail (pin, tombstone, Action lookup, `hasInvite`) happens
+    before the one atomic write**, so a failed lookup never consumes a nonce and a retry is a
+    fresh attempt. The ledger contract is `peek`, `claim`, `isTombstoned`, `hasInvite` — all
+    required; a ledger missing any of them is `ledger_unavailable`. For a cancel, the claim
+    **persists the tombstone in the same durable write**; a tombstone can never be lost
+    between claim and effect. Claim outcomes: `new` → proceed; `repeat` (same nonce, same bytes) → idempotent repeat of the
     prior outcome, no new effect; `conflict` (same nonce, different bytes) → `replay`;
     `invite_conflict` (same `invite_id`, different signed content, different nonce) →
     `action_conflict` — one signed content per action. The claim happens after all checks
@@ -168,7 +175,7 @@ never changes an existing action's state. **Nothing in a message body changes an
 
 - A cancel is valid **until the action is terminal**, independent of the invite's entry
   deadline; it carries its own `issued_at` and fresh `nonce` (retained 24 h from
-  `issued_at`) and is verified by the same steps (1–8, 10). A verified cancel for a known,
+  **acceptance**) and is verified by the same steps (1–8, 10). A verified cancel for a known,
   non-terminal invite ends it (`effect: cancel`); for an **unknown** `invite_id` — including
   one that arrives before its invite — it writes a **tombstone** (`effect: tombstone`, no
   other effect) so the later invite refuses `action_not_pending`; for an already-tombstoned
@@ -213,7 +220,9 @@ the bearer token plus the operator's knowledge of which bot they run — #391/#3
 ## Conformance
 
 Golden vectors: `conformance/vectors/signed-invite-v0.1.json` — a fixed file the tests
-**compare against** (regenerated only by an explicit `--regen`, never by the test run):
+**compare against** (regenerated only by an explicit `--regen`, never by the test run;
+`profile`, `operator_seed`, `key_id`, every case object, canonical bytes, signature and the
+exact case count are all asserted):
 fixed-seed key, canonical bytes and signature for the base object, absent-vs-null, escaped
 strings, supplementary-plane keys (JCS code-unit ordering), and a cancel.
 Reference verifier with injected clock, pin store, nonce ledger and action lookup:

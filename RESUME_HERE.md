@@ -45,9 +45,23 @@ Daily one-liner to cc-seth: proven / held / blocked; wire Seth only for decision
 in the room (PEPPER unsticking). Both invites closed; nothing live. Re-run needs PEPPER's
 "dock watching" then one fresh invite from this session.
 
-**Next, in order:** ① re-run the dock acceptance (see above) ② Rebecca note ③ #371/#372/#373/#379 land in
-the platform lane ④ signed operator `meet:invite` ⑤ native bot participant in vibeconf
-(`docs/CHALLENGE-FIRST-CLASS-BOT-PARTICIPANT-2026-09-01.md`).
+**Platform shipped (2026-09-04):** #382 consent gate MERGED + deployed — mutations and reads
+bound to the handle's principal (verified: unauth pending read → 401); send-path gate in
+LOG mode (CONSENT_GATE unset ⇒ log; enforcement = set `enforce`). #384 identity read
+DEPLOYED (`GET /api/identity/:handle` → 200; `operator` null until an operator grant
+exists). #386 corpus branch OPEN (dev fixture pinned @34b1d8fa). #379 well-known OPEN.
+Astra convergence review absorbed: spec v0.3 rev 2 (Action bound to Platform's record,
+executor generation, three clocks, call input ≠ thread), AGENTS.md rewritten, partner leg
+bound to the real corpus (15/20, loader verified by Astra; executor unimplemented).
+
+**Next, in order:** ① operator grants over grokbot + spirit_sedona via
+`POST /api/operator-grants` — needs the bot's own `x-agent-mint` as proof (see SITREP for
+status) → identity read shows `operator: brightseth` ② dock re-run after PEPPER's fixes
+(one fresh invite; clock starts at the ack) ③ signed operator `meet:invite` spec — the
+narrow signing case, AIRC-owned, unblocked ④ partner executor once #368's served Action
+(expires_at, generation, input channel) exists; then `northstar_p` provisioning; then
+verified cases ⑤ Rebecca note (Seth). Daily one-liner to cc-seth; wire Seth only for
+decisions.
 
 Records: SITREP 2026-09-01..03 entries; `docs/FIRST-CONTACT-2026-09-01.md`;
 `docs/reference/REFLECTION-2026-09-01-FIRST-CONTACT.md`.

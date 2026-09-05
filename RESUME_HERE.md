@@ -59,7 +59,16 @@ Astra convergence review absorbed: spec v0.3 rev 2 (Action bound to Platform's r
 executor generation, three clocks, call input ≠ thread), AGENTS.md rewritten, partner leg
 bound to the real corpus (15/20, loader verified by Astra; executor unimplemented).
 
-**Next, in order:** ① operator grants over grokbot + spirit_sedona via
+**Cross-runtime demo (2026-09-05, `docs/CROSS-RUNTIME-DEMO-2026-09-05.md`):** Leg A (isolated
+Claude receiver) loop CORRECT, dedup BROKEN; Leg B (restart) CORRECT — sent nothing; Leg C
+(codex as receiver, question msg_mto141hgzvops_ / q_mto1416z) was RUNNING at wrap — verify
+from the asking side: `node conformance/cross-runtime/verify.js msg_mto141hgzvops_ q_mto1416z`
+(exit 0 = correlated + one answer; 3 = correlated, dedup failed). The incompatibility:
+no retry dedup for the principal-less enrollment path (#391, narrowed per Seth). After
+Platform's fix: identical retry → one answer; restart → no send. Tooling:
+`conformance/cross-runtime/` (senders only via the allowlist guard).
+
+**Next, in order:** ⓪ close Leg C's verdict ① operator grants over grokbot + spirit_sedona via
 `POST /api/operator-grants` — needs the bot's own `x-agent-mint` as proof (see SITREP for
 status) → identity read shows `operator: brightseth` ② dock re-run after PEPPER's fixes
 (one fresh invite; clock starts at the ack) ③ signed operator `meet:invite` — SHIP-AS-DRAFT after six codex rounds

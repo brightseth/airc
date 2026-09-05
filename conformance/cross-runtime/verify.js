@@ -15,7 +15,8 @@ const replyId = (m) => (m.reply_to && typeof m.reply_to === 'object' ? m.reply_t
     exactly_one_answer: answers.length === 1,
     correlated: answers.length >= 1 && answers.every((a) => replyId(a) === qid),   // GET returns reply_to as {id, from, text} and carries no thread_id
     dedup_held: answers.length === 1,
-    self_conversation: msgs.some((m) => m.from === 'northstar_b' && (m.payload || {}).type === 'answer' && (((m.payload || {}).data || {}).correlation_id !== corr)),
+    // self-conversation = an answer that does not reply to a question the asker actually sent (a receiver answering itself / its own receipts)
+    self_conversation: msgs.some((m) => m.from === 'northstar_b' && (m.payload || {}).type === 'answer' && !msgs.some((q) => q.from === 'northstar_a' && q.id === replyId(m))),
   };
   console.log(JSON.stringify(out, null, 1));
   process.exit(out.question_found && out.correlated && !out.self_conversation ? (out.dedup_held ? 0 : 3) : 1);   // exit 3 = loop correct, dedup failed

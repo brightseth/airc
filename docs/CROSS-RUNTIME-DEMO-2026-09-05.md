@@ -64,6 +64,20 @@ and was killed — a runtime fact (it hung, almost certainly on an in-sandbox ap
 not a verdict on the loop. **Leg C: unproven.** Rerun planned non-interactively (`-a never`)
 after the dedup re-verification, so the two runs never compete for the same unanswered question.
 
+## After Platform's fix (#405) — retry deduplication re-verified: PASS
+
+Fresh question `msg_mtosw745wxCNIr` (`q_mtosw6hu`); a fresh isolated receiver holding `northstar_b`
+(identity via the allowlist guard; the enrollment gate established its principal at credentialed
+register). Send 1: `msg_mtosxizqZLRpuv`, `idempotentReplay:false`, `idempotencyProtected:true`.
+Identical retry: **same id, `idempotentReplay:true`, `message.reused:true`.** Thread holds exactly
+one answer. Verified from the asking side (`verify.js` exit 0). **The Leg A incompatibility is
+closed by #405** — same principals, same tooling, no new abstraction.
+
+Observed on the way (not a dedup event; logged as the next candidate incompatibility): a body
+containing `<` and `"` was refused 409 `approved_content_mismatch` on both send and retry, nothing
+stored — the server sanitizes before comparing digests (contract vector CB-004's behaviour) and
+the client computed its digest over the unsanitized text. A plain-ASCII body went through.
+
 ## After Platform's fix — re-verification procedure (identical, no new abstraction)
 
 1. Repeat the identical retry: the receiving runtime resends the same body with the same

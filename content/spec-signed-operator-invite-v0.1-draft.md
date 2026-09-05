@@ -1,6 +1,6 @@
 # AIRC Extension: Signed operator `meet:invite` — v0.1 draft
 
-**Status:** Draft rev 2, 2026-09-04 (after codex adversarial review — 16 findings absorbed). Owner: AIRC lane. Verifier: the invited bot (and any dock
+**Status:** Draft rev 3, 2026-09-04 (two codex adversarial rounds absorbed). Owner: AIRC lane. Verifier: the invited bot (and any dock
 acting for it). Registry: unchanged — nothing here is verified at ingest.
 **Builds on:** `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md` — as a **deliberate
 variant** of its Option C: the memo's endpoint is verification at ingest once a trigger fires;
@@ -45,10 +45,14 @@ recipient, action, time, and nonce:
 }
 ```
 
-- **Canonical form:** RFC 8785 restricted to this profile — sorted keys, no whitespace,
-  strings and `null` only. Verifiers **reject before parsing loses information**: duplicate
-  names, non-finite numbers, lone surrogates, depth > 4, payload > 16 KB. Timestamps are
-  strict UTC `YYYY-MM-DDTHH:MM:SS(.sss)Z`. `url` is `https://…`.
+- **Canonical form:** RFC 8785 restricted to this profile — sorted keys (UTF-16 code-unit
+  order, as JCS), no whitespace, strings and `null` only. Verifiers use a **strict JSON
+  parser** that rejects before any information is lost: duplicate names after escape
+  decoding (so `"a\"b"` and `"ab"` are distinct, but two spellings of one key are
+  duplicates), non-finite numbers, lone surrogates raw **or escaped**, control characters,
+  object *or array* depth > 4, and more than 16 KB **in bytes**. Timestamps are strict UTC
+  `YYYY-MM-DDTHH:MM:SS(.sss)Z` **and calendar-valid** (a normalized `02-30` refuses);
+  `starts_at`, when present, lies within `[issued_at − skew, expires_at]`. `url` is `https://…`.
 - **Field rules:** required — `domain`, `protocol_version`, `type`, `from`, `to`,
   `invite_id`, `issued_at`, `nonce`; invite-required — `url`, `expires_at`; optional —
   `surface`, `starts_at`, `reason`. Unknown keys refuse. `domain` is the extension's own
@@ -83,11 +87,13 @@ signed one. A signed `meet:leave` uses the same shape (`type: "meet:leave"`, opt
   truncated id), bound to `(operator handle, registry URL)`, durably. Mismatch or absence:
   refuse and report; **accept nothing pending confirmation.** A spoofed identity read
   therefore yields denial of service, never impersonation.
-- **Pinned means signed_required.** Once pinned, the bot persists `signed_required = true`
-  for that operator. From then on: missing key, lookup failure, unpublished key, pending
-  confirmation, or a retired key all **refuse invitations** — none of them re-enable the
-  unsigned path. Disabling verification requires a separate, explicit operator instruction
-  in the operator chat.
+- **Four pin states, persisted per `(operator, registry)`:** `none` (no key has ever been
+  stated or served) · `pending` (a key has been served **or** a fingerprint stated, but not
+  both matched) · `pinned` · `retired`. **Unsigned invites are accepted only in `none`.**
+  In `pending`, `pinned` and `retired`, everything unsigned refuses; in `pending` even a
+  validly signed message refuses (`pin_pending`) until the operator's stated fingerprint and
+  the served key match. Leaving `none` is one-way: nothing re-enables the unsigned path
+  except an explicit operator instruction in the operator chat.
 - **Rotation is an authenticated, versioned operator instruction** in the operator chat:
   new full fingerprint, key version `n+1`, effective time. The bot pins the new key at the
   effective time, marks the old key **retired** (signatures under it refuse thereafter),
@@ -111,8 +117,9 @@ input. Order:
    base64 (`bad_signature`).
 4. Shape: required fields present, strings/`null` only, no unknown keys, `domain` and
    `protocol_version` exact, `type` in the command set (`bad_shape`).
-5. Signed `type` == payload `type` == the executing handler; envelope `invite_id` == signed
-   (`envelope_mismatch`).
+5. The executing handler passes the command it expects; payload `type`, any outer message
+   `type`, and the signed `type` must all equal it; any outer `invite_id` must equal the
+   signed one (`envelope_mismatch`). A falsy or missing outer type is not a match.
 6. Ed25519 verify over canonical bytes with the pinned key (`bad_signature`).
 7. `from` == configured operator, `to` == own handle (`not_my_operator`).
 8. Time: `issued_at` strict and not more than 2 minutes in the future (`bad_time`). For an
@@ -120,35 +127,45 @@ input. Order:
    (`expired`) — conservative, so a slow clock cannot seat past the deadline. **No freshness
    window on `issued_at`**: delivery may lag by a full watch cycle; the entry deadline is the
    only deadline. Re-check `expires_at` again immediately before any effect (seating).
-9. Action binding (when an Action record exists): its `to` == `to`, its `expires_at` ==
-   signed `expires_at`, its status pending (`action_mismatch`, `action_not_pending`);
-   lookup unavailable → `action_unavailable`.
-10. Nonce: base64url, 22–43 chars (`bad_nonce`). Durable ledger keyed by `(key_id, nonce)`
-    holding the canonical bytes and retained until `expires_at + 24 h`: same nonce with the
-    **same canonical bytes** → idempotent repeat of the prior outcome (re-ack, no new
-    effect); same nonce with **different** bytes → `replay`. Record after all checks pass and
-    **before** any effect, atomically. Bot and dock keep separate ledgers and never consume
-    the same authorization twice for the same effect.
+9. Action binding: when Actions are **required** (once #368 serves them — a verifier flag,
+   default on from then), a missing record refuses (`action_unavailable`); no fallback.
+   When a record exists, its `from` == operator, `to` == own handle, `url` == signed `url`,
+   `expires_at` == signed `expires_at` (`action_mismatch`), and its status is pending
+   (`action_not_pending`). A tombstoned `invite_id` refuses `action_not_pending`. Lookup
+   errors refuse (`action_unavailable`).
+10. Nonce: base64url, 22–43 chars (`bad_nonce`). A **durable ledger with one atomic
+    `claim`** keyed by `(key_id, nonce)` **and by `invite_id`**, holding the canonical bytes,
+    retained until `expires_at + 24 h` for invites and `issued_at + 24 h` for cancels. Claim
+    outcomes: `new` → proceed; `repeat` (same nonce, same bytes) → idempotent repeat of the
+    prior outcome, no new effect; `conflict` (same nonce, different bytes) → `replay`;
+    `invite_conflict` (same `invite_id`, different signed content, different nonce) →
+    `action_conflict` — one signed content per action. The claim happens after all checks
+    and **before** any effect; if the ledger cannot claim, the verifier refuses
+    (`ledger_unavailable`) — it never accepts on a failed record. Bot and dock keep separate
+    ledgers and never consume the same authorization twice for the same effect.
 11. Only then: `meet:ack accepted:true`, and the v0.3 lifecycle proceeds.
 
 Refusal ack: `meet:ack {accepted:false, reason}` with one of `malformed`, `unsigned`,
 `unknown_key`, `key_mismatch`, `key_retired`, `bad_signature`, `bad_shape`,
 `envelope_mismatch`, `not_my_operator`, `bad_time`, `expired`, `bad_nonce`, `replay`,
-`action_mismatch`, `action_not_pending`, `action_unavailable`. At most one refusal report
+`action_conflict`, `action_mismatch`, `action_not_pending`, `action_unavailable`,
+`pin_pending`, `pin_unavailable`, `ledger_unavailable`, `bad_handler`. At most one refusal report
 per `invite_id` in the operator chat, and at most 10 per hour overall. An unverified message
 never changes an existing action's state. **Nothing in a message body changes any check.**
 
 ## Cancellation (signed `meet:leave` from the operator)
 
 - A cancel is valid **until the action is terminal**, independent of the invite's entry
-  deadline; it carries its own `issued_at` and fresh `nonce` and is verified by the same
-  steps (1–8, 10). A cancel that arrives **before** its invite tombstones the `invite_id`
-  (the later invite refuses `action_not_pending`).
+  deadline; it carries its own `issued_at` and fresh `nonce` (retained 24 h from
+  `issued_at`) and is verified by the same steps (1–8, 10). A verified cancel for a known
+  invite ends it (`effect: cancel`); a verified cancel for an **unknown** `invite_id` —
+  including one that arrives before its invite — writes a **tombstone** (`effect:
+  tombstone`, no other effect) so the later invite refuses `action_not_pending`. Tombstones
+  are durable in the ledger.
 - Every operator-cancel path over the network is signed. A human saying "leave" in the call
   chat is **host authority in the room** — a different object, exercised by the body's
   adapter — not an operator cancel of the action.
-- Cancellation never invokes the acceptance branch; a cancel of an unknown `invite_id` is
-  refused and receipted once.
+- Cancellation never invokes the acceptance branch.
 
 ## Trust boundary — what a signature does not tell you
 
@@ -183,8 +200,10 @@ the bearer token plus the operator's knowledge of which bot they run — #391/#3
 
 ## Conformance
 
-Golden vectors: `conformance/vectors/signed-invite-v0.1.json` (fixed seed key; canonical
-bytes; expected signature; accept and refusal cases with isolated single-field mutations).
+Golden vectors: `conformance/vectors/signed-invite-v0.1.json` — a fixed file the tests
+**compare against** (regenerated only by an explicit `--regen`, never by the test run):
+fixed-seed key, canonical bytes and signature for the base object, absent-vs-null, escaped
+strings, supplementary-plane keys (JCS code-unit ordering), and a cancel.
 Reference verifier with injected clock, pin store, nonce ledger and action lookup:
 `conformance/lib/signed-invite-verify.js`; tests: `node conformance/signed-invite.selfcheck.js`.
 Vectors for Platform's corpus are requested, not written here: signed accepted · unsigned

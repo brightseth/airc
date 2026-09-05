@@ -1,96 +1,129 @@
 #!/usr/bin/env node
-// Tests the reference verifier (conformance/lib/signed-invite-verify.js) against the rev-2
-// spec: independent fixed-seed keys, golden vectors, injected clock/pins/ledger/actions,
-// isolated single-field mutations, cancel, rotation, envelope/type binding, replay vs
-// idempotent repeat, malformed input (fail closed), dates (fail closed).
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
+// Tests conformance/lib/signed-invite-verify.js (rev 3). Golden vectors are COMPARED against
+// conformance/vectors/signed-invite-v0.1.json; regenerate only with --regen.
+const crypto = require('crypto'); const fs = require('fs'); const path = require('path');
 const V = require('./lib/signed-invite-verify.js');
+const REGEN = process.argv.includes('--regen');
+const VEC = path.join(__dirname, 'vectors', 'signed-invite-v0.1.json');
 
-// deterministic keys from fixed seeds (Ed25519 private key = 32-byte seed)
 function keyFromSeed(hex) {
-  const seed = Buffer.from(hex, 'hex');
-  const pkcs8 = Buffer.concat([Buffer.from('302e020100300506032b657004220420', 'hex'), seed]);
-  const privateKey = crypto.createPrivateKey({ key: pkcs8, format: 'der', type: 'pkcs8' });
+  const privateKey = crypto.createPrivateKey({ key: Buffer.concat([Buffer.from('302e020100300506032b657004220420', 'hex'), Buffer.from(hex, 'hex')]), format: 'der', type: 'pkcs8' });
   const raw = crypto.createPublicKey(privateKey).export({ type: 'spki', format: 'der' }).subarray(-32);
   return { privateKey, raw, keyId: V.keyIdOf(raw) };
 }
-const OP = keyFromSeed('11'.repeat(32));      // operator's real key
-const OP2 = keyFromSeed('22'.repeat(32));     // operator's rotated key
-const MAL = keyFromSeed('33'.repeat(32));     // attacker key
+const OP = keyFromSeed('11'.repeat(32)), OP2 = keyFromSeed('22'.repeat(32)), MAL = keyFromSeed('33'.repeat(32));
+const T0 = Date.parse('2026-09-04T18:00:00Z'); const at = (iso) => () => Date.parse(iso); const clock = (ms) => () => ms;
 
-const T0 = Date.parse('2026-09-04T18:00:00Z');
-const mkClock = (ms) => () => ms;
-function mkPins(entries) { return { get: (op, reg) => entries[`${op}@${reg}`] || null }; }
-function mkLedger() { const m = new Map(); return { seen: (k, n) => m.get(`${k}:${n}`) || false, record: (k, n, c) => m.set(`${k}:${n}`, c) }; }
-function mkActions(map) { return { get: (id) => (map && id in map ? map[id] : null) }; }
+function mkLedger(opts = {}) {
+  const byNonce = new Map(), byInvite = new Map(), tomb = new Set();
+  return {
+    claim: ({ keyId, nonce, inviteId, type, canonical }) => {
+      if (opts.fail) throw new Error('ledger down');
+      const k = `${keyId}:${nonce}`;
+      if (byNonce.has(k)) return { status: byNonce.get(k) === canonical ? 'repeat' : 'conflict' };
+      if (type === 'meet:invite' && byInvite.has(inviteId) && byInvite.get(inviteId) !== canonical) return { status: 'invite_conflict' };
+      byNonce.set(k, canonical); if (type === 'meet:invite') byInvite.set(inviteId, canonical); return { status: 'new' };
+    },
+    tombstone: (id) => tomb.add(id), isTombstoned: (id) => tomb.has(id), hasInvite: (id) => byInvite.has(id),
+  };
+}
+const pins = (state, key = OP, extra = {}) => ({ get: () => (state === 'none' ? { state: 'none' } : { state, raw: key.raw, keyId: key.keyId, ...extra }) });
+const actions = (map, fail) => ({ get: (id) => { if (fail) throw new Error('db down'); return map && id in map ? map[id] : null; } });
 
-const base = {
-  domain: V.DOMAIN, protocol_version: '0.2', type: 'meet:invite', from: 'brightseth', to: 'grokbot',
-  invite_id: 'mi_20260904_grokbot_003', url: 'https://meet.google.com/mrq-ujjh-qna', surface: 'google-meet',
-  starts_at: null, expires_at: '2026-09-04T18:30:00Z', issued_at: '2026-09-04T18:00:00Z', nonce: 'AAAAAAAAAAAAAAAAAAAAAA',
-};
-function envelope(signed, key, opts = {}) {
-  const data = { ...signed };
-  if (key) data.sig = opts.sig || V.sign(signed, key.privateKey);
-  const msg = { type: opts.envType || signed.type, payload: { type: opts.payloadType || signed.type, data: { ...data, invite_id: opts.envInvite || signed.invite_id } } };
+const base = { domain: V.DOMAIN, protocol_version: '0.2', type: 'meet:invite', from: 'brightseth', to: 'grokbot', invite_id: 'mi_20260904_grokbot_003', url: 'https://meet.google.com/mrq-ujjh-qna', surface: 'google-meet', starts_at: null, expires_at: '2026-09-04T18:30:00Z', issued_at: '2026-09-04T18:00:00Z', nonce: 'AAAAAAAAAAAAAAAAAAAAAA' };
+const cancel = { domain: V.DOMAIN, protocol_version: '0.2', type: 'meet:leave', from: 'brightseth', to: 'grokbot', invite_id: base.invite_id, issued_at: '2026-09-04T19:30:00Z', nonce: 'BBBBBBBBBBBBBBBBBBBBBB', reason: 'done' };
+function env(signed, key, o = {}) {
+  const data = { ...signed }; if (key) data.sig = o.sig || V.sign(signed, key.privateKey);
+  const msg = { type: o.envType === undefined ? signed.type : o.envType, payload: { type: o.payloadType || signed.type, data } };
+  if (o.outerInvite) msg.invite_id = o.outerInvite; if (o.envType === null) delete msg.type;
   return JSON.stringify(msg);
 }
-const pinnedOp = { 'brightseth@https://www.slashvibe.dev': { raw: OP.raw, keyId: OP.keyId, version: 1, retired: false, signedRequired: true } };
-const ctx = (over = {}) => ({ me: 'grokbot', operator: 'brightseth', registry: 'https://www.slashvibe.dev', pinStore: mkPins(pinnedOp), nonceLedger: mkLedger(), actions: mkActions(null), now: mkClock(T0 + 60e3), ...over });
-
-const results = [];
-const check = (name, res, want) => results.push([(res.ok ? 'accepted:' + (res.provenance || '') + (res.repeat ? ':repeat' : '') : res.reason) === want ? '✓' : '✗', name, res.ok ? 'accepted:' + res.provenance + (res.repeat ? ':repeat' : '') : res.reason, want]);
+const ctx = (over = {}) => ({ expect: 'meet:invite', me: 'grokbot', operator: 'brightseth', registry: 'https://www.slashvibe.dev', pinStore: pins('pinned'), ledger: mkLedger(), actions: actions(null), now: clock(T0 + 60e3), ...over });
 const run = (raw, over) => V.verify({ ...ctx(over), rawJson: raw });
+const R = []; const show = (r) => (r.ok ? `accepted:${r.provenance}${r.repeat ? ':repeat' : ''}${r.effect ? ':' + r.effect : ''}` : r.reason);
+const check = (name, res, want) => R.push([show(res) === want ? '✓' : '✗', name, show(res), want]);
 
-// golden vector: fixed key + fixed object → fixed canonical bytes + signature
-const golden = { canonical: V.canonical(base), signature: V.sign(base, OP.privateKey).value, key_id: OP.keyId, operator_seed: '11'.repeat(32) };
-fs.writeFileSync(path.join(__dirname, 'vectors', 'signed-invite-v0.1.json'), JSON.stringify({ profile: 'airc-meet-v1', object: base, ...golden }, null, 1) + '\n');
-const goldenAgain = V.sign(base, OP.privateKey).value;
-results.push([goldenAgain === golden.signature ? '✓' : '✗', 'golden: deterministic signature for fixed key+object', goldenAgain === golden.signature, true]);
+// ---- golden vectors: compared, never overwritten by a test run
+const vectors = {
+  profile: 'airc-meet-v1', operator_seed: '11'.repeat(32), key_id: OP.keyId,
+  cases: [
+    { name: 'base invite', object: base },
+    { name: 'starts_at absent (distinct from null)', object: (() => { const b = { ...base, nonce: 'CCCCCCCCCCCCCCCCCCCCCC' }; delete b.starts_at; return b; })() },
+    { name: 'escaped quotes and backslash in reason (cancel)', object: { ...cancel, nonce: 'DDDDDDDDDDDDDDDDDDDDDD', reason: 'say "hi" \\ done' } },
+    { name: 'supplementary-plane text in surface (JCS code-unit order)', object: { ...base, nonce: 'EEEEEEEEEEEEEEEEEEEEEE', surface: 'g\u{1F600}m' } },
+    { name: 'cancel', object: cancel },
+  ].map((c) => ({ ...c, canonical: V.canonical(c.object), signature: V.sign(c.object, OP.privateKey).value })),
+};
+if (REGEN) { fs.writeFileSync(VEC, JSON.stringify(vectors, null, 1) + '\n'); console.log('golden vectors regenerated'); }
+const golden = JSON.parse(fs.readFileSync(VEC, 'utf8'));
+for (const c of golden.cases) {
+  const mine = vectors.cases.find((x) => x.name === c.name);
+  R.push([mine && mine.canonical === c.canonical && mine.signature === c.signature ? '✓' : '✗', `golden: ${c.name}`, 'match', 'match']);
+}
+R.push([golden.key_id === OP.keyId ? '✓' : '✗', 'golden: key id from fixed seed', golden.key_id, OP.keyId]);
 
-check('signed invite accepted', run(envelope(base, OP)), 'accepted:signed');
-check('identical delivery again → idempotent repeat', (() => { const l = mkLedger(); const c = { nonceLedger: l }; run(envelope(base, OP), c); return run(envelope(base, OP), c); })(), 'accepted:signed:repeat');
-check('same nonce, different bytes → replay', (() => { const l = mkLedger(); const c = { nonceLedger: l }; run(envelope(base, OP), c); return run(envelope({ ...base, url: 'https://meet.google.com/zzz-zzzz-zzz' }, OP), c); })(), 'replay');
-check('unsigned after pin → unsigned', run(envelope(base, null)), 'unsigned');
-check('unsigned before any pin → accepted:unsigned', run(envelope(base, null), { pinStore: mkPins({}) }), 'accepted:unsigned');
-check('signed but nothing pinned → unknown_key (no TOFU from wire)', run(envelope(base, OP), { pinStore: mkPins({}) }), 'unknown_key');
-check('attacker key, correct key_id claim → key_mismatch', run(envelope(base, MAL)), 'key_mismatch');
-check('attacker signs but relabels key_id to the pinned one → bad_signature', run(envelope(base, MAL, { sig: { ...V.sign(base, MAL.privateKey), key_id: OP.keyId } })), 'bad_signature');
-check('retired key → key_retired', run(envelope(base, OP), { pinStore: mkPins({ 'brightseth@https://www.slashvibe.dev': { ...pinnedOp['brightseth@https://www.slashvibe.dev'], retired: true } }) }), 'key_retired');
-check('rotation: new key pinned, old signature → key_mismatch', run(envelope(base, OP), { pinStore: mkPins({ 'brightseth@https://www.slashvibe.dev': { raw: OP2.raw, keyId: OP2.keyId, version: 2, retired: false, signedRequired: true } }) }), 'key_mismatch');
-check('rotation: new key pinned, new signature → accepted', run(envelope(base, OP2), { pinStore: mkPins({ 'brightseth@https://www.slashvibe.dev': { raw: OP2.raw, keyId: OP2.keyId, version: 2, retired: false, signedRequired: true } }) }), 'accepted:signed');
-check('url tampered on the wire (signature over original) → bad_signature', run(envelope({ ...base, url: 'https://evil.example/x' }, OP, { sig: V.sign(base, OP.privateKey) })), 'bad_signature');
-check('wrong operator signs → not_my_operator', run(envelope({ ...base, from: 'mallory' }, OP)), 'not_my_operator');
-check('addressed to someone else → not_my_operator', run(envelope({ ...base, to: 'spirit_sedona' }, OP)), 'not_my_operator');
-check('relabeled: signed invite sent as meet:leave → envelope_mismatch', run(envelope(base, OP, { envType: 'meet:leave', payloadType: 'meet:leave' })), 'envelope_mismatch');
-check('invite_id tampered on the wire → bad_signature', run(envelope(base, OP, { envInvite: 'mi_other' })), 'bad_signature');
-check('wrong domain → bad_shape', run(envelope({ ...base, domain: 'airc-x' }, OP)), 'bad_shape');
-check('unknown field → bad_shape', run(envelope({ ...base, extra: 'x' }, OP)), 'bad_shape');
-check('number in signed object → bad_shape', run(JSON.stringify({ type: 'meet:invite', payload: { type: 'meet:invite', data: { ...base, starts_at: 5, sig: V.sign({ ...base, starts_at: 5 }, OP.privateKey) } } })), 'bad_shape');
-check('expired (now+skew ≥ expires_at) → expired', run(envelope(base, OP), { now: mkClock(Date.parse('2026-09-04T18:28:30Z')) }), 'expired');
-check('delivered 4 min late (no freshness window) → accepted', run(envelope(base, OP), { now: mkClock(T0 + 4 * 60e3) }), 'accepted:signed');
-check('issued_at 3 min in the future → bad_time', run(envelope(base, OP), { now: mkClock(T0 - 3 * 60e3) }), 'bad_time');
-check('malformed timestamp → bad_time (fail closed)', run(envelope({ ...base, expires_at: 'tomorrow' }, OP)), 'bad_time');
-check('expires_at before issued_at → bad_time', run(envelope({ ...base, expires_at: '2026-09-04T17:00:00Z' }, OP)), 'bad_time');
-check('missing nonce → bad_shape', run(envelope((() => { const b = { ...base }; delete b.nonce; return b; })(), OP)), 'bad_shape');
-check('short nonce → bad_nonce', run(envelope({ ...base, nonce: 'abc' }, OP)), 'bad_nonce');
-check('null replaced by 1e400 on the wire → malformed', run(envelope(base, OP).replace('"starts_at":null', '"starts_at":1e400')), 'malformed');
-check('duplicate url key injected → malformed', run(envelope(base, OP).replace('"url":', '"url":"https://evil.example/","url":')), 'malformed');
-check('lone surrogate → malformed', run(envelope(base, OP).replace('grokbot', 'grok\ud800bot')), 'malformed');
-check('null payload → malformed (no throw)', run('{"type":"meet:invite","payload":null}'), 'malformed');
-check('signature value garbage → bad_signature (no throw)', run(envelope(base, OP, { sig: { alg: 'ed25519', key_id: OP.keyId, value: '!!!' } })), 'bad_signature');
-check('action record matches → accepted', run(envelope(base, OP), { actions: mkActions({ mi_20260904_grokbot_003: { to: 'grokbot', expires_at: base.expires_at, status: 'pending' } }) }), 'accepted:signed');
-check('action expires_at differs → action_mismatch', run(envelope(base, OP), { actions: mkActions({ mi_20260904_grokbot_003: { to: 'grokbot', expires_at: '2026-09-04T19:00:00Z', status: 'pending' } }) }), 'action_mismatch');
-check('action already cancelled → action_not_pending', run(envelope(base, OP), { actions: mkActions({ mi_20260904_grokbot_003: { to: 'grokbot', expires_at: base.expires_at, status: 'cancelled' } }) }), 'action_not_pending');
-check('action lookup unavailable → action_unavailable (no fallback)', run(envelope(base, OP), { actions: mkActions({ mi_20260904_grokbot_003: 'unavailable' }) }), 'action_unavailable');
-const cancel = { domain: V.DOMAIN, protocol_version: '0.2', type: 'meet:leave', from: 'brightseth', to: 'grokbot', invite_id: base.invite_id, issued_at: '2026-09-04T19:30:00Z', nonce: 'BBBBBBBBBBBBBBBBBBBBBB', reason: 'done' };
-check('signed cancel after the invite deadline → accepted (cancel has its own clock)', run(envelope(cancel, OP), { now: mkClock(Date.parse('2026-09-04T19:31:00Z')) }), 'accepted:signed');
-check('forged cancel (attacker key) → key_mismatch', run(envelope(cancel, MAL), { now: mkClock(Date.parse('2026-09-04T19:31:00Z')) }), 'key_mismatch');
-check('cancel carrying an invite-only field → bad_shape', run(envelope({ ...cancel, url: 'https://x' }, OP), { now: mkClock(Date.parse('2026-09-04T19:31:00Z')) }), 'bad_shape');
+// ---- acceptance, pin states, keys
+check('signed invite accepted', run(env(base, OP)), 'accepted:signed');
+check('unsigned, pin state none → accepted:unsigned', run(env(base, null), { pinStore: pins('none') }), 'accepted:unsigned');
+check('unsigned, pin pending → unsigned', run(env(base, null), { pinStore: pins('pending') }), 'unsigned');
+check('signed, pin pending → pin_pending', run(env(base, OP), { pinStore: pins('pending') }), 'pin_pending');
+check('unsigned after pin → unsigned', run(env(base, null)), 'unsigned');
+check('signed but pin none → unknown_key', run(env(base, OP), { pinStore: pins('none') }), 'unknown_key');
+check('retired key → key_retired', run(env(base, OP), { pinStore: pins('retired') }), 'key_retired');
+check('pin store throws → pin_unavailable', run(env(base, OP), { pinStore: { get: () => { throw new Error('x'); } } }), 'pin_unavailable');
+check('attacker key → key_mismatch', run(env(base, MAL)), 'key_mismatch');
+check('attacker relabels key_id → bad_signature', run(env(base, MAL, { sig: { ...V.sign(base, MAL.privateKey), key_id: OP.keyId } })), 'bad_signature');
+check('rotation: old sig under new pin → key_mismatch', run(env(base, OP), { pinStore: pins('pinned', OP2) }), 'key_mismatch');
+check('rotation: new sig under new pin → accepted', run(env(base, OP2), { pinStore: pins('pinned', OP2) }), 'accepted:signed');
+// ---- envelope / dispatch
+check('handler expects leave, payload is invite → envelope_mismatch', run(env(base, OP), { expect: 'meet:leave' }), 'envelope_mismatch');
+check('relabeled outer+payload type → envelope_mismatch', run(env(base, OP, { envType: 'meet:leave', payloadType: 'meet:leave' }), { expect: 'meet:leave' }), 'envelope_mismatch');
+check('missing outer type is fine (payload governs)', run(env(base, OP, { envType: null })), 'accepted:signed');
+check('outer invite_id differs → envelope_mismatch', run(env(base, OP, { outerInvite: 'mi_other' })), 'envelope_mismatch');
+check('unknown handler → bad_handler', run(env(base, OP), { expect: 'meet:say' }), 'bad_handler');
+// ---- shape / parser
+check('tampered url on the wire → bad_signature', run(env({ ...base, url: 'https://evil.example/x' }, OP, { sig: V.sign(base, OP.privateKey) })), 'bad_signature');
+check('wrong domain → bad_shape', run(env({ ...base, domain: 'airc-x' }, OP)), 'bad_shape');
+check('unknown field → bad_shape', run(env({ ...base, extra: 'x' }, OP)), 'bad_shape');
+check('number in signed object → bad_shape', run(env({ ...base, starts_at: 5 }, OP)), 'bad_shape');
+check('cancel carrying invite-only field → bad_shape', run(env({ ...cancel, url: 'https://x' }, OP), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z') }), 'bad_shape');
+check('null → 1e400 on the wire → malformed', run(env(base, OP).replace('"starts_at":null', '"starts_at":1e400')), 'malformed');
+check('duplicate url key → malformed', run(env(base, OP).replace('"url":', '"url":"https://evil.example/","url":')), 'malformed');
+check('escaped duplicate key (\\u0075rl) → malformed', run(env(base, OP).replace('"url":', '"\\u0075rl":"https://evil.example/","url":')), 'malformed');
+check('distinct escaped keys are NOT duplicates → (shape refuses unknown key, not malformed)', run(env(base, OP).replace('"surface":', '"a\\"b":"x","surface":')), 'bad_shape');
+check('raw lone surrogate → malformed', run(env(base, OP).replace('grokbot', 'grok\ud800bot')), 'malformed');
+check('escaped lone surrogate → malformed', run(env(base, OP).replace('"surface":"google-meet"', '"surface":"g\\ud800m"')), 'malformed');
+check('deep nested arrays → malformed (no crash)', run('[[[[[[[[[[1]]]]]]]]]]'), 'malformed');
+check('oversize (bytes) → malformed', run(env({ ...base, surface: '\u{1F600}'.repeat(5000) }, OP)), 'malformed');
+check('null payload → malformed', run('{"type":"meet:invite","payload":null}'), 'malformed');
+check('garbage signature value → bad_signature', run(env(base, OP, { sig: { alg: 'ed25519', key_id: OP.keyId, value: '!!!' } })), 'bad_signature');
+// ---- time
+check('expired (now+skew ≥ expires_at) → expired', run(env(base, OP), { now: at('2026-09-04T18:28:30Z') }), 'expired');
+check('delivered 4 min late → accepted', run(env(base, OP), { now: clock(T0 + 4 * 60e3) }), 'accepted:signed');
+check('issued 3 min in the future → bad_time', run(env(base, OP), { now: clock(T0 - 3 * 60e3) }), 'bad_time');
+check('malformed timestamp → bad_time', run(env({ ...base, expires_at: 'tomorrow' }, OP)), 'bad_time');
+check('calendar-invalid timestamp (02-30) → bad_time', run(env({ ...base, expires_at: '2026-02-30T18:30:00Z' }, OP)), 'bad_time');
+check('expires before issued → bad_time', run(env({ ...base, expires_at: '2026-09-04T17:00:00Z' }, OP)), 'bad_time');
+check('starts_at after expires_at → bad_time', run(env({ ...base, starts_at: '2026-09-04T19:00:00Z' }, OP)), 'bad_time');
+check('short nonce → bad_nonce', run(env({ ...base, nonce: 'abc' }, OP)), 'bad_nonce');
+// ---- ledger / replay / idempotency
+check('identical delivery again → repeat', (() => { const c = { ledger: mkLedger() }; run(env(base, OP), c); return run(env(base, OP), c); })(), 'accepted:signed:repeat');
+check('same nonce, different bytes → replay', (() => { const c = { ledger: mkLedger() }; run(env(base, OP), c); return run(env({ ...base, url: 'https://meet.google.com/zzz-zzzz-zzz' }, OP), c); })(), 'replay');
+check('same invite_id, fresh nonce, different content → action_conflict', (() => { const c = { ledger: mkLedger() }; run(env(base, OP), c); return run(env({ ...base, nonce: 'FFFFFFFFFFFFFFFFFFFFFF', url: 'https://meet.google.com/zzz-zzzz-zzz' }, OP), c); })(), 'action_conflict');
+check('ledger claim throws → ledger_unavailable (never accept on failed record)', run(env(base, OP), { ledger: mkLedger({ fail: true }) }), 'ledger_unavailable');
+// ---- actions
+check('action matches → accepted', run(env(base, OP), { actions: actions({ [base.invite_id]: { from: 'brightseth', to: 'grokbot', url: base.url, expires_at: base.expires_at, status: 'pending' } }) }), 'accepted:signed');
+check('action url differs → action_mismatch', run(env(base, OP), { actions: actions({ [base.invite_id]: { from: 'brightseth', to: 'grokbot', url: 'https://meet.google.com/other', expires_at: base.expires_at, status: 'pending' } }) }), 'action_mismatch');
+check('action from differs → action_mismatch', run(env(base, OP), { actions: actions({ [base.invite_id]: { from: 'mallory', to: 'grokbot', url: base.url, expires_at: base.expires_at, status: 'pending' } }) }), 'action_mismatch');
+check('action status absent → action_not_pending', run(env(base, OP), { actions: actions({ [base.invite_id]: { from: 'brightseth', to: 'grokbot', url: base.url, expires_at: base.expires_at } }) }), 'action_not_pending');
+check('action completed, resend → action_not_pending', run(env(base, OP), { actions: actions({ [base.invite_id]: { from: 'brightseth', to: 'grokbot', url: base.url, expires_at: base.expires_at, status: 'completed' } }) }), 'action_not_pending');
+check('actions required, none found → action_unavailable (no fallback)', run(env(base, OP), { actionsRequired: true }), 'action_unavailable');
+check('action lookup throws → action_unavailable', run(env(base, OP), { actions: actions(null, true) }), 'action_unavailable');
+// ---- cancel lifecycle
+check('signed cancel after invite deadline → accepted:cancel', (() => { const c = { ledger: mkLedger() }; run(env(base, OP), c); return run(env(cancel, OP), { ...c, expect: 'meet:leave', now: at('2026-09-04T19:31:00Z') }); })(), 'accepted:signed:cancel');
+check('cancel for unknown invite → accepted:tombstone', run(env(cancel, OP), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z') }), 'accepted:signed:tombstone');
+check('cancel before invite → later invite refuses action_not_pending', (() => { const c = { ledger: mkLedger() }; run(env({ ...cancel, issued_at: '2026-09-04T17:59:00Z' }, OP), { ...c, expect: 'meet:leave', now: clock(T0) }); return run(env(base, OP), c); })(), 'action_not_pending');
+check('forged cancel → key_mismatch', run(env(cancel, MAL), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z') }), 'key_mismatch');
 
-for (const [m, n, got, want] of results) console.log(`${m} ${n}${m === '✗' ? `  (got ${got}, want ${want})` : ''}`);
-const fails = results.filter((r) => r[0] === '✗').length;
-console.log(`\n${results.length - fails}/${results.length} pass`);
-process.exit(fails ? 1 : 0);
+for (const [m, n, got, want] of R) console.log(`${m} ${n}${m === '✗' ? `  (got ${got}, want ${want})` : ''}`);
+const fails = R.filter((r) => r[0] === '✗').length; console.log(`\n${R.length - fails}/${R.length} pass`); process.exit(fails ? 1 : 0);

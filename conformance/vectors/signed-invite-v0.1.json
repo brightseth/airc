@@ -1,21 +1,95 @@
 {
  "profile": "airc-meet-v1",
- "object": {
-  "domain": "airc-meet-v1",
-  "protocol_version": "0.2",
-  "type": "meet:invite",
-  "from": "brightseth",
-  "to": "grokbot",
-  "invite_id": "mi_20260904_grokbot_003",
-  "url": "https://meet.google.com/mrq-ujjh-qna",
-  "surface": "google-meet",
-  "starts_at": null,
-  "expires_at": "2026-09-04T18:30:00Z",
-  "issued_at": "2026-09-04T18:00:00Z",
-  "nonce": "AAAAAAAAAAAAAAAAAAAAAA"
- },
- "canonical": "{\"domain\":\"airc-meet-v1\",\"expires_at\":\"2026-09-04T18:30:00Z\",\"from\":\"brightseth\",\"invite_id\":\"mi_20260904_grokbot_003\",\"issued_at\":\"2026-09-04T18:00:00Z\",\"nonce\":\"AAAAAAAAAAAAAAAAAAAAAA\",\"protocol_version\":\"0.2\",\"starts_at\":null,\"surface\":\"google-meet\",\"to\":\"grokbot\",\"type\":\"meet:invite\",\"url\":\"https://meet.google.com/mrq-ujjh-qna\"}",
- "signature": "CB9K9dAJN2j2yIl/B+euvAALI5oqLNubIEqmtDR00QsGG4jaQMCbKQ0dza6hsxtEwpkIa/ZWVKYVSpMHcm99Cg==",
+ "operator_seed": "1111111111111111111111111111111111111111111111111111111111111111",
  "key_id": "sha256:10ba682c8ad13513971e8b56881aab8bd702bb807796eca81932c735a94d6e6d",
- "operator_seed": "1111111111111111111111111111111111111111111111111111111111111111"
+ "cases": [
+  {
+   "name": "base invite",
+   "object": {
+    "domain": "airc-meet-v1",
+    "protocol_version": "0.2",
+    "type": "meet:invite",
+    "from": "brightseth",
+    "to": "grokbot",
+    "invite_id": "mi_20260904_grokbot_003",
+    "url": "https://meet.google.com/mrq-ujjh-qna",
+    "surface": "google-meet",
+    "starts_at": null,
+    "expires_at": "2026-09-04T18:30:00Z",
+    "issued_at": "2026-09-04T18:00:00Z",
+    "nonce": "AAAAAAAAAAAAAAAAAAAAAA"
+   },
+   "canonical": "{\"domain\":\"airc-meet-v1\",\"expires_at\":\"2026-09-04T18:30:00Z\",\"from\":\"brightseth\",\"invite_id\":\"mi_20260904_grokbot_003\",\"issued_at\":\"2026-09-04T18:00:00Z\",\"nonce\":\"AAAAAAAAAAAAAAAAAAAAAA\",\"protocol_version\":\"0.2\",\"starts_at\":null,\"surface\":\"google-meet\",\"to\":\"grokbot\",\"type\":\"meet:invite\",\"url\":\"https://meet.google.com/mrq-ujjh-qna\"}",
+   "signature": "CB9K9dAJN2j2yIl/B+euvAALI5oqLNubIEqmtDR00QsGG4jaQMCbKQ0dza6hsxtEwpkIa/ZWVKYVSpMHcm99Cg=="
+  },
+  {
+   "name": "starts_at absent (distinct from null)",
+   "object": {
+    "domain": "airc-meet-v1",
+    "protocol_version": "0.2",
+    "type": "meet:invite",
+    "from": "brightseth",
+    "to": "grokbot",
+    "invite_id": "mi_20260904_grokbot_003",
+    "url": "https://meet.google.com/mrq-ujjh-qna",
+    "surface": "google-meet",
+    "expires_at": "2026-09-04T18:30:00Z",
+    "issued_at": "2026-09-04T18:00:00Z",
+    "nonce": "CCCCCCCCCCCCCCCCCCCCCC"
+   },
+   "canonical": "{\"domain\":\"airc-meet-v1\",\"expires_at\":\"2026-09-04T18:30:00Z\",\"from\":\"brightseth\",\"invite_id\":\"mi_20260904_grokbot_003\",\"issued_at\":\"2026-09-04T18:00:00Z\",\"nonce\":\"CCCCCCCCCCCCCCCCCCCCCC\",\"protocol_version\":\"0.2\",\"surface\":\"google-meet\",\"to\":\"grokbot\",\"type\":\"meet:invite\",\"url\":\"https://meet.google.com/mrq-ujjh-qna\"}",
+   "signature": "WUEqo88UDeDXrrXJjhOtp93pXkUgubwacF9dA5hEYfkQ9jhldZDJqDEixS6aNXUcnkMePPvJgsoDEBRycSTxAA=="
+  },
+  {
+   "name": "escaped quotes and backslash in reason (cancel)",
+   "object": {
+    "domain": "airc-meet-v1",
+    "protocol_version": "0.2",
+    "type": "meet:leave",
+    "from": "brightseth",
+    "to": "grokbot",
+    "invite_id": "mi_20260904_grokbot_003",
+    "issued_at": "2026-09-04T19:30:00Z",
+    "nonce": "DDDDDDDDDDDDDDDDDDDDDD",
+    "reason": "say \"hi\" \\ done"
+   },
+   "canonical": "{\"domain\":\"airc-meet-v1\",\"from\":\"brightseth\",\"invite_id\":\"mi_20260904_grokbot_003\",\"issued_at\":\"2026-09-04T19:30:00Z\",\"nonce\":\"DDDDDDDDDDDDDDDDDDDDDD\",\"protocol_version\":\"0.2\",\"reason\":\"say \\\"hi\\\" \\\\ done\",\"to\":\"grokbot\",\"type\":\"meet:leave\"}",
+   "signature": "Q0sx0KfosK6onegPNHwH8Trv60MfpjfhTanILuoWJL+xyBtP7b9gEhBbryJdpCaQJLALoBhN8iOq0jRNjR2VDg=="
+  },
+  {
+   "name": "supplementary-plane text in surface (JCS code-unit order)",
+   "object": {
+    "domain": "airc-meet-v1",
+    "protocol_version": "0.2",
+    "type": "meet:invite",
+    "from": "brightseth",
+    "to": "grokbot",
+    "invite_id": "mi_20260904_grokbot_003",
+    "url": "https://meet.google.com/mrq-ujjh-qna",
+    "surface": "g😀m",
+    "starts_at": null,
+    "expires_at": "2026-09-04T18:30:00Z",
+    "issued_at": "2026-09-04T18:00:00Z",
+    "nonce": "EEEEEEEEEEEEEEEEEEEEEE"
+   },
+   "canonical": "{\"domain\":\"airc-meet-v1\",\"expires_at\":\"2026-09-04T18:30:00Z\",\"from\":\"brightseth\",\"invite_id\":\"mi_20260904_grokbot_003\",\"issued_at\":\"2026-09-04T18:00:00Z\",\"nonce\":\"EEEEEEEEEEEEEEEEEEEEEE\",\"protocol_version\":\"0.2\",\"starts_at\":null,\"surface\":\"g😀m\",\"to\":\"grokbot\",\"type\":\"meet:invite\",\"url\":\"https://meet.google.com/mrq-ujjh-qna\"}",
+   "signature": "wnr4TMGiEdWZKwVbuZw8QgrE/MaDRIlt0hlECSsJ6CJVh9YaRKFrAJoBqOaldPxdrbNP1z+nnO3haZWnFiKOAg=="
+  },
+  {
+   "name": "cancel",
+   "object": {
+    "domain": "airc-meet-v1",
+    "protocol_version": "0.2",
+    "type": "meet:leave",
+    "from": "brightseth",
+    "to": "grokbot",
+    "invite_id": "mi_20260904_grokbot_003",
+    "issued_at": "2026-09-04T19:30:00Z",
+    "nonce": "BBBBBBBBBBBBBBBBBBBBBB",
+    "reason": "done"
+   },
+   "canonical": "{\"domain\":\"airc-meet-v1\",\"from\":\"brightseth\",\"invite_id\":\"mi_20260904_grokbot_003\",\"issued_at\":\"2026-09-04T19:30:00Z\",\"nonce\":\"BBBBBBBBBBBBBBBBBBBBBB\",\"protocol_version\":\"0.2\",\"reason\":\"done\",\"to\":\"grokbot\",\"type\":\"meet:leave\"}",
+   "signature": "6UKDWCBw+KMnMirVI6lu4mSj1SAkLzcq7I21+QeSEjjboRf3UuQRfqr3Csnku4fmTa81SQUH6yrPlh4nGa5NCg=="
+  }
+ ]
 }

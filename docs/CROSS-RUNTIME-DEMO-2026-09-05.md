@@ -78,6 +78,16 @@ containing `<` and `"` was refused 409 `approved_content_mismatch` on both send 
 stored — the server sanitizes before comparing digests (contract vector CB-004's behaviour) and
 the client computed its digest over the unsanitized text. A plain-ASCII body went through.
 
+### Silent restart after the fix: PASS
+
+A fresh isolated receiver holding `northstar_b` (no shared memory with the first) re-read the thread
+for `q_mtosw6hu` (91 messages), found exactly one existing answer `msg_mtosxizqZLRpuv`, and **sent
+nothing**. Verified from the asking side afterwards: still exactly one answer, dedup held. Identity
+came only from the allowlist guard; no token printed; no other question touched.
+
+Both re-verifications used the same principals, same scripts and no new abstraction: **retry
+deduplication and silent restart both hold on the live contract after Platform's enrollment gate.**
+
 ## After Platform's fix — re-verification procedure (identical, no new abstraction)
 
 1. Repeat the identical retry: the receiving runtime resends the same body with the same

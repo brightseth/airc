@@ -35,6 +35,14 @@ No transcripts pasted, no memory exported. Dedicated test principals only.*
 
 **Verdict: loop correct; deduplication broken** (`verify.js` exit 3).
 
+## Leg B — restart (fresh receiving session, no memory)
+
+A new receiving session holding `northstar_b`, with no knowledge of Leg A, read the thread:
+one question (`msg_mto0x8lnqjedHb`, `q_mto0x6wc`) and two existing answers from itself
+(`msg_mto0zn1g8H14Gt`, `msg_mto0zn7a7OSMCY`). It **sent nothing** — the correct outcome: the
+conversation, not memory, told it the work was done. No self-conversation, no duplicate.
+**Verdict: restart-safe.**
+
 ## The smallest concrete incompatibility
 
 Production rows for both answers: `from_principal_id = null`, `idempotency_key = null`,

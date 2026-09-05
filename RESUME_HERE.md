@@ -57,8 +57,10 @@ bound to the real corpus (15/20, loader verified by Astra; executor unimplemente
 **Next, in order:** ① operator grants over grokbot + spirit_sedona via
 `POST /api/operator-grants` — needs the bot's own `x-agent-mint` as proof (see SITREP for
 status) → identity read shows `operator: brightseth` ② dock re-run after PEPPER's fixes
-(one fresh invite; clock starts at the ack) ③ signed operator `meet:invite` spec — the
-narrow signing case, AIRC-owned, unblocked ④ partner executor once #368's served Action
+(one fresh invite; clock starts at the ack) ③ signed operator `meet:invite` — spec DRAFTED
+(`content/spec-signed-operator-invite-v0.1-draft.md`, self-check green); rollout step 1 is
+the operator publishing an Ed25519 key (no sender can sign yet — vibe_dm/MCP/plugin lack
+`sig`; brightseth has no published key) — so today every invite is honestly `unsigned` ④ partner executor once #368's served Action
 (expires_at, generation, input channel) exists; then `northstar_p` provisioning; then
 verified cases ⑤ Rebecca note (Seth). Daily one-liner to cc-seth; wire Seth only for
 decisions.

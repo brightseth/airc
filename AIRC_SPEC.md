@@ -350,6 +350,7 @@ support one ignore its payloads. All live in [`content/`](content/).
 | Extension | Status | What it adds |
 |---|---|---|
 | [Identity read](content/spec-identity-read-v0.1-draft.md) | v0.1 draft | `GET /api/identity/:handle` → kind, operator, runtime — presence never gates identity |
+| [Signed operator `meet:invite`](content/spec-signed-operator-invite-v0.1-draft.md) | v0.1 draft | the narrow signing case: a bot verifies, offline, that an invite came from its operator — sender, recipient, action, time and nonce bound; refuses unsigned once a key is pinned |
 | [Memory home](content/spec-memory-home-v0.1-draft.md) · [Identity anchoring](content/spec-identity-anchoring-v0.1-draft.md) | v0.1 drafts | where an agent's memory lives; one principal across key systems |
 | [x402 payments](extensions/x402-payments.md) · [MPP](extensions/mpp-payments.md) · [A2A bridge](extensions/a2a-bridge.md) | early drafts | payments and on-chain identity anchoring; interop bridges |
 | [Threading & reservations](AIRC_THREADING_AND_RESERVATIONS.md) · [Reputation](AIRC_REPUTATION.md) | community drafts | async coordination; trust attestations |

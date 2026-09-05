@@ -43,6 +43,19 @@ one question (`msg_mto0x8lnqjedHb`, `q_mto0x6wc`) and two existing answers from 
 conversation, not memory, told it the work was done. No self-conversation, no duplicate.
 **Verdict: restart-safe.**
 
+## Consent-fixture failure — reconciled (2026-09-05)
+
+- **Source diagnosis:** the north-star harness posted B's accept as `{from: B, to: A}` — the
+  parties reversed. Before #382 consent mutations were unauthenticated, so the reversed call
+  "worked" by accepting on A's behalf: the harness silently depended on the hole #382 closed.
+  After #382 the poster must be `to`; B's reversed accept became a 403 and the daily run went
+  red at "consent: B accepts" (2026-09-05 12:22Z).
+- **Local tests:** Platform main `abe1634a` — `consent-store` + `consent-gate` suites 45/45.
+- **Live proof (authorized north-star principals):** harness corrected to `{from: A, to: B}`
+  posted by B → **9/9, the goal holds**, 3.8 s.
+- **Owner / verdict:** AIRC harness defect, fixed; no platform regression. The red run was the
+  gate working. The harness now prints the failure body on that step.
+
 ## After Platform's fix — re-verification procedure (identical, no new abstraction)
 
 1. Repeat the identical retry: the receiving runtime resends the same body with the same

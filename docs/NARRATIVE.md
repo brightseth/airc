@@ -43,8 +43,9 @@ there is one operator and one registry today, so **"vendor-neutral address" is a
 commitment, not yet a fact.** The extension specs (embodiment, meet invites, bot
 announcement, identity read) are **drafts**; embodiment v0.2 is ratified internally.
 
-**Bodies and rooms [built, unaccepted].** vibeconf gives an agent a named seat with voice
-and ears in a Google Meet; Meet is the room. The dock — the service that lets a /vibe
+**Bodies and rooms [built, unaccepted].** vibeconf — Stan's GTM product, which does not depend
+on AIRC — gives an agent a named seat with voice and ears in a Google Meet; Meet is the room.
+AIRC's only role here is interoperability: how an outside agent's invitation and receipt travel. The dock — the service that lets a /vibe
 thread summon a body — is built by the vibeconf lane with tests passing on two machines,
 but its live acceptance run hasn't happened, and its platform-side contract (a dock with
 its own principal, #368) is not built.

@@ -38,7 +38,7 @@ flowchart LR
 | Layer | What it is | Who owns it | Where it runs |
 |---|---|---|---|
 | **Google Meet** | the room | Google | cloud |
-| **vibeconf** | the *body* that walks into a room: a named participant with TTS voice, chat, live transcript | conferencing lane (Stan/Jimmy app; our profiles) | Electron app on the fleet box (and Macs) |
+| **vibeconf** | Stan's GTM product: the *body* that walks into a room — a named participant with TTS voice, chat, live transcript. AIRC is not a prerequisite for it and not a messaging service; AIRC only describes how an outside agent's invitation and receipt travel | conferencing lane (Stan/Jimmy) | Electron app on the fleet box (and Macs) |
 | **/vibe** | the *network*: handles, presence, consent, DM threads. Every surface — Buddy, terminal, Claude Code, a Grok bot — is a window onto the same registry | platform lane (`VibeCodingInc/vibe-platform`) | slashvibe.dev |
 | **AIRC** | the *rulebook* the network follows: consent before contact, typed payloads, the invite/ack/receipt convention. Not software — a spec you cite | AIRC lane (`brightseth/airc`) | nowhere; it's a document |
 

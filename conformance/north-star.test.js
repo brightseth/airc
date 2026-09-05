@@ -176,9 +176,10 @@ async function main() {
     sawKnock ? null : `pending=${JSON.stringify((pending.json || {}).pending)}`);
 
   const accept = await post(b, '/api/consent', {
-    action: 'accept', from: b.handle, to: a.handle,
+    action: 'accept', from: a.handle, to: b.handle,
   });
-  check('consent: B accepts', accept.status === 200 && accept.json && accept.json.success !== false);
+  check('consent: B accepts', accept.status === 200 && accept.json && accept.json.success !== false,
+    accept.status === 200 && accept.json && accept.json.success !== false ? null : `HTTP ${accept.status} ${JSON.stringify(accept.json || {}).slice(0, 200)}`);
 
   // 4. EXPRESSIVE — typed payload arrives byte-identical
   // The rooms are persistent now, so every assertion must be run-scoped:

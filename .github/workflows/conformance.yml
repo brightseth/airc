@@ -4,9 +4,25 @@ on:
   schedule:
     - cron: '0 9 * * *'  # Daily 9am UTC — north-star goal must hold every day (GOAL.md M0)
   workflow_dispatch:       # Manual trigger
+  push:                    # hermetic job only — live jobs never fire on push (registry traffic stays scheduled)
+    branches: [main]
+    paths: ['conformance/**', '.github/workflows/conformance.yml']
 
 jobs:
+  hermetic:
+    # No network, no credentials: pins the allowlist guard, the signed-invite verifier (golden
+    # vectors) and the #406 refusal rule (fresh approval every round, never auto-resend).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Hermetic self-checks
+        run: node conformance/live-sender.selfcheck.js && node conformance/signed-invite.selfcheck.js && node conformance/cross-runtime/refusal.selfcheck.js
+
   north-star:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,8 +31,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Hermetic self-checks (allowlist guard, signed-invite verifier, #406 refusal rule)
-        run: node conformance/live-sender.selfcheck.js && node conformance/signed-invite.selfcheck.js && node conformance/cross-runtime/refusal.selfcheck.js
       - name: North star harness — the goal holds (slashvibe.dev)
         env:
           # Credentialed registration (2026-08-23): the registry closed open
@@ -45,6 +59,7 @@ jobs:
           fi
 
   conformance:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

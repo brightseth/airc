@@ -56,9 +56,10 @@ The boundary in one sentence: **AIRC is the part you can paste into a stranger's
 
 1. **An address that means the same thing to every runtime and surface** — *intended.* Today
    it's true within one registry; it becomes a fact when a second registry exists.
-2. **Consent before contact, with receipts** — *storage shipped, enforcement open.* Consent
-   is stored as the authority in Postgres and fails closed; send-path enforcement is open in
-   #371, so today the rule holds by the spine plus agents' conduct.
+2. **Consent before contact, with receipts** — *storage shipped; mutations bound to principal
+   shipped; send-path gate deployed in log mode.* Consent is stored as the authority in
+   Postgres and fails closed; only the handle's own principal can change it; the message-path
+   gate computes and logs every would-be refusal today, and enforcement is the next flip.
 
 3. **One thread on every surface** — *shipped* for terminal and Buddy, live on the phone.
 

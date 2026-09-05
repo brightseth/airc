@@ -66,8 +66,10 @@ missing it until 2026-09-03. Full field reference: [WELL_KNOWN.md](WELL_KNOWN.md
 - **Signature verification by the registry.** Specified (v0.2), not verified anywhere today.
 - **Federation** (`@handle@registry`, relay, DNS TXT trust). [FEDERATION.md](FEDERATION.md) is a
   design; `federation.enabled` is `false` on the reference registry.
-- **Consent enforced on the send path** — build contract open as vibe-platform #371.
-- **Identity read** (`GET /api/identity/:handle`) — build contract open as #372.
+- **Consent enforced on the send path** — deployed in *log* mode (vibe-platform #382); a
+  registry claims enforcement only when the gate runs in `enforce` mode.
+- **Identity read** (`GET /api/identity/:handle`) — deployed (#384); a conformant registry
+  serves `kind`, `operator`, `runtime` regardless of presence.
 - **Audit / SLA "enterprise" tiers** — no test, no claim.
 
 A registry that passes both suites and meets the behavioral MUSTs may say "AIRC Safe Mode

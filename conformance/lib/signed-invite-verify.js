@@ -84,6 +84,7 @@ function canonical(o) {
 function keyIdOf(raw32) { return 'sha256:' + crypto.createHash('sha256').update(raw32).digest('hex'); }
 function pubKeyFromRaw(raw32) { return crypto.createPublicKey({ key: Buffer.concat([Buffer.from('302a300506032b6570032100', 'hex'), raw32]), format: 'der', type: 'spki' }); }
 function strictIso(s) {
+  if (typeof s !== 'string') return NaN;
   const m = ISO_UTC.exec(s); if (!m) return NaN;
   const t = Date.parse(s); if (!Number.isFinite(t)) return NaN;
   const d = new Date(t); // reject calendar-normalized dates (e.g. 02-30 → 03-02)
@@ -104,6 +105,7 @@ function verify(p) {
   const now = typeof p.now === 'function' ? p.now() : Date.now();
   const refuse = (reason) => ({ ok: false, reason });
   if (!COMMANDS.has(expect)) return refuse('bad_handler');
+  for (const m of ['peek', 'claim', 'isTombstoned', 'hasInvite']) if (!ledger || typeof ledger[m] !== 'function') return refuse('ledger_unavailable'); // the whole ledger contract, or nothing
   const msg = parseStrict(p.rawJson);
   if (!msg || typeof msg !== 'object' || Array.isArray(msg)) return refuse('malformed');
   const payload = msg.payload; const data = payload && payload.data;
@@ -117,10 +119,12 @@ function verify(p) {
     if (pin.state !== 'none') return refuse('unsigned');        // pending, pinned or retired: nothing unsigned
     if (expect !== 'meet:invite') return refuse('unsigned');    // every network cancel is signed, in every pin state
     // an unsigned invite is accepted only in state 'none' — and still fully bound to tombstones and the Action
+    for (const [k, v] of Object.entries(signed)) if (!(v === null || typeof v === 'string')) return refuse('bad_shape'); // unsigned data: strings/null only, same as signed
     if (typeof signed.invite_id !== 'string' || typeof signed.url !== 'string' || !/^https:\/\/[^\s"'<>]+$/.test(signed.url)) return refuse('bad_shape');
-    if (signed.expires_at !== undefined) { const exp = strictIso(signed.expires_at); if (!Number.isFinite(exp)) return refuse('bad_time'); if (now + SKEW_MS >= exp) return refuse('expired'); }
-    if (typeof signed.from === 'string' && signed.from !== operator) return refuse('not_my_operator');
-    if (typeof signed.to === 'string' && signed.to !== me) return refuse('not_my_operator');
+    if (signed.expires_at != null) { const exp = strictIso(signed.expires_at); if (!Number.isFinite(exp)) return refuse('bad_time'); if (now + SKEW_MS >= exp) return refuse('expired'); }
+    if (signed.from != null && signed.from !== operator) return refuse('not_my_operator');
+    if (signed.to != null && signed.to !== me) return refuse('not_my_operator');
+    if (signed.from == null || signed.to == null) return refuse('bad_shape');   // an unsigned invite still names its parties
     try { if (ledger.isTombstoned(signed.invite_id)) return refuse('action_not_pending'); } catch { return refuse('ledger_unavailable'); }
     let action; try { action = actions ? actions.get(signed.invite_id) : null; } catch { return refuse('action_unavailable'); }
     if (!action && p.actionsRequired) return refuse('action_unavailable');
@@ -150,7 +154,6 @@ function verify(p) {
   if (!NONCE_RE.test(signed.nonce)) return refuse('bad_nonce');
 
   // identical resend → the stored prior outcome, before any action-state check (idempotency beats staleness)
-  if (typeof ledger.peek !== 'function') return refuse('ledger_unavailable');   // peek is part of the ledger contract
   let prior; try { prior = ledger.peek(pin.keyId, signed.nonce); } catch { return refuse('ledger_unavailable'); }
   if (prior && prior.canonical === canonical(signed)) return { ok: true, provenance: 'signed', repeat: true, signed, effect: 'none', prior: prior.outcome };
   if (prior) return refuse('replay');
@@ -183,7 +186,7 @@ function verify(p) {
   const VALID = new Set(['new', 'repeat', 'conflict', 'invite_conflict']);
   let claim; try { claim = ledger.claim({ keyId: pin.keyId, nonce: signed.nonce, inviteId: signed.invite_id, type: signed.type, canonical: canonical(signed), retainUntil, tombstone: signed.type === 'meet:leave' }); } catch { return refuse('ledger_unavailable'); }
   if (!claim || typeof claim !== 'object' || !VALID.has(claim.status)) return refuse('ledger_unavailable');   // an unknown result never accepts
-  if (claim.status === 'repeat') return { ok: true, provenance: 'signed', repeat: true, signed, effect: 'none' };
+  if (claim.status === 'repeat') { let again = null; try { again = ledger.peek(pin.keyId, signed.nonce); } catch { return refuse('ledger_unavailable'); } return { ok: true, provenance: 'signed', repeat: true, signed, effect: 'none', prior: again ? again.outcome : undefined }; }
   if (claim.status === 'conflict') return refuse('replay');
   if (claim.status === 'invite_conflict') return refuse('action_conflict');
   if (signed.type === 'meet:leave') {

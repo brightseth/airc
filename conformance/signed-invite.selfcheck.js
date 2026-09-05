@@ -17,14 +17,15 @@ const T0 = Date.parse('2026-09-04T18:00:00Z'); const at = (iso) => () => Date.pa
 function mkLedger(opts = {}) {
   // Durable fixture: mutate a COPY, persist atomically (tmp + rename), then swap — a failed
   // write leaves memory untouched; torn writes cannot happen. Retention is enforced on load.
-  let st = { byNonce: {}, byInvite: {}, tomb: [], outcomes: {}, retain: {} };
-  const load = () => { if (opts.file && fs.existsSync(opts.file)) { st = JSON.parse(fs.readFileSync(opts.file, 'utf8')); const t = opts.now ? opts.now() : Date.now(); for (const k of Object.keys(st.retain)) if (st.retain[k] < t) { delete st.byNonce[k]; delete st.outcomes[k]; delete st.retain[k]; } } };
+  let st = { byNonce: {}, byInvite: {}, tomb: [], outcomes: {}, retain: {} }; let corrupt = false;
+  const load = () => { if (opts.file && fs.existsSync(opts.file)) { try { st = JSON.parse(fs.readFileSync(opts.file, 'utf8')); } catch { corrupt = true; return; } const t = opts.now ? opts.now() : Date.now(); for (const k of Object.keys(st.retain)) if (st.retain[k] < t) { delete st.byNonce[k]; delete st.outcomes[k]; delete st.retain[k]; } } };
   load();
-  const persist = (next) => { if (opts.failWrite) throw new Error('disk full'); if (opts.file) { const tmp = opts.file + '.tmp'; fs.writeFileSync(tmp, JSON.stringify(next)); fs.renameSync(tmp, opts.file); } st = next; };
+  const guard = () => { if (corrupt) throw new Error('ledger corrupt: refuse until an operator repairs it'); };
+  const persist = (next) => { if (opts.failWrite) throw new Error('disk full'); if (opts.file) { const tmp = opts.file + '.tmp'; const fd = fs.openSync(tmp, 'w'); fs.writeSync(fd, JSON.stringify(next)); fs.fsyncSync(fd); fs.closeSync(fd); fs.renameSync(tmp, opts.file); } st = next; };
   return {
-    peek: (keyId, nonce) => { const k = `${keyId}:${nonce}`; return k in st.byNonce ? { canonical: st.byNonce[k], outcome: st.outcomes[k] } : null; },
+    peek: (keyId, nonce) => { guard(); const k = `${keyId}:${nonce}`; return k in st.byNonce ? { canonical: st.byNonce[k], outcome: st.outcomes[k] } : null; },
     claim: ({ keyId, nonce, inviteId, type, canonical, retainUntil, tombstone }) => {
-      if (opts.fail) throw new Error('ledger down');
+      guard(); if (opts.fail) throw new Error('ledger down');
       if (opts.badResult !== undefined) return opts.badResult;
       const k = `${keyId}:${nonce}`;
       if (k in st.byNonce) return { status: st.byNonce[k] === canonical ? 'repeat' : 'conflict' };
@@ -35,7 +36,7 @@ function mkLedger(opts = {}) {
       persist(next); return { status: 'new' };
     },
     tombstone: (id) => { const next = JSON.parse(JSON.stringify(st)); if (!next.tomb.includes(id)) next.tomb.push(id); persist(next); },
-    isTombstoned: (id) => st.tomb.includes(id), hasInvite: (id) => id in st.byInvite,
+    isTombstoned: (id) => { guard(); return st.tomb.includes(id); }, hasInvite: (id) => { guard(); return id in st.byInvite; },
   };
 }
 const pins = (state, key = OP, extra = {}) => ({ get: () => (state === 'none' ? { state: 'none' } : { state, raw: key.raw, keyId: key.keyId, ...extra }) });
@@ -161,9 +162,18 @@ check('unsigned cancel in pin state none → unsigned (every network cancel is s
 check('unsigned invite, Action from differs → action_mismatch', run(env(base, null), { pinStore: pins('none'), actions: actions({ [base.invite_id]: { from: 'mallory', to: 'grokbot', url: base.url, expires_at: base.expires_at, status: 'pending' } }) }), 'action_mismatch');
 check('unsigned invite, Action expired → expired', run(env(base, null), { pinStore: pins('none'), actions: actions({ [base.invite_id]: { from: 'brightseth', to: 'grokbot', url: base.url, expires_at: base.expires_at, status: 'pending' } }), now: at('2026-09-04T18:29:00Z') }), 'expired');
 check('unsigned invite claiming a different operator → not_my_operator', run(env({ ...base, from: 'mallory' }, null), { pinStore: pins('none') }), 'not_my_operator');
-check('ledger write fails → ledger_unavailable, memory untouched; retry → new (not repeat)', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger3-${process.pid}.json`); try { fs.unlinkSync(f); } catch {} const l1 = mkLedger({ file: f, failWrite: true }); const r1 = run(env(base, OP), { ledger: l1 }); if (show(r1) !== 'ledger_unavailable') return r1; const l2 = mkLedger({ file: f }); const r2 = run(env(base, OP), { ledger: l2 }); try { fs.unlinkSync(f); } catch {} return r2; })(), 'accepted:signed');
+check('ledger write fails → ledger_unavailable, memory untouched; SAME instance retry → new (not repeat)', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger3-${process.pid}.json`); try { fs.unlinkSync(f); } catch {} const o = { file: f, failWrite: true }; const l = mkLedger(o); const r1 = run(env(base, OP), { ledger: l }); if (show(r1) !== 'ledger_unavailable') return r1; o.failWrite = false; const r2 = run(env(base, OP), { ledger: l }); try { fs.unlinkSync(f); } catch {} return r2; })(), 'accepted:signed');
 check('retention: an entry past retainUntil is evicted on load; tombstone persists', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger4-${process.pid}.json`); try { fs.unlinkSync(f); } catch {} run(env(cancel, OP), { expect: 'meet:leave', now: at('2026-09-04T19:31:00Z'), ledger: mkLedger({ file: f }) }); const later = mkLedger({ file: f, now: at('2026-09-07T00:00:00Z') }); const evicted = later.peek(OP.keyId, cancel.nonce) === null; const tomb = later.isTombstoned(base.invite_id); try { fs.unlinkSync(f); } catch {} return { ok: evicted && tomb, provenance: 'evicted-and-tombstoned', reason: `evicted=${evicted} tomb=${tomb}` }; })(), 'accepted:evicted-and-tombstoned');
 check('ledger without peek → ledger_unavailable', run(env(base, OP), { ledger: { claim: () => ({ status: 'new' }), isTombstoned: () => false, hasInvite: () => false } }), 'ledger_unavailable');
+
+// ---- rev 6: unsigned shape strictness, whole-ledger contract, repeat race, corrupt-file recovery
+check('unsigned invite with expires_at:{} → bad_shape (no throw)', run(env({ ...base, expires_at: {} }, null), { pinStore: pins('none') }), 'bad_shape');
+check('unsigned invite with from:42 → bad_shape', run(env({ ...base, from: 42 }, null), { pinStore: pins('none') }), 'bad_shape');
+check('unsigned invite with to:null → bad_shape', run(env({ ...base, to: null }, null), { pinStore: pins('none') }), 'bad_shape');
+check('unsigned invite with expires_at as array → bad_shape', run(env({ ...base, expires_at: ['2026-09-04T18:30:00Z'] }, null), { pinStore: pins('none') }), 'bad_shape');
+check('ledger missing hasInvite → ledger_unavailable (signed invite)', run(env(base, OP), { ledger: { peek: () => null, claim: () => ({ status: 'new' }), isTombstoned: () => false } }), 'ledger_unavailable');
+check('claim-repeat race keeps the stored outcome', (() => { let calls = 0; const l = { peek: () => (calls++ === 0 ? null : { canonical: V.canonical(base), outcome: 'accepted' }), claim: () => ({ status: 'repeat' }), isTombstoned: () => false, hasInvite: () => false }; const r = run(env(base, OP), { ledger: l }); return { ok: r.ok && r.repeat === true && r.prior === 'accepted', provenance: 'repeat-with-prior', reason: JSON.stringify(r) }; })(), 'accepted:repeat-with-prior');
+check('corrupt ledger file → ledger_unavailable (refuse, no throw)', (() => { const f = path.join(require('os').tmpdir(), `airc-ledger5-${process.pid}.json`); fs.writeFileSync(f, '{"byNonce":{"x'); const r = run(env(base, OP), { ledger: mkLedger({ file: f }) }); try { fs.unlinkSync(f); } catch {} return r; })(), 'ledger_unavailable');
 
 for (const [m, n, got, want] of R) console.log(`${m} ${n}${m === '✗' ? `  (got ${got}, want ${want})` : ''}`);
 const fails = R.filter((r) => r[0] === '✗').length; console.log(`\n${R.length - fails}/${R.length} pass`); process.exit(fails ? 1 : 0);

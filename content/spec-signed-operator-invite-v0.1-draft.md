@@ -1,6 +1,6 @@
 # AIRC Extension: Signed operator `meet:invite` — v0.1 draft
 
-**Status:** Draft rev 5, 2026-09-04 (four codex adversarial rounds absorbed). Owner: AIRC lane. Verifier: the invited bot (and any dock
+**Status:** Draft rev 6, 2026-09-04 (five codex adversarial rounds absorbed). Owner: AIRC lane. Verifier: the invited bot (and any dock
 acting for it). Registry: unchanged — nothing here is verified at ingest.
 **Builds on:** `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md` — as a **deliberate
 variant** of its Option C: the memo's endpoint is verification at ingest once a trigger fires;
@@ -151,7 +151,11 @@ input. Order:
     past. **Every read that can fail (pin, tombstone, Action lookup, `hasInvite`) happens
     before the one atomic write**, so a failed lookup never consumes a nonce and a retry is a
     fresh attempt. The ledger contract is `peek`, `claim`, `isTombstoned`, `hasInvite` — all
-    required; a ledger missing any of them is `ledger_unavailable`. For a cancel, the claim
+    required and checked up front; a ledger missing any of them is `ledger_unavailable`
+    before any other step. A ledger whose store is unreadable (corrupt file) refuses
+    everything until repaired; it never starts empty over a corrupt file. When a `claim`
+    reports `repeat` (a race with a concurrent verifier), the stored prior outcome is
+    re-read and returned — a repeat never loses its outcome. For a cancel, the claim
     **persists the tombstone in the same durable write**; a tombstone can never be lost
     between claim and effect. Claim outcomes: `new` → proceed; `repeat` (same nonce, same bytes) → idempotent repeat of the
     prior outcome, no new effect; `conflict` (same nonce, different bytes) → `replay`;

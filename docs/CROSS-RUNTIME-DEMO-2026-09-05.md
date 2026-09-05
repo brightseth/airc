@@ -56,6 +56,14 @@ conversation, not memory, told it the work was done. No self-conversation, no du
 - **Owner / verdict:** AIRC harness defect, fixed; no platform regression. The red run was the
   gate working. The harness now prints the failure body on that step.
 
+## Leg C — different model (codex as the receiving runtime): attempt 1 did not complete
+
+Question `msg_mto141hgzvops_` (`q_mto1416z`) sent 2026-09-05 06:59Z. The codex process
+(`codex exec -s workspace-write`, interactive approval mode) produced **no output for 13 hours**
+and was killed — a runtime fact (it hung, almost certainly on an in-sandbox approval prompt),
+not a verdict on the loop. **Leg C: unproven.** Rerun planned non-interactively (`-a never`)
+after the dedup re-verification, so the two runs never compete for the same unanswered question.
+
 ## After Platform's fix — re-verification procedure (identical, no new abstraction)
 
 1. Repeat the identical retry: the receiving runtime resends the same body with the same

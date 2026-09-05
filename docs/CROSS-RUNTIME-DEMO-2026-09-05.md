@@ -88,6 +88,27 @@ came only from the allowlist guard; no token printed; no other question touched.
 Both re-verifications used the same principals, same scripts and no new abstraction: **retry
 deduplication and silent restart both hold on the live contract after Platform's enrollment gate.**
 
+## Leg C — different model as the receiver: PASS (its own verdict)
+
+Receiver: **codex CLI 0.153.2 (gpt-6-astra)**, run non-interactively (`codex exec`, workspace-write
+sandbox with network enabled), holding `northstar_b` through the same allowlist guard. No shared
+memory with the asking runtime (a Claude session): everything it knew came from reading its own
+thread. Question `msg_mto141hgzvops_` (`q_mto1416z`): *which markdown file states the rule that a
+bot must only join meetings its operator sent, and what is that document's current status line?*
+
+- It ran `answer.js`, searched the repo, and answered from `AIRC_SPEC.md` +
+  `content/spec-signed-operator-invite-v0.1-draft.md`: the status line quoted verbatim
+  ("Draft rev 6, 2026-09-04 - SHIP-AS-DRAFT … Ratification: NOT approved. Rollout: NOT approved.").
+- Send 1: `msg_mtot5y4cNRRRRA`, `idempotentReplay:false`. Identical retry: **same id,
+  `idempotentReplay:true`, `reused:true`.** Its own count: 1.
+- Verified from the asking side (`verify.js`, exit 0): question found, exactly one answer,
+  correlated, dedup held, no self-conversation.
+
+Verdict: **the context-guided loop holds across a different model and vendor runtime** on the live
+contract, with the same dedicated principals and no new abstraction. Honest note on the earlier
+"hung 13h" run and two reruns: none of them executed codex at all (an unsupported `-a` flag twice,
+then no `timeout` binary on macOS) — a tooling defect on the asking side, not a runtime finding.
+
 ## After Platform's fix — re-verification procedure (identical, no new abstraction)
 
 1. Repeat the identical retry: the receiving runtime resends the same body with the same

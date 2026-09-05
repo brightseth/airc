@@ -1,9 +1,11 @@
 # AIRC Extension: Signed operator `meet:invite` — v0.1 draft
 
-**Status:** Draft, 2026-09-04. Owner: AIRC lane. Verifier: the invited bot (and any dock
+**Status:** Draft rev 2, 2026-09-04 (after codex adversarial review — 16 findings absorbed). Owner: AIRC lane. Verifier: the invited bot (and any dock
 acting for it). Registry: unchanged — nothing here is verified at ingest.
-**Builds on:** `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md` (Option C: client-side
-verification with the v0.2 in-body signed shape; verify only when a trigger fires) and
+**Builds on:** `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md` — as a **deliberate
+variant** of its Option C: the memo's endpoint is verification at ingest once a trigger fires;
+this extension verifies client-side (the bot and its dock), for one payload family, and leaves
+ingest untouched and
 `spec-meet-invite-v0.1-draft.md` v0.3 (the invite as an Action bound to Platform's record).
 
 ## Why now — the trigger fired, narrowly
@@ -22,11 +24,13 @@ relay. This extension makes that rule checkable by the bot itself, offline.
 
 ## The signed object
 
-The operator signs a canonical object that **binds sender, recipient, action, time, and
-nonce** — the four things the shipped header scheme omitted:
+The operator signs a flat object of **strings and `null` only** — no numbers, no nesting —
+so canonicalization cannot disagree across runtimes. It binds domain, command, sender,
+recipient, action, time, and nonce:
 
 ```json
 {
+  "domain": "airc-meet-v1",
   "protocol_version": "0.2",
   "type": "meet:invite",
   "from": "brightseth",
@@ -37,97 +41,159 @@ nonce** — the four things the shipped header scheme omitted:
   "starts_at": null,
   "expires_at": "2026-09-04T18:30:00Z",
   "issued_at": "2026-09-04T18:00:00Z",
-  "nonce": "b7e1…(16+ random bytes, base64url)"
+  "nonce": "b7e1…(16–32 random bytes, base64url, 22–43 chars)"
 }
 ```
 
-- Canonical form: RFC 8785 (sorted keys, no whitespace) — the same `canonical()` the
-  north-star harness uses. Optional fields present as `null` are included as `null`.
-- `expires_at` is the **server-issued** entry deadline from the Action record (v0.3); the
-  operator copies it into the signed object. If no Action record exists yet, the operator
-  sets it and the bot treats it as the deadline.
-- Signature: Ed25519 over the canonical bytes; carried **inside the payload**, not a header:
+- **Canonical form:** RFC 8785 restricted to this profile — sorted keys, no whitespace,
+  strings and `null` only. Verifiers **reject before parsing loses information**: duplicate
+  names, non-finite numbers, lone surrogates, depth > 4, payload > 16 KB. Timestamps are
+  strict UTC `YYYY-MM-DDTHH:MM:SS(.sss)Z`. `url` is `https://…`.
+- **Field rules:** required — `domain`, `protocol_version`, `type`, `from`, `to`,
+  `invite_id`, `issued_at`, `nonce`; invite-required — `url`, `expires_at`; optional —
+  `surface`, `starts_at`, `reason`. Unknown keys refuse. `domain` is the extension's own
+  signing domain so a signature can never be re-used under another AIRC payload type.
+- **The signed `type` controls dispatch.** Verifiers require signed `type` == the payload's
+  `type` == the handler they are executing. A valid invite relabeled as a leave refuses.
+- **`expires_at`** is the Action's server-issued entry deadline (v0.3). Interim, before an
+  Action record exists (#368): the operator sets it. When an Action exists, the verifier
+  compares it: mismatch refuses; lookup failure refuses (no fallback).
+- **Signature:** Ed25519 over the canonical bytes, carried inside the payload:
 
 ```json
-"payload": { "type": "meet:invite", "data": { …the object above…,
-  "sig": { "alg": "ed25519", "key_id": "sha256:<first 16 hex of SHA-256(raw 32-byte public key)>", "value": "<base64>" } } }
+"payload": { "type": "meet:invite", "data": { …the object…,
+  "sig": { "alg": "ed25519", "key_id": "sha256:<full 64-hex SHA-256 of the raw 32-byte public key>", "value": "<base64, 64 bytes>" } } }
 ```
 
-`sig` is excluded from the canonical bytes. `meet:leave` from the operator uses the same
-shape with `type: "meet:leave"` and the same `invite_id`.
+`sig` is excluded from the canonical bytes. The envelope's `invite_id` must equal the
+signed one. A signed `meet:leave` uses the same shape (`type: "meet:leave"`, optional
+`reason`, no `url`/`expires_at`).
 
-## Keys — publication, discovery, pinning
+## Keys — publication, discovery, pinning, rotation
 
-- **Publication:** the operator publishes their Ed25519 public key with the registry
-  (`publicKey` on `POST /api/presence` register). The registry serves it at
-  `GET /api/identity/:handle` → `public_key` (deployed 2026-09-04). *As of this draft no
-  operator has published one — see "Rollout".*
-- **Discovery:** the bot fetches `GET /api/identity/<operator>` and reads `public_key`.
-- **Pinning (trust on first use, confirmed out of band):** the first time a bot sees an
-  operator key it computes the `key_id` and **reports it in its operator chat**; the
-  operator confirms the fingerprint there (the one channel the bot already trusts for
-  instructions). From then on the key is pinned; a served key that differs from the pin is
-  refused and reported, never silently adopted. Rotation = the operator confirms a new
-  fingerprint in the operator chat.
-- The registry serving the key is discovery, not trust. Trust is the pinned fingerprint.
+- **Publication:** the operator publishes an Ed25519 public key with the registry
+  (`publicKey` on register); `GET /api/identity/:handle` serves it (deployed 2026-09-04).
+- **Discovery is not trust.** The bot fetches the served key but pins nothing from the wire
+  alone.
+- **Bootstrap (ownership, not just consent):** the operator computes the fingerprint
+  **independently** from their own key file and states the **full** SHA-256 fingerprint in
+  the operator chat — the channel the bot already trusts for instructions and which does not
+  depend on the registry or the bearer token. The bot compares the served key's fingerprint
+  to what the operator stated; on match it pins the **validated 32-byte key** (not a
+  truncated id), bound to `(operator handle, registry URL)`, durably. Mismatch or absence:
+  refuse and report; **accept nothing pending confirmation.** A spoofed identity read
+  therefore yields denial of service, never impersonation.
+- **Pinned means signed_required.** Once pinned, the bot persists `signed_required = true`
+  for that operator. From then on: missing key, lookup failure, unpublished key, pending
+  confirmation, or a retired key all **refuse invitations** — none of them re-enable the
+  unsigned path. Disabling verification requires a separate, explicit operator instruction
+  in the operator chat.
+- **Rotation is an authenticated, versioned operator instruction** in the operator chat:
+  new full fingerprint, key version `n+1`, effective time. The bot pins the new key at the
+  effective time, marks the old key **retired** (signatures under it refuse thereafter),
+  and re-verifies any not-yet-accepted invitation against the new key; already-accepted
+  actions keep their authorization. Registry unpublication is **not** revocation — only the
+  operator-chat instruction is. Rollback to a retired version refuses.
+- **Bot and dock share a pin** by the operator confirming the same fingerprint to each; a
+  dock never derives its pin from the bot's messages.
 
 ## Verification (the bot, and any dock acting for it)
 
-1. `payload.data.sig` present, `alg == "ed25519"`, `key_id` equals the pinned key for
-   `from` → else **refuse**.
-2. Rebuild the canonical bytes from `data` minus `sig`; verify the signature → else refuse.
-3. `from` equals the configured operator; `to` equals the bot's own handle → else refuse.
-4. `issued_at` within ±5 minutes of now; `expires_at` in the future → else refuse.
-5. `nonce` not seen before for this operator key within the last 24 h → else refuse (replay).
-6. `invite_id` matches the message envelope's `invite_id` and, where an Action record
-   exists, the record's `expires_at` → else refuse.
-7. Only then: `meet:ack accepted:true`, and the v0.3 lifecycle proceeds.
+All checks run before any effect; any failure is a named refusal; no step throws on bad
+input. Order:
 
-Refusals are `meet:ack {accepted:false, reason}` with one of: `unsigned`, `bad_signature`,
-`unknown_key`, `key_mismatch`, `not_my_operator`, `expired`, `replay`, `envelope_mismatch`.
-A refused invite is also reported in the operator chat once. **Nothing said in the
-message body changes any of the above.**
+1. Parse strictly (duplicates, non-finite numbers, invalid Unicode, size, depth → `malformed`).
+2. Pin lookup for `(operator, registry)`. No `sig` and no pin → accept as `provenance:
+   "unsigned"` (only before any pin has ever existed). No `sig` with a pin → `unsigned`.
+   `sig` without a pin → `unknown_key` (never trust-on-first-use from the wire).
+3. `sig.alg == "ed25519"`, `sig.key_id` equals the pinned full fingerprint (`key_mismatch`),
+   pinned key not retired (`key_retired`), signature value is exactly 64 bytes of strict
+   base64 (`bad_signature`).
+4. Shape: required fields present, strings/`null` only, no unknown keys, `domain` and
+   `protocol_version` exact, `type` in the command set (`bad_shape`).
+5. Signed `type` == payload `type` == the executing handler; envelope `invite_id` == signed
+   (`envelope_mismatch`).
+6. Ed25519 verify over canonical bytes with the pinned key (`bad_signature`).
+7. `from` == configured operator, `to` == own handle (`not_my_operator`).
+8. Time: `issued_at` strict and not more than 2 minutes in the future (`bad_time`). For an
+   invite: `expires_at` strict and after `issued_at`; refuse if `now + 2 min ≥ expires_at`
+   (`expired`) — conservative, so a slow clock cannot seat past the deadline. **No freshness
+   window on `issued_at`**: delivery may lag by a full watch cycle; the entry deadline is the
+   only deadline. Re-check `expires_at` again immediately before any effect (seating).
+9. Action binding (when an Action record exists): its `to` == `to`, its `expires_at` ==
+   signed `expires_at`, its status pending (`action_mismatch`, `action_not_pending`);
+   lookup unavailable → `action_unavailable`.
+10. Nonce: base64url, 22–43 chars (`bad_nonce`). Durable ledger keyed by `(key_id, nonce)`
+    holding the canonical bytes and retained until `expires_at + 24 h`: same nonce with the
+    **same canonical bytes** → idempotent repeat of the prior outcome (re-ack, no new
+    effect); same nonce with **different** bytes → `replay`. Record after all checks pass and
+    **before** any effect, atomically. Bot and dock keep separate ledgers and never consume
+    the same authorization twice for the same effect.
+11. Only then: `meet:ack accepted:true`, and the v0.3 lifecycle proceeds.
+
+Refusal ack: `meet:ack {accepted:false, reason}` with one of `malformed`, `unsigned`,
+`unknown_key`, `key_mismatch`, `key_retired`, `bad_signature`, `bad_shape`,
+`envelope_mismatch`, `not_my_operator`, `bad_time`, `expired`, `bad_nonce`, `replay`,
+`action_mismatch`, `action_not_pending`, `action_unavailable`. At most one refusal report
+per `invite_id` in the operator chat, and at most 10 per hour overall. An unverified message
+never changes an existing action's state. **Nothing in a message body changes any check.**
+
+## Cancellation (signed `meet:leave` from the operator)
+
+- A cancel is valid **until the action is terminal**, independent of the invite's entry
+  deadline; it carries its own `issued_at` and fresh `nonce` and is verified by the same
+  steps (1–8, 10). A cancel that arrives **before** its invite tombstones the `invite_id`
+  (the later invite refuses `action_not_pending`).
+- Every operator-cancel path over the network is signed. A human saying "leave" in the call
+  chat is **host authority in the room** — a different object, exercised by the body's
+  adapter — not an operator cancel of the action.
+- Cancellation never invokes the acceptance branch; a cancel of an unknown `invite_id` is
+  refused and receipted once.
+
+## Trust boundary — what a signature does not tell you
+
+A signature proves the operator authored this exact invitation. It cannot reveal a cancel
+that was suppressed in transit, a grant revoked since, or an executor generation that moved
+on. Therefore verifiers **re-check current authorization, `expires_at`, and executor
+generation immediately before every effect**, and a compromised registry can still lie about
+action state — that is the identity spine's boundary (#391, #368), not this extension's.
 
 ## Policy
 
-- **Before the operator publishes a key:** unsigned invites are accepted as today, and the
-  ack carries `"provenance":"unsigned"` so the record is honest.
-- **After the operator publishes and the bot pins:** unsigned or unverifiable invites are
-  **refused**. Fail closed. There is no downgrade path except the operator revoking the
-  key (unpublishing), which the bot treats as a new first-use event to confirm in chat.
-- A forged or replayed `meet:leave` can at worst end a call early — safe direction — but
-  it is still refused when the key is pinned, so a stranger cannot cancel the operator's
-  invitations.
+- **Before any key is pinned:** unsigned invites accepted, ack carries `"provenance":
+  "unsigned"`.
+- **After pinning:** `signed_required` is persisted; unsigned, unverifiable, missing-key and
+  retired-key invites refuse. No downgrade path except an explicit operator instruction.
 
 ## What this does and does not defend
 
-Defends: a stranger sending an invite as the operator; a leaked operator bearer token used
-to summon the bot; a relay or proxy altering `url` or `to`; replay of an old invite.
-Does not defend: compromise of the operator's private key or the operator chat itself;
-platform-side tampering with the identity read *before* the key is pinned (hence the
-out-of-band fingerprint confirmation). Not addressed: signing anything the **bot** sends —
-the bot's identity to the operator is the bearer token plus the operator's own knowledge of
-which bot they run; that is the identity-spine's job (#391, #372), not this extension's.
+Defends: a stranger inviting as the operator; a leaked operator bearer token used to summon
+the bot; a relay altering `url`, `to`, or `type`; replay; relabeling an invite as a cancel.
+Does not defend: compromise of the operator's private key or of the operator chat; a lying
+registry *about action state*; anything the **bot** sends (its identity to the operator is
+the bearer token plus the operator's knowledge of which bot they run — #391/#372).
 
 ## Rollout, in order
 
-1. Operator publishes a key (register with `publicKey`); the identity read serves it.
-2. Bots' briefs gain the verification section (`docs/GROKBOT-ONBOARDING-BRIEF.md`) and
-   pin on first use with chat confirmation.
-3. Operators' senders (this session's `vibe_dm`, the MCP, the channel plugin) add `sig`.
-   Until a sender can sign, its invites are unsigned and — once the bot has pinned —
-   refused. That is the intended pressure.
-4. The dock verifies the same way before dispatching a body.
+1. Operator generates a key, publishes it (register with `publicKey`), and states its full
+   fingerprint in each bot's operator chat.
+2. Bots and docks pin on confirmation and persist `signed_required`.
+3. Senders add `sig` (`vibe_dm`, the MCP, the channel plugin). Until a sender can sign, its
+   invites are refused by pinned bots — the intended pressure.
 
 ## Conformance
 
-Vectors belong in Platform's corpus, requested not written here: *signed invite accepted*,
-*unsigned invite refused after key pinned*, *bad signature refused*, *key mismatch refused*,
-*replayed nonce refused*, *expired refused*, *envelope mismatch refused*, *forged cancel
-refused*. A local self-check that the sign/verify recipe round-trips with the harness's
-canonical form: `node conformance/signed-invite.selfcheck.js`.
+Golden vectors: `conformance/vectors/signed-invite-v0.1.json` (fixed seed key; canonical
+bytes; expected signature; accept and refusal cases with isolated single-field mutations).
+Reference verifier with injected clock, pin store, nonce ledger and action lookup:
+`conformance/lib/signed-invite-verify.js`; tests: `node conformance/signed-invite.selfcheck.js`.
+Vectors for Platform's corpus are requested, not written here: signed accepted · unsigned
+refused after pin · bad signature · key mismatch · retired key · replay (different bytes) ·
+idempotent repeat (same bytes) · expired · envelope mismatch · relabeled type · forged cancel ·
+cancel-before-invite tombstone · action mismatch · action unavailable.
 
 ## Non-goals
 
 General message signing; registry-side verification; key distribution beyond the identity
-read; any claim that a signature proves *which model* produced a message.
+read plus operator-chat confirmation; any claim that a signature proves *which model*
+produced a message.

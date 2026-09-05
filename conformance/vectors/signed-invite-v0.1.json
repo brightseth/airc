@@ -1,0 +1,21 @@
+{
+ "profile": "airc-meet-v1",
+ "object": {
+  "domain": "airc-meet-v1",
+  "protocol_version": "0.2",
+  "type": "meet:invite",
+  "from": "brightseth",
+  "to": "grokbot",
+  "invite_id": "mi_20260904_grokbot_003",
+  "url": "https://meet.google.com/mrq-ujjh-qna",
+  "surface": "google-meet",
+  "starts_at": null,
+  "expires_at": "2026-09-04T18:30:00Z",
+  "issued_at": "2026-09-04T18:00:00Z",
+  "nonce": "AAAAAAAAAAAAAAAAAAAAAA"
+ },
+ "canonical": "{\"domain\":\"airc-meet-v1\",\"expires_at\":\"2026-09-04T18:30:00Z\",\"from\":\"brightseth\",\"invite_id\":\"mi_20260904_grokbot_003\",\"issued_at\":\"2026-09-04T18:00:00Z\",\"nonce\":\"AAAAAAAAAAAAAAAAAAAAAA\",\"protocol_version\":\"0.2\",\"starts_at\":null,\"surface\":\"google-meet\",\"to\":\"grokbot\",\"type\":\"meet:invite\",\"url\":\"https://meet.google.com/mrq-ujjh-qna\"}",
+ "signature": "CB9K9dAJN2j2yIl/B+euvAALI5oqLNubIEqmtDR00QsGG4jaQMCbKQ0dza6hsxtEwpkIa/ZWVKYVSpMHcm99Cg==",
+ "key_id": "sha256:10ba682c8ad13513971e8b56881aab8bd702bb807796eca81932c735a94d6e6d",
+ "operator_seed": "1111111111111111111111111111111111111111111111111111111111111111"
+}

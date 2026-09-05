@@ -57,7 +57,7 @@
    "signature": "Q0sx0KfosK6onegPNHwH8Trv60MfpjfhTanILuoWJL+xyBtP7b9gEhBbryJdpCaQJLALoBhN8iOq0jRNjR2VDg=="
   },
   {
-   "name": "supplementary-plane text in surface (JCS code-unit order)",
+   "name": "supplementary-plane text in a value (profile keys are fixed ASCII; ordering moot)",
    "object": {
     "domain": "airc-meet-v1",
     "protocol_version": "0.2",

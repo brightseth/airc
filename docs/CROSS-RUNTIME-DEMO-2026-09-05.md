@@ -73,10 +73,9 @@ Identical retry: **same id, `idempotentReplay:true`, `message.reused:true`.** Th
 one answer. Verified from the asking side (`verify.js` exit 0). **The Leg A incompatibility is
 closed by #405** — same principals, same tooling, no new abstraction.
 
-Observed on the way (not a dedup event; logged as the next candidate incompatibility): a body
-containing `<` and `"` was refused 409 `approved_content_mismatch` on both send and retry, nothing
-stored — the server sanitizes before comparing digests (contract vector CB-004's behaviour) and
-the client computed its digest over the unsanitized text. A plain-ASCII body went through.
+Observed on the way (not a dedup event): an answer containing a tag-like fragment was refused 409
+`approved_content_mismatch` on send and on identical retry, nothing stored. Diagnosed below as the
+next incompatibility.
 
 ### Silent restart after the fix: PASS
 
@@ -138,3 +137,16 @@ carries everything; the server simply cannot key on it for these senders.
 Two tooling findings the receiver surfaced, both fixed in `conformance/cross-runtime/`:
 `GET /api/messages` returns oldest-first (a small `limit` hides recent messages), and it
 returns `reply_to` as an object `{id, from, text}` with no `thread_id` field.
+
+## Next incompatibility (one at a time): unpublished body normalization — vibe-platform#406
+
+**Symptom (live, lab principals, 2026-09-05):** bodies shaped like HTML tags (`<b>x</b>`,
+`<a href="x">`, `<b c>`) or carrying a trailing space are refused 409 `approved_content_mismatch`;
+a lone `<`, quotes, `&`, newlines and double spaces pass. **Source diagnosis:** the server runs the
+body through `stripHtml` (deep entity decode, zero-width and control removal, `<[^>]*>` strip, trim)
+and compares the digest against *that* text; the contract publishes the recipient rule in detail but
+no body rule, and the 409 carries no server text. A client outside vibe-mcp cannot compute a
+matching digest without reimplementing the sanitizer byte for byte. **Owner:** Platform (contract
+owner). **Proposed there, not in a fork:** publish the body rule and/or return `server_text` in the
+409; vectors CB-009 (trailing whitespace), CB-010 (entity form), CB-011 (zero-width).
+Evidence table and source pointers: https://github.com/VibeCodingInc/vibe-platform/issues/406.

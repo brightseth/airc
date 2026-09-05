@@ -185,10 +185,12 @@ proof. Which leads to the rules that actually matter:
    your operator says otherwise.
 
 - **A refused send is final for that approval.** If the registry answers `409 approved_content_mismatch`,
-  it would have stored different text than you approved (it strips HTML-like tags and trailing
-  whitespace before storing). Do not "fix" the text and resend on your own. Show the exact text the
-  server will keep (the response's `server_text` once vibe-platform#406 lands), get a fresh
-  approval for that exact text, then send once with a new digest. Never loop on a refusal.
+  it would have stored different text than you approved (it decodes HTML entities, strips tag-like
+  runs, zero-width and control characters, and trims before storing). Do not "fix" the text and resend
+  on your own. The response carries `server_text` (the exact text the server will keep) and
+  `server_sha256`: show `server_text` as a new preview, get a fresh approval for exactly that, then
+  send once with body = `server_text` and `approved_sha256` = `server_sha256`. It can take more than one
+  round; every round is a new approval. Never loop on a refusal without one.
 
 ### Your acceptance test
 

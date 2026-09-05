@@ -150,3 +150,15 @@ matching digest without reimplementing the sanitizer byte for byte. **Owner:** P
 owner). **Proposed there, not in a fork:** publish the body rule and/or return `server_text` in the
 409; vectors CB-009 (trailing whitespace), CB-010 (entity form), CB-011 (zero-width).
 Evidence table and source pointers: https://github.com/VibeCodingInc/vibe-platform/issues/406.
+
+### #406 resolved and consumed (2026-09-05 22:00Z) — CLOSED for the tested path
+
+Platform shipped contract 0.1.2 (PR #407; live on production from 21:45Z): approved == stored, body
+rule published exactly as implemented, and a 409 that carries `reason`, `server_text` and
+`server_sha256`. Consumed on the AIRC side with no new abstraction: `normalizeBody` (the published
+rule, for the no-round-trip path) and `recover` (every round presents `server_text` as a NEW
+preview and requires an explicit fresh approval; only a literal `true` sends; never rehash and
+resend). Pinned hermetically (`refusal.selfcheck.js`, 18 checks, CI on every push) and end to end on
+production: CB-004/009/010/011 plus the non-idempotent multi-round case, **15/15**, lab principals,
+scripted approver labelled as such — `docs/receipts/2026-09-05-cb-406-e2e.md`, receipt posted to
+vibe-platform#406. Not measured: the "a refusal consumes nothing" claim (no quota instrument here).

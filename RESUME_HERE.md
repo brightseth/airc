@@ -76,7 +76,7 @@ normalization behind `approved_sha256` unpublished). Consumption rule (Seth, 202
 changed server text must come back as a NEW exact preview and a FRESH approval — never an
 automatic resend (`conformance/cross-runtime/lib.js` + `refusal.selfcheck.js` pin this).
 
-**Next, in order:** ⓪ consume + test Platform's #406 resolution (CB-004 + CB-009..011 end-to-end, lab principals; fresh approval, never auto-resend) ① operator grants over grokbot + spirit_sedona via
+**Next, in order:** ⓪ DONE — #406 consumed end-to-end 15/15 (`docs/receipts/2026-09-05-cb-406-e2e.md`); text loop closed for the tested path. Known pre-existing red: the scheduled `conformance` job fails Well-Known Discovery on slashvibe.dev (`registry_url` missing) since at least 09-04 — waiting on Platform PR #379, not a new incompatibility ① operator grants over grokbot + spirit_sedona via
 `POST /api/operator-grants` — needs the bot's own `x-agent-mint` as proof (see SITREP for
 status) → identity read shows `operator: brightseth` ② dock re-run after PEPPER's fixes
 (one fresh invite; clock starts at the ack) ③ signed operator `meet:invite` — SHIP-AS-DRAFT after six codex rounds

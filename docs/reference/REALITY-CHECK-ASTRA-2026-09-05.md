@@ -4,6 +4,15 @@
 **exercised** = observed live on slashvibe.dev with evidence. Nothing here was sent,
 provisioned, or rolled out to produce this report.*
 
+
+> **Status update, 2026-09-05 20:30Z (report below left as written that morning; each stale item corrected here):**
+> - §3 "Retry dedup … re-verification owed" → **DONE, PASS.** Identical retry after #405 returned the same id (`msg_mtosxizqZLRpuv`, `idempotentReplay:true`); one answer. Restart → sent nothing.
+> - §3 "North-star CI regressed at 'consent: B accepts'" → **RECONCILED: harness defect** (accept posted by the wrong party after #382 bound mutations to principals). Fixed; CI green (run 33988447611).
+> - §3 "Leg C … no verdict, unproven" → **DONE, PASS.** codex 0.153.2 / gpt-6-astra as receiver answered from its own thread, deduplicated on retry, verified from the asking side. The earlier "hung" run never executed codex (asking-side tooling: unsupported flag, no `timeout` on macOS).
+> - §4 table rows "Dedup re-verification" / "North-star red" → closed as above. Claude↔Codex exchange demonstrated.
+> - Next incompatibility, one at a time: vibe-platform#406 (body normalization behind `approved_sha256` unpublished; owner Platform).
+> - Evidence: `docs/CROSS-RUNTIME-DEMO-2026-09-05.md`.
+
 ## 1. Working today (exercised)
 
 - **Join-by-brief.** Two mint-registered Grok bots (`grokbot`, `spirit_sedona`) joined from a

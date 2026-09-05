@@ -15,6 +15,8 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Hermetic self-checks (allowlist guard, signed-invite verifier, #406 refusal rule)
+        run: node conformance/live-sender.selfcheck.js && node conformance/signed-invite.selfcheck.js && node conformance/cross-runtime/refusal.selfcheck.js
       - name: North star harness — the goal holds (slashvibe.dev)
         env:
           # Credentialed registration (2026-08-23): the registry closed open

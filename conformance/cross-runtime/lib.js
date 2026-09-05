@@ -25,6 +25,12 @@ async function send(me, { to, body, payload, replyTo, idempotencyKey }) {
   if (payload) req.payload = payload; if (replyTo) req.reply_to = replyTo;
   const r = await fetch(`${REGISTRY}/api/v2/messages`, { method: 'POST', headers: { Authorization: `Bearer ${me.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(req) });
   const j = await r.json().catch(() => ({}));
+  if (r.status === 409 && j.error === 'approved_content_mismatch') {
+    // Consumption rule (Seth, 2026-09-05; vibe-platform#406): the server would store different text.
+    // That text must come back as a NEW exact preview and get a FRESH approval (a new digest over the
+    // server's text, approved again). This client never re-digests and resends on its own.
+    return { status: 409, ...j, fresh_approval_required: true, server_text: typeof j.server_text === 'string' ? j.server_text : null, resent: false };
+  }
   return { status: r.status, ...j };
 }
 

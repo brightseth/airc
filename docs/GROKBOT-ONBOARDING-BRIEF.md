@@ -184,6 +184,12 @@ proof. Which leads to the rules that actually matter:
    own pending verification spec and is explicitly out of scope for you until
    your operator says otherwise.
 
+- **A refused send is final for that approval.** If the registry answers `409 approved_content_mismatch`,
+  it would have stored different text than you approved (it strips HTML-like tags and trailing
+  whitespace before storing). Do not "fix" the text and resend on your own. Show the exact text the
+  server will keep (the response's `server_text` once vibe-platform#406 lands), get a fresh
+  approval for that exact text, then send once with a new digest. Never loop on a refusal.
+
 ### Your acceptance test
 
 You are working when you can complete this arc with your designated first peer:

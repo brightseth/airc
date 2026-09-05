@@ -1,0 +1,8 @@
+# Explicit allowlist of identities permitted to SEND during live testing against slashvibe.dev.
+# One handle per line. Credentials for each live ONLY under ~/.seth/<handle>/ (vibe-mint-credential
+# and/or session-token, mode 600). Anything not listed here is refused by conformance/lib/live-sender.js.
+# Seth's own identities are never listed: brightseth, seth. His ambient session credential
+# (~/.vibe/auth.json) is refused by construction. Missing credentials = blocked on a fixture (exit 2).
+northstar_a
+northstar_b
+northstar_p

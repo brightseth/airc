@@ -40,6 +40,11 @@ handed to platform — #371 (`docs/reference/CONSENT-GATE-CONTRACT-371.md`), #37
 (`docs/reference/IDENTITY-READ-ACCEPTANCE-372.md`); CONFORMANCE.md = registry profile by
 real tests; well-known fix PR #379; per-runtime briefs (`docs/briefs/make-brief.py`).
 Daily one-liner to cc-seth: proven / held / blocked; wire Seth only for decisions.
+**LIVE-TEST RULE (Seth, 2026-09-04): never send as Seth.** Dedicated test credentials from
+`conformance/TEST-SENDERS.allowlist` via `conformance/lib/live-sender.js` only; no fallback to
+`~/.vibe/auth.json`; missing credentials = blocked on a fixture (exit 2). The 09-04
+composition-vector run (vibe-mcp#41) was sent as brightseth without authorization — the
+receipt is preserved and labeled; it is the miss that produced this rule.
 
 **Dock run attempted 2026-09-03 evening — HELD:** bot acked in 93s; the dock never put a body
 in the room (PEPPER unsticking). Both invites closed; nothing live. Re-run needs PEPPER's
@@ -59,9 +64,9 @@ bound to the real corpus (15/20, loader verified by Astra; executor unimplemente
 status) → identity read shows `operator: brightseth` ② dock re-run after PEPPER's fixes
 (one fresh invite; clock starts at the ack) ③ signed operator `meet:invite` — SHIP-AS-DRAFT after six codex rounds
 (`content/spec-signed-operator-invite-v0.1-draft.md` rev 6 + reference verifier + golden
-vectors, 90/90); awaiting Seth's ratification. Rollout: operator publishes a key + states
-the fingerprint to each bot; a sender learns to attach `sig`; vectors into Platform's corpus.
-Today every invite is honestly `unsigned` ④ partner executor once #368's served Action
+vectors, 90/90). **Ratification and rollout are separate decisions, both UNAPPROVED**
+(Seth, 2026-09-04) — do nothing toward either without his explicit call. Today every
+invite is honestly `unsigned` ④ partner executor once #368's served Action
 (expires_at, generation, input channel) exists; then `northstar_p` provisioning; then
 verified cases ⑤ Rebecca note (Seth). Daily one-liner to cc-seth; wire Seth only for
 decisions.

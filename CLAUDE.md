@@ -43,6 +43,11 @@ Reference registry: https://www.slashvibe.dev (the /vibe deployment). Stats: vib
 
 ## Gotchas (the reasons this file exists)
 
+- 🚫 **Never send as Seth in tests (ruling 2026-09-04).** Live traffic to slashvibe.dev from
+  conformance/tests uses ONLY identities in `conformance/TEST-SENDERS.allowlist`, obtained via
+  `conformance/lib/live-sender.js` (credentials under `~/.seth/<handle>/`, mode 600). Never
+  read `~/.vibe/auth.json` for a test send. No credential = blocked on a fixture, not a fallback.
+
 - ⚠️ **Deploy alias-pinning:** `airc.chat` / `www` / `demo` are alias-pinned. After ANY
   deploy, re-point all three (`vercel alias set <new>.vercel.app airc.chat --scope
   sethvibes`, etc.) or the live site stays frozen on the old build.

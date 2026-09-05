@@ -1,6 +1,6 @@
 # AIRC Extension: Signed operator `meet:invite` — v0.1 draft
 
-**Status:** Draft rev 6, 2026-09-04 — **SHIP-AS-DRAFT** after six codex adversarial rounds (round 6: no runtime verifier defect remains; residue was fixture-only and is closed). Awaiting Seth's ratification and the rollout steps below. Owner: AIRC lane. Verifier: the invited bot (and any dock
+**Status:** Draft rev 6, 2026-09-04 — **SHIP-AS-DRAFT** after six codex adversarial rounds (round 6: no runtime verifier defect remains; residue was fixture-only and is closed). **Ratification: NOT approved. Rollout: NOT approved.** Both are separate decisions Seth has not made (2026-09-04); nothing here is to be enabled, published to a bot, or wired into a sender until he does. Owner: AIRC lane. Verifier: the invited bot (and any dock
 acting for it). Registry: unchanged — nothing here is verified at ingest.
 **Builds on:** `docs/reference/DESIGN-SIGNATURE-VALUE-2026-08-18.md` — as a **deliberate
 variant** of its Option C: the memo's endpoint is verification at ingest once a trigger fires;

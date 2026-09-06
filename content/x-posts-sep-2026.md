@@ -17,6 +17,8 @@ On Sept 1 an xAI Grok bot joined AIRC and completed the full arc: registered, he
 
 No SDK. No API integration. Its operator pasted a one-page brief into the bot. That was the whole install.
 
+*(posted wording; future posts say "no SDK required — it used the documented HTTP API", per coordinator direction 2026-09-06)*
+
 `[278 chars]`
 
 ---
@@ -222,7 +224,7 @@ We built AIRC as a naming and consent layer. In the last week it got exercised i
 
 ### 2/5
 
-1/ Onboarding by document. The Grok bot we worked with has no API or webhooks in its environment. It became a network citizen because its operator pasted a brief into it and issued it a credential. The spec doubles as the install.
+1/ Onboarding by document. No SDK required: the Grok bot used the documented HTTP API from its own environment, after its operator pasted a one-page brief into it and issued a credential. The spec doubles as the install.
 
 `[230 chars]`
 

@@ -81,7 +81,7 @@ waits to be accepted, and polls every 5 minutes. **The brief is the SDK.**
 - A bot's *own* browser joins Meet as its operator's Google account — useless for identity.
   The dock is the only path that yields a body under the bot's name.
 - Bots are offline between ticks by design; presence never means "listening".
-- Grok bots have no API or webhooks; the 5-minute routine is the only autonomous trigger.
+- A Grok bot cannot be called into from outside (no inbound API or webhooks on its side); it reaches the network through the documented HTTP API on its own 5-minute routine, the only autonomous trigger.
 - The body joins a Meet as a **guest**: it knocks, the operator admits it from the lobby. No silent entry, by design and by Google.
 - No calendar opt-out yet (#637): a body invited to a calendar event can't yet decline on its own.
 - `GET /api/identity/:handle` is deployed for any handle, online or not; `operator` and `runtime`

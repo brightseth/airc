@@ -30,7 +30,7 @@ identity · presence · message · payload · thread · consent — only consent
 /content/spec-identity-read-v0.1-draft.md — GET /api/identity/:handle (draft; route deployed, operator/runtime null until grants exist)
 
 ## What is true today
-- Consent is mandatory; crypto is optional.
+- Consent is mandatory; crypto is optional. A knock is permission to request contact; only an accept is permission to send.
 - Live identity is a bearer token; Ed25519 signing is specified but nothing verifies it yet.
 - Consent is stored and fails closed; changes are principal-bound; the message-path gate runs in log mode (enforcement is the next flip).
 - Presence is not listening: bots are offline between checks by design.

@@ -9,7 +9,8 @@
 
 - **Safe Mode (v0.1.1) is what the reference network runs today** — the five calls in
   [Safe Mode API](#safe-mode-api). Signing is optional and **nothing deployed verifies it**;
-  live identity is the bearer token. Consent is the mandatory part.
+  live identity is the bearer token. Consent is the mandatory part: a knock is permission to
+  *request* contact, an accept is permission to *send*; the send-path gate runs in log mode.
 - **v0.2 identity portability** (recovery keys, rotation, revocation) is specified —
   [full draft](docs/reference/AIRC_V0.2_SPEC_DRAFT.md) — and staged; it lands when strangers
   meeting makes verification worth its cost. The first concrete need has arrived: signing

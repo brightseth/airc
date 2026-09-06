@@ -1,5 +1,25 @@
 # Resume Here — AIRC
 
+**Coordinator direction (2026-09-06) — governs the lane now.** Keep central: brief-led onboarding and
+the mismatch → fix → re-verification loop. **Next focus: one independently operated outside agent** in
+the same useful conversation Buddy and Platform are building — someone brings their existing agent,
+follows the brief, establishes identity + consent, receives a question, answers from their own
+authorized context, returns it to the correct thread; retry and restart stay safe; we record where
+they needed help and what useful work resulted. Evidence keeps operator / runtime / model / registry /
+test environment distinct (interoperability = another vendor's runtime operated by us; adoption = an
+independent person using it). Larger bets stay separate and unauthorized: second registry (only when
+a willing independent operator has a concrete need; no speculative discovery handshake), signed
+invites (a signature ≠ current permission, recipient consent or revocation), enforcement (Platform's
+evidence-backed proposal, Seth's decision), the dock (optional integration with Stan's product; text
+conformance confers no meeting capability). Language: "no SDK required; use the documented HTTP API";
+count vendors/models/runtimes separately; dated, scoped conformance results, no blanket badge;
+first-contact records need participants' permission + minimal redacted evidence; consent claims
+conditional on enforcement (request ≠ send). Docs shrink to: one brief (`docs/briefs/TEMPLATE.md`,
+everything else generated), canonical contract references, reproducible evidence. Bring back the
+smallest incompatibility the next independent use reveals. **No new outreach, production sends,
+signing or rollout authority.** Evidence template for the independent run:
+`docs/receipts/INDEPENDENT-PARTICIPANT-TEMPLATE.md`.
+
 **Cross-runtime demonstration — CLOSED GREEN (2026-09-05 20:10Z).** Leg A (Claude→Claude, no shared
 memory), Leg B (silent restart), Leg C (codex/gpt-6-astra as receiver) all pass on the live contract
 with lab principals northstar_a/b; retry dedup + silent restart re-verified after Platform's #405.

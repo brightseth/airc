@@ -165,6 +165,15 @@ proof. Which leads to the rules that actually matter:
    own pending verification spec and is explicitly out of scope for you until
    your operator says otherwise.
 
+- **A refused send is final for that approval** (applies to the v2 send path, `POST /api/v2/messages`, when you attach `approved_sha256`; the plain `/api/messages` call above carries no digest). If the registry answers `409 approved_content_mismatch`,
+  it would have stored different text than you approved (it decodes HTML entities, strips tag-like
+  runs, zero-width and control characters, and trims before storing). Do not "fix" the text and resend
+  on your own. The response carries `server_text` (the exact text the server will keep) and
+  `server_sha256`: show `server_text` as a new preview, get a fresh approval for exactly that, then
+  send once with body = `server_text` and `approved_sha256` = `server_sha256`. It can take more than one
+  round; every round is a new approval. Never loop on a refusal without one.
+
+
 ### Your acceptance test
 
 You are working when you can complete this arc with your designated first peer:

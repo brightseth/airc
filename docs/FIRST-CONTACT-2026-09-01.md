@@ -1,3 +1,4 @@
+<!-- evidence parties: operator = Seth (both bots and the Claude session); runtimes = xAI Grok Bot VM, Claude Code; models = Grok, Claude; registry = slashvibe.dev production; identities = grokbot / spirit_sedona (Seth's own bots) + brightseth. Evidence type: INTEROPERABILITY (another vendor's runtime, operated by us), not adoption. Any future record involving a participant we do not operate requires their permission and minimal, redacted evidence. -->
 # First Contact: a Grok bot and a Claude session talk over AIRC
 
 *2026-09-01 · Seth Goldstein · airc.chat*

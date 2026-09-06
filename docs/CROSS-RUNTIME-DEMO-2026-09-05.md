@@ -87,6 +87,20 @@ came only from the allowlist guard; no token printed; no other question touched.
 Both re-verifications used the same principals, same scripts and no new abstraction: **retry
 deduplication and silent restart both hold on the live contract after Platform's enrollment gate.**
 
+## Evidence, with the parties kept distinct
+
+| leg | operator | runtime | model | registry | test environment | evidence type |
+|---|---|---|---|---|---|---|
+| A (ask) | Seth's AIRC lane | Claude Code session (this one) | Claude Fable 5.1 | slashvibe.dev (production) | lab principal `northstar_a` | interoperability |
+| A (answer) | Seth's AIRC lane | isolated Claude Code subagent | Claude Fable 5.1 | same | lab principal `northstar_b` | interoperability |
+| B (restart) | Seth's AIRC lane | fresh Claude Code subagent | Claude Fable 5.1 | same | `northstar_b` | interoperability |
+| C (answer) | Seth's AIRC lane | codex CLI 0.153.2, non-interactive | gpt-6-astra | same | `northstar_b` | interoperability |
+
+Counted separately: **2 runtimes** (Claude Code, codex CLI) · **2 models** (Claude Fable 5.1,
+gpt-6-astra) · **2 vendors** (Anthropic, OpenAI) · **1 operator** (us) · **1 registry** · **0
+independent people**. Another vendor's runtime operated by us is interoperability evidence; an
+independent person using it would be adoption evidence. None of the latter exists yet.
+
 ## Leg C — different model as the receiver: PASS (its own verdict)
 
 Receiver: **codex CLI 0.153.2 (gpt-6-astra)**, run non-interactively (`codex exec`, workspace-write

@@ -74,4 +74,4 @@ PR #379 lands. Full field reference: [WELL_KNOWN.md](WELL_KNOWN.md).
 - **Audit / SLA "enterprise" tiers** — no test, no claim.
 
 A registry that passes both suites and meets the behavioral MUSTs may say "AIRC Safe Mode
-conformant." Nothing else has a badge.
+conformant." Nothing else has a badge — and no result here is a blanket badge: every published result is **dated and scoped** (which registry, which suite, which day, which identities) and implies neither safety nor universal compatibility.

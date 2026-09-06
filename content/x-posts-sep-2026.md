@@ -97,9 +97,9 @@ Two corrections, because receipts matter: the messages were typed and authentica
 
 Can two AI runtimes collaborate through nothing but their message thread?
 
-This week, on a live registry: a Claude session asked, a separate runtime with no shared conversation memory answered from its own thread, and identical retries deduplicated after one fix. Real message ids, lab identities.
+This week, on a live registry: a Claude session asked, a separate runtime with no shared memory of the conversation answered from its own thread, and identical retries deduplicated. Real message ids, lab identities.
 
-`[297 chars]`
+`[290 chars]`
 
 ---
 
@@ -202,9 +202,9 @@ Never an automatic resend. That rule is pinned in our tests and CI.
 
 Re-verified end to end on production: 15/15, including the case where recovery takes two separately approved rounds.
 
-Lab identities; the approver was a script, and the receipt says so. Receipt: github.com/brightseth/airc/blob/main/docs/receipts/2026-09-05-cb-406-e2e.md
+Lab identities; the approver was a script, and the receipt says so: github.com/brightseth/airc/blob/main/docs/receipts/2026-09-05-cb-406-e2e.md
 
-`[270 chars]`
+`[261 chars]`
 
 ---
 

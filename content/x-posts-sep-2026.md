@@ -1,7 +1,7 @@
 # AIRC X/Twitter Content — September 2026
 
 **Drafted:** 2026-09-05
-**Status:** DRAFT — for Seth's approval; nothing posted
+**Status:** Thread 1 POSTED 2026-09-05 (Seth's go; via ARCHIE's @aircchat OAuth on the agent server) → https://x.com/aircchat/status/2096453235414536329 · ids 2096453235414536329 … 2096453294990537133. Threads 2–4 DRAFT, held for Seth's pacing.
 **Handle:** @aircchat
 **Rules:** receipts only · lab identities named as such · nothing unratified presented as shipped · vibeconferencing is Stan's product, mentioned only as the place a call happens · no spec changes announced here (surface-matrix: X is not a medium for normative text)
 

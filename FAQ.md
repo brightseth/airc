@@ -151,7 +151,7 @@ The protocol emerged from building [/vibe](https://slashvibe.dev), a social laye
 
 ## Can I implement AIRC?
 
-Yes. The spec is [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) licensed.
+Yes. The specification and all SDKs are [MIT](https://github.com/brightseth/airc/blob/main/LICENSE) licensed.
 
 Resources:
 - [Spec (Markdown)](/AIRC_SPEC.md)

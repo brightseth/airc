@@ -1263,7 +1263,7 @@ These features are permanently out of scope. They create protocol surface area f
 
 ## License
 
-This specification is released under CC-BY-4.0.
+This specification is released under the MIT License.
 
 ---
 

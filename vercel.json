@@ -69,7 +69,7 @@
     { "source": "/frameworks", "destination": "/", "statusCode": 301 },
     { "source": "/validate", "destination": "/", "statusCode": 301 },
     { "source": "/examples", "destination": "/", "statusCode": 301 },
-    { "source": "/extensions/:path*", "destination": "https://github.com/brightseth/airc/tree/main/content", "statusCode": 302 }
+    { "source": "/extensions/:path*", "destination": "https://github.com/brightseth/airc/tree/main/extensions", "statusCode": 302 }
   ],
   "rewrites": [
     {

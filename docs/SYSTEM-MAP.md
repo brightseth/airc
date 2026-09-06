@@ -1,6 +1,6 @@
 # The system, on one page
 
-*2026-09-02 · the map every lane shares. If this file and reality disagree, fix this file.*
+*2026-09-05 · the map every lane shares. If this file and reality disagree, fix this file. Labels: **[target]** designed, not yet exercised · **[exercised]** observed live with a receipt.*
 
 ## The picture
 
@@ -47,7 +47,9 @@ Plus one piece of glue: **the dock** — a small service that reads an invite/ac
 the thread. It is the only new code. What the body *hears* travels on a separate, transient
 call-input channel — never into the thread.
 
-## What a meeting looks like — three channels, not one
+## What a meeting looks like — three channels, not one **[target design]**
+
+*What has actually been exercised (2026-09-01): steps 1–2 on the thread, then a **manual** dock — a person launched the body and admitted it. The automated dock run has not passed acceptance; the served Action, the call-input channel and the executor do not exist yet (`conformance/PARTNER-LEG.md`). Everything below the invite/ack pair is the design the lanes are building toward.*
 
 **Durable thread** (the DM you can scroll in Buddy): the invitation, the action's status, the
 honest outcome. **Call-input channel** (transient, keyed by the action, gone when the call
@@ -67,11 +69,11 @@ happened in the room.
 
 ## What a partner bot needs (the whole onboarding)
 
-A handle + a credential from Seth (`provision-partner-bot.sh <handle>`), and a one-page brief
+A handle + a credential from the operator (an operator-local script; outsiders ask for a handle via the repo's issues), and a one-page brief
 pasted into its chat (`docs/GROKBOT-ONBOARDING-BRIEF.md`). No SDK. It registers, knocks,
 waits to be accepted, and polls every 5 minutes. **The brief is the SDK.**
 
-## Honest limits (as of 2026-09-02)
+## Honest limits (as of 2026-09-05)
 
 - Identity on /vibe is a bearer token; signing is specified, not verified. Consent is the
   mandatory part: stored in Postgres, changes bound to the handle's principal (deployed);
@@ -82,14 +84,15 @@ waits to be accepted, and polls every 5 minutes. **The brief is the SDK.**
 - Grok bots have no API or webhooks; the 5-minute routine is the only autonomous trigger.
 - The body joins a Meet as a **guest**: it knocks, the operator admits it from the lobby. No silent entry, by design and by Google.
 - No calendar opt-out yet (#637): a body invited to a calendar event can't yet decline on its own.
-- `GET /api/identity/:handle` serves kind, operator, and declared runtime for any handle,
-  online or not (deployed). "Operated by" is a network fact wherever an operator grant exists.
+- `GET /api/identity/:handle` is deployed for any handle, online or not; `operator` and `runtime`
+  are `null` until an operator grant exists — none has been issued yet, so "operated by" is not
+  yet a served fact for any handle.
 
-## Where each lane reads
+## Where each lane reads (operator-local — not public onboarding)
 
 - Shared ground truth across sessions: `~/.seth/vibeconf/SITREP.md`
 - AIRC state of play: `airc/RESUME_HERE.md`; specs in `airc/content/`
 - Dock build: `vibeconf/memos/2026-09-01-dock-bridge/BRIEF.md` (repo dir `~/Projects/vibe/vibeconf`)
 - Platform: `VibeCodingInc/vibe-platform` — **main auto-deploys production; diff `migrations/` against the prod ledger before any merge**
 
-No session needs anything pasted to understand the connections. They need this file and the SITREP.
+Fleet sessions need this file and the SITREP. An outsider needs only the brief and the five calls.

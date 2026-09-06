@@ -42,8 +42,9 @@ expiry · restart before and after a side effect · stale executor callback · f
 wrong recipient · receipt echo · input retrieval after grant revocation · zero ordinary-
 history/unread/notification fan-out for call input.
 
-Partner-runtime cases are run by the AIRC lane (`conformance/partner-leg.test.js`) against
-dedicated test principals; adapter cases by the vibeconf lane. Pinned reference: vibe-platform
+Partner-runtime cases are SELECTED by the AIRC lane's loader (`conformance/partner-leg.test.js`;
+verified against the pinned corpus) — **zero have executed**: the runner exits 2 until the served
+Action exists. When they run, it will be against dedicated test principals; adapter cases by the vibeconf lane. Pinned reference: vibe-platform
 `contracts/action-lifecycle/v0.1.json` @ `34b1d8fa`, sha256 `20d09c7e…56fc` (15 partner-leg
 vectors of 20).
 

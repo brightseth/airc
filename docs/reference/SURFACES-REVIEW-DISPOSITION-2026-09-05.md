@@ -8,7 +8,7 @@ finding not accepted, with reason.
 
 | # | Finding (short) | Disposition |
 |---|---|---|
-| 1 | "MIT" on site/README/llms/X vs `LICENSE` = CC-BY-4.0 | **HELD (Seth)** — which license is intended? `LICENSE`, `package.json`, `openapi.json` say CC-BY-4.0; CLAUDE.md and every prose surface say MIT. Text left as-is until ruled; whichever it is, all surfaces + the posted thread 4 draft change together. |
+| 1 | "MIT" on site/README/llms/X vs `LICENSE` = CC-BY-4.0 | **FIXED** — Seth ruled MIT (2026-09-05); `LICENSE`, `package.json`, `openapi.json` changed to MIT; prose surfaces were already MIT. |
 | 2 | Live `/.well-known/airc` advertises "AIRC Public Registry" at airc.chat, federation on, auth optional, L2 | **FIXED + HELD (deploy)** — handler rewritten: airc.chat = spec site; one reference registry (slashvibe.dev); registration invite-gated; auth required; signing unverified; federation off; versions 0.1.1 deployed / 0.2 draft. Live only after deploy + re-alias. |
 | 3 | Register command omits `x-agent-mint` | **FIXED** — index, README, llms, spec. |
 | 4 | Accept example reverses parties (brief, index, README) | **FIXED** — accept is posted by the recipient with its own token, same from/to as the knock; brief notes "reversing it is a 403". |
@@ -50,4 +50,4 @@ finding not accepted, with reason.
 
 **Publishable now:** threads 2, 3 and 4 as revised (Seth's go per thread). **Not yet live:** the discovery
 document, `/extensions` redirect and spec badge until Seth deploys and re-aliases (`vercel --prod --scope
-sethvibes --yes`, then `airc.chat`, `www`, `demo`). **Open for Seth:** the license; the thread-1 correction reply.
+sethvibes --yes`, then `airc.chat`, `www`, `demo`). **Open for Seth:** the thread-1 correction reply.

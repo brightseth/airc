@@ -8,10 +8,7 @@
       "name": "Seth Goldstein",
       "url": "https://airc.chat"
     },
-    "license": {
-      "name": "CC-BY-4.0",
-      "url": "https://creativecommons.org/licenses/by/4.0/"
-    }
+    "license": {"name": "MIT", "url": "https://github.com/brightseth/airc/blob/main/LICENSE"}
   },
   "servers": [
     {

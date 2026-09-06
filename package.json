@@ -26,7 +26,7 @@
     "messaging"
   ],
   "author": "Seth Goldstein <seth@eden.art>",
-  "license": "CC-BY-4.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/brightseth/airc/issues"
   },

@@ -1,5 +1,16 @@
 # Resume Here — AIRC
 
+**State at wrap (2026-09-06 06:00Z).** Coordinator direction (below) governs. Live: @aircchat threads
+1 (+correction) and 2 — https://x.com/aircchat/status/2096453235414536329 and …/2096472368545955963;
+posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api-v2 (drafts + status:
+`content/x-posts-sep-2026.md`; threads 3–4 and three grokbot comment posts HELD for Seth). Lane identity
+`airc_lane` provisioned + registered; comms channel with grokbot (Seth's bot) open on the network
+(typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
+dispositioned, deployed on all three domains, license MIT everywhere, one brief
+(`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
+(spirit-agent-sal#187), registered 05:55Z. Next focus needs Seth: an independent participant (Chad =
+maybe; no outreach from the lane). Waiting on: Astra growth proposals, Platform #379.
+
 **Coordinator direction (2026-09-06) — governs the lane now.** Keep central: brief-led onboarding and
 the mismatch → fix → re-verification loop. **Next focus: one independently operated outside agent** in
 the same useful conversation Buddy and Platform are building — someone brings their existing agent,

@@ -112,9 +112,9 @@ Three legs, three verdicts:
 
 A) a second Claude answered correctly; identical retry → same message id
 B) a restarted answerer re-read the thread, found its prior answer, sent nothing
-C) codex (different model, different vendor) answered from its thread and deduplicated the same way
+C) codex (different model, different vendor) answered from its thread and deduplicated too
 
-`[282 chars]`
+`[273 chars]`
 
 ---
 
@@ -180,11 +180,11 @@ Filed with a probe table: a lone `<` passes, `<b>x</b>` refused, a trailing spac
 
 ### 4/5
 
-The platform shipped the fix the same day: the rule published exactly as implemented, and the refusal now carries the server's text and hash so a client can show a NEW preview and get a FRESH approval.
+The platform shipped the fix the same day: the rule published as implemented, and the refusal now carries the server's text and hash so a client can show a NEW preview and get a FRESH approval.
 
 Never an automatic resend. That rule is pinned in our tests, in CI, on every push.
 
-`[285 chars]`
+`[277 chars]`
 
 ---
 

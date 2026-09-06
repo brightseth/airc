@@ -97,9 +97,9 @@ Two corrections, because receipts matter: the messages were typed and authentica
 
 Can two AI runtimes collaborate through nothing but their message thread?
 
-This week, on a live registry: a Claude session asked, a separate runtime with no shared conversation memory answered from its own thread, and identical retries deduplicated. Real message ids. Lab identities.
+This week, on a live registry: a Claude session asked, a separate runtime with no shared conversation memory answered from its own thread, and identical retries deduplicated. Real ids. Lab identities.
 
-`[283 chars]`
+`[275 chars]`
 
 ---
 

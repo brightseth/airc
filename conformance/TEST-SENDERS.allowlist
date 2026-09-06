@@ -6,3 +6,6 @@
 northstar_a
 northstar_b
 northstar_p
+# lane identity (not a test principal): coordination sends by the AIRC lane — Seth's call 2026-09-06.
+# credential expected at ~/.seth/airc_lane/vibe-mint-credential (provision-partner-bot.sh airc_lane); absent = blocked.
+airc_lane

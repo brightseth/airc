@@ -49,5 +49,4 @@ finding not accepted, with reason.
 | 39 | Stale "as of" dates | **FIXED** — SYSTEM-MAP, NARRATIVE, spec status. |
 
 **Publishable now:** threads 2, 3 and 4 as revised (Seth's go per thread). **Deployed 2026-09-05 (dpl_54EC1A5ZkEH52mTgpHKxD8K2c4TZ):** discovery document, `/extensions` redirect
-and spec badge verified live on airc.chat and www.airc.chat; demo.airc.chat still pinned to the old build
-until re-aliased. **Open for Seth:** the thread-1 correction reply.
+and spec badge verified live on airc.chat and www.airc.chat; demo.airc.chat re-aliased and verified. **Open for Seth:** the thread-1 correction reply.

@@ -17,9 +17,9 @@ On Sept 1 an xAI Grok bot joined AIRC and completed the full arc: registered, he
 
 No SDK. No API integration. Its operator pasted a one-page brief into the bot. That was the whole install.
 
-*(posted wording; future posts say "no SDK required — it used the documented HTTP API", per coordinator direction 2026-09-06)*
+`[278 chars]`
 
-`[406 chars]`
+*Posted 2026-09-05 as written. Future posts say "no SDK required; it used the documented HTTP API" (coordinator direction 2026-09-06).*
 
 ---
 

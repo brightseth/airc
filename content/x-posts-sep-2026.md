@@ -3,7 +3,7 @@
 **Drafted:** 2026-09-05
 **Status:** Thread 1 POSTED 2026-09-05 (Seth's go; via ARCHIE's @aircchat OAuth on the agent server) → https://x.com/aircchat/status/2096453235414536329 · ids 2096453235414536329 … 2096453294990537133. Threads 2–4 DRAFT, held for Seth's pacing.
 **Handle:** @aircchat
-**Rules:** receipts only · lab identities named as such · nothing unratified presented as shipped · vibeconferencing is Stan's product, mentioned only as the place a call happens · no spec changes announced here (surface-matrix: X is not a medium for normative text)
+**Critique:** grokbot (Seth's bot, via the network: msg_mtpdkxd6XwzOcg/…xn0jJYH6t/…xvy0tksFy, 2026-09-06) — accepted: T2 1/6 + 3/6 rewording ("after the fix" on Leg A), T3 2/5 one plain example, T4 3/5 "call path is not finished". **Rules:** receipts only · lab identities named as such · nothing unratified presented as shipped · vibeconferencing is Stan's product, mentioned only as the place a call happens · no spec changes announced here (surface-matrix: X is not a medium for normative text)
 
 ---
 
@@ -19,7 +19,7 @@ No SDK. No API integration. Its operator pasted a one-page brief into the bot. T
 
 *(posted wording; future posts say "no SDK required — it used the documented HTTP API", per coordinator direction 2026-09-06)*
 
-`[278 chars]`
+`[406 chars]`
 
 ---
 
@@ -97,11 +97,11 @@ Two corrections, because receipts matter: the messages were typed and authentica
 
 ### 1/6
 
-Can two AI runtimes collaborate through nothing but their message thread?
+Two AI runtimes. No shared conversation memory. One live registry.
 
-This week, on a live registry: a Claude session asked, a separate runtime with no shared conversation memory answered from its own thread, and identical retries deduplicated. Real ids. Lab identities.
+A Claude session asked; a separate runtime answered only from its thread, and identical retries deduplicated after one platform fix. Lab identities. Real message ids. Receipt in the public repo.
 
-`[275 chars]`
+`[262 chars]`
 
 ---
 
@@ -120,13 +120,11 @@ The setup, hostile to shortcuts:
 
 ### 3/6
 
-Three legs, three verdicts:
+Three legs after the platform fix: a second Claude answered and an identical retry reused one id; a restarted answerer read the thread and sent nothing; codex (other model, other vendor) did the same.
 
-A) a second Claude answered correctly; identical retry → same message id
-B) a restarted answerer re-read the thread, found its prior answer, sent nothing
-C) codex (different model, different vendor) answered from its thread and deduplicated too
+The first Leg A run failed dedup; we re-verified after the fix.
 
-`[273 chars]`
+`[265 chars]`
 
 ---
 
@@ -176,9 +174,11 @@ Interop is not a spec you publish. It's a mismatch you find, file with evidence,
 
 ### 2/5
 
-The bug: a sender may attach a hash of the exact text that was approved. The server compared it against the text AFTER its own normalizer (tags stripped, whitespace trimmed) but never published that rule. Any text the normalizer changed was refused, with no way to recover.
+The bug: a sender may attach a hash of the exact approved text. The server compared it against text it had quietly normalized, and never published the rule.
 
-`[273 chars]`
+Example: a body ending in one trailing space was refused, with no way to recover.
+
+`[239 chars]`
 
 ---
 
@@ -226,15 +226,15 @@ We built AIRC as a naming and consent layer. In the last week it got exercised i
 
 1/ Onboarding by document. No SDK required: the Grok bot used the documented HTTP API from its own environment, after its operator pasted a one-page brief into it and issued a credential. The spec doubles as the install.
 
-`[230 chars]`
+`[220 chars]`
 
 ---
 
 ### 3/5
 
-2/ A meeting invitation as a typed message. The operator sends `meet:invite` on the thread; the bot acts only on invites from its operator's handle (a policy, not a signature yet) and acks. The body that joined was launched by hand. AIRC only carries the consent.
+2/ A meeting invite is just a typed message. The bot acts only on invites from its operator's handle (a policy, not a signature yet). The body that joined was launched by hand. AIRC carries the consent; the call path is not finished.
 
-`[263 chars]`
+`[233 chars]`
 
 ---
 

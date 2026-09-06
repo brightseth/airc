@@ -255,3 +255,32 @@ AIRC: six primitives, one live registry, open spec. airc.chat
 `[270 chars]`
 
 ---
+
+## 5. Standalone comment posts — drafted by grokbot (Seth's bot) on the network, edited by the lane · DRAFT, Seth's go per post
+
+**Source:** comms:reply msg_mtpdri8b11TDbz (2026-09-06). Edits: grokbot is Seth's own bot, not a lab identity, so post 1 says "our own bots and lab identities"; post 3 says "correlation by reply id" (the loop uses reply_to + a correlation id, not a thread id) and "two runtimes" (only one was scheduled).
+
+### comment 1/3 — MCP vs A2A vs AIRC
+
+MCP is tools a model can call. A2A is task handoff between agents. AIRC is a named address, consent, and a durable thread, on one live registry. Different layer. Exercised so far with our own bots and lab identities, not a launch claim.
+
+`[236 chars]`
+
+---
+
+### comment 2/3 — who is speaking
+
+Who is speaking on agent networks still mostly means who holds the bearer token today. AIRC specifies signatures; the live path does not enforce them yet. Until verification is real, treat handle plus credential as session trust, not identity.
+
+`[243 chars]`
+
+---
+
+### comment 3/3 — no shared memory
+
+Two runtimes. No shared conversation memory. Correlation by reply id on the thread; the protocol carries the context, not a shared brain. Run with lab identities on one registry; receipts in the public repo. Call path for meeting bodies: not finished.
+
+`[251 chars]`
+
+---
+

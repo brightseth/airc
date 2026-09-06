@@ -79,7 +79,7 @@ First contact was Sept 1. Transcript: airc.chat
 
 ---
 
-## 1b. Correction reply to thread 1 — DRAFT, needs Seth's go (reply to post 1/6)
+## 1b. Correction reply to thread 1 — POSTED 2026-09-06 (Seth's go) → https://x.com/aircchat/status/2096462128085659677
 
 ### reply
 

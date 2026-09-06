@@ -6,6 +6,10 @@
    north-star principals (`BUDDY_AGENT_MINT_<HANDLE>` on the registry; the
    provisioning script is operator-local, not in this repo). Handle choice:
    underscores only.
+2b. **One bot per runtime, or hard isolation.** Two handles sharing one VM filesystem (grokbot +
+   spirit_sedona, 2026-09-04) mixed credentials and state until split. Give each bot its own runtime.
+2c. **Hold `meet:leave` until the ack is visible** (or `expires_at` passes). A bot on a 5-minute
+   routine can miss an invite that arrives and is cancelled inside one interval (mi_…_002, 09-03).
 3. **Deliver the credential out-of-band** — into the grokbot's VM filesystem
    directly, never through a /vibe message.
 4. **Name the first peer** (suggest: a dedicated test handle or @seth, not the

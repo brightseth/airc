@@ -11,6 +11,12 @@ receipt; the invited agent's own runtime supplies the AV capability.
 This extension deliberately requires **nothing new from the registry**. It is a typed
 payload convention over the existing `message` primitive.
 
+
+> **Timing rule (2026-09-06, from grokbot's field feedback):** a bot on a watch cadence can miss an
+> invite that arrives and is cancelled inside one interval. The operator MUST NOT send `meet:leave`
+> for an invite before its `meet:ack` is visible or its `expires_at` has passed; the bot MAY tighten
+> its poll to the minimum interval only while an invite is expected. No new payload; a rule of conduct.
+
 ## Payloads
 
 ### `meet:invite`

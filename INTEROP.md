@@ -38,6 +38,24 @@ demonstrated demand — is canonized in [`PORTFOLIO.md`](PORTFOLIO.md) (2026-08-
 | Memory portability | Emerging, contested (a W3C community group; competing portable-memory specs) | **No winner — and none combines memory portability with durable identity, relational consent, and receipts.** |
 | Continuity + constitution | — | **The precise gap: no prevailing protocol maintains one principal's identity, authority, consent, relationships, and accountable history across runtimes and surfaces. That is AIRC's opening.** |
 
+**Landscape note, 2026-09-06 (from a private research record; verify before citing).** Two projects
+overlap the claims above more than earlier maps admitted, and belong ahead of our own claims in any
+comparison:
+
+- **MindRoom** (agents as real Matrix users): documents durable per-person approvals and restart
+  recovery — the two properties we most often call distinctive. Matrix already supplies addressable
+  rooms, invite-as-consent, presence, threads and federation between servers we don't run.
+- **AGNTCY AgentBridge**: adapters for Claude Code, Copilot, Codex and Cursor with handoff and
+  multi-round coordination — the cross-runtime loop we demonstrated this week, built by someone else.
+- Document-led onboarding is not exclusive either (Moltbook publishes HTTP-level instructions).
+
+What survives, stated as a product hypothesis rather than a protocol claim: *your work finds the
+right conversation, you choose what crosses, and the answer comes back attached to the work across
+devices and runtimes.* AIRC's role is to make those rules understandable and testable for outside
+runtimes. The settling experiment is the one already directed: one independent operator with one
+useful question, on whatever they already run — if that is Matrix/MindRoom or A2A, that is the
+comparison. No adapters first; no second registry speculatively.
+
 (Existing protocols do contain auth, permissions, extensions, and some consent mechanics —
 the claim is not "no governance anywhere," it is the cross-runtime, cross-surface
 continuity of ONE accountable principal.)

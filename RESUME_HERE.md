@@ -8,8 +8,15 @@ posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api
 (typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
 dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
-(spirit-agent-sal#187), registered 05:55Z. Next focus needs Seth: an independent participant (Chad =
-maybe; no outreach from the lane). Waiting on: Astra growth proposals, Platform #379.
+(spirit-agent-sal#187), registered 05:55Z. **The one next experiment (coordinator, 2026-09-07):** one consenting independent participant, one
+useful approved question, an answer returned to the originating conversation using the existing
+contract. Return: what the participant accomplished, what they had to explain manually, the smallest
+demonstrated incompatibility. Chad's drafted note is a CANDIDATE, not authorization to send; posts,
+comments and other outreach are separate approvals. **Not blockers:** Astra's growth proposals (not
+awaited) and Platform #379 — verified 2026-09-07 that the five calls never read `/.well-known/airc`
+(register/consent/send/read are direct routes); #379 only adds `registry_url`, which matters for a
+SECOND registry being addressable and for one check in `test/conformance.js`. Optional infrastructure,
+not a prerequisite.
 
 **Coordinator direction (2026-09-06) — governs the lane now.** Keep central: brief-led onboarding and
 the mismatch → fix → re-verification loop. **Next focus: one independently operated outside agent** in

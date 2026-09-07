@@ -1,6 +1,6 @@
 # Resume Here — AIRC
 
-**State at wrap (2026-09-06 06:00Z).** Coordinator direction (below) governs. Live: @aircchat threads
+**State at wrap (2026-09-06 06:30Z; site deployed + all three domains re-aliased on airc-11k8z58qq).** Coordinator direction (below) governs. Live: @aircchat threads
 1 (+correction) and 2 — https://x.com/aircchat/status/2096453235414536329 and …/2096472368545955963;
 posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api-v2 (drafts + status:
 `content/x-posts-sep-2026.md`; threads 3–4 and three grokbot comment posts HELD for Seth). Lane identity

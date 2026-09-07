@@ -37,7 +37,7 @@ with lab principals northstar_a/b; retry dedup + silent restart re-verified afte
 Evidence: `docs/CROSS-RUNTIME-DEMO-2026-09-05.md`. Next incompatibility filed, one at a time:
 vibe-platform#406 (unpublished body normalization behind approved_sha256; owner Platform). Held:
 signed-invite ratification/rollout, operator grants retry, northstar_p provisioning, dock acceptance.
-Gotcha: `codex exec` on macOS — no `-a` flag on 0.153.2, no `timeout` binary (use perl alarm), enable
+Token-copy security follow-up: CLOSED 2026-09-06 (Astra targeted-revoked the exposed token; 401 everywhere; duplicate removed). Gotcha: `codex exec` on macOS — no `-a` flag on 0.153.2, no `timeout` binary (use perl alarm), enable
 `sandbox_workspace_write.network_access=true` or registry calls strand.
 
 **Updated: 2026-09-03. Read `docs/SYSTEM-MAP.md` first (four layers, one diagram), then this.**

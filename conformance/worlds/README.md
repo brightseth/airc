@@ -1,7 +1,7 @@
 # Isolated-runtime doorway check (worlds, #425)
 
 Spec: `docs/CHECK-ISOLATED-RUNTIME-DOORWAY-2026-09-11.md`. Target: vibe-platform `proto/neighborhood`
-@ **f8a5c3ea** (Buddy, PR #429), destination `mara-garden`; injection fixture `rowan`.
+@ **8c8d3fe8** (f8a5c3ea + cwd removed, keepsakes moved) (Buddy, PR #429), destination `mara-garden`; injection fixture `rowan`.
 
 Hermetic. No registry, no credentials, no network (codex sandbox has none; the worlds are pure).
 

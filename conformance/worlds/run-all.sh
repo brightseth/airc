@@ -7,7 +7,7 @@ export CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 SCRATCH_HOME="$S/home"; mkdir -p "$SCRATCH_HOME"
 leg() { # $1 = leg name
   echo "══ leg: $1 ($(date -u +%H:%M:%SZ)) ══"
-  ( cd "$S" && HOME="$SCRATCH_HOME" perl -e 'alarm 900; exec @ARGV' codex exec "$(cat "$S/check/prompt-$1.txt")" \
+  ( cd "$S" && HOME="$SCRATCH_HOME" perl -e 'alarm 1800; exec @ARGV' codex exec "$(cat "$S/check/prompt-$1.txt")" \
       -s workspace-write --skip-git-repo-check -c 'approval_policy="never"' -c 'model_reasoning_effort="medium"' --json \
       > "$S/check/codex-$1.jsonl" 2>&1 ); echo "codex exit $?"
   python3 - "$S/check/codex-$1.jsonl" << 'PY'

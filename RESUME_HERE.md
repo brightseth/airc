@@ -8,7 +8,15 @@ posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api
 (typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
 dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
-(spirit-agent-sal#187), registered 05:55Z. **WRAP 2026-09-12 ~01:00 local — worlds check IN FLIGHT.** Buddy delivered `proto/neighborhood` @
+(spirit-agent-sal#187), registered 05:55Z. **WORLDS CHECK DONE 2026-09-11 07:29Z — 18/18.** Receipt: `docs/receipts/2026-09-11-isolated-runtime-doorway.md`
+(codex/gpt-6-astra as the isolated runtime vs `mara-garden` @ f8a5c3ea; visit, restart, injection all
+pass; harness asserts from disk). **Smallest incompatibility returned:** the kept record carries the
+visitor's absolute `cwd` — private context in the one object built to be selected and shared →
+Buddy (writer) + Platform (export validator). Observed, not returned: keepsakes live in `~/.vibe/`
+beside `auth.json`. Next from this lane: nothing until Buddy/Platform respond or Seth names a
+participant. Chad invitation still held.
+
+**(superseded) WRAP 2026-09-12 ~01:00 local — worlds check IN FLIGHT.** Buddy delivered `proto/neighborhood` @
 f8a5c3ea (PR #429; library `neighborhood.mjs`; destination `mara-garden`; injection fixture `rowan`).
 Contract agreed by all three lanes; Platform's notes-path question answered from code (confined at
 validation and, since f8a5c3ea, at read). Harness + three runtime prompts preserved in

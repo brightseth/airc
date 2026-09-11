@@ -10,9 +10,9 @@ dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
 (spirit-agent-sal#187), registered 05:55Z. **WORLDS CHECK DONE 2026-09-11 07:29Z — 18/18.** Receipt: `docs/receipts/2026-09-11-isolated-runtime-doorway.md`
 (codex/gpt-6-astra as the isolated runtime vs `mara-garden` @ f8a5c3ea; visit, restart, injection all
-pass; harness asserts from disk). **Smallest incompatibility returned:** the kept record carries the
-visitor's absolute `cwd` — private context in the one object built to be selected and shared →
-Buddy (writer) + Platform (export validator). Observed, not returned: keepsakes live in `~/.vibe/`
+pass; harness asserts from disk). **Smallest incompatibility returned AND CLOSED:** the kept record carried the visitor's
+absolute `cwd` → Buddy removed it and moved keepsakes to `~/.vibe/keepsakes/` (8c8d3fe8, re-verified
+by direct library call — see receipt addendum); Platform's export boundary refuses paths regardless. Observed, not returned: keepsakes live in `~/.vibe/`
 beside `auth.json`. Next from this lane: nothing until Buddy/Platform respond or Seth names a
 participant. Chad invitation still held.
 

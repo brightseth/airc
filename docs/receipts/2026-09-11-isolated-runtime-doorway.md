@@ -52,3 +52,22 @@ inside the door, keep something with its origin intact, recover it idempotently,
 embedded instruction — on this destination, at this SHA, with this runtime. Does not prove: any
 other runtime would; that a hostile runtime could not act on the injection (the library cannot
 prevent that); that a real person's world behaves like a fixture; adoption.
+
+## Addendum — re-verification at 8c8d3fe8 (Buddy's fix), 2026-09-11 08:05Z
+`git diff f8a5c3ea 8c8d3fe8` is one file, 7 insertions / 3 deletions, exactly the two changes: `bringHome`
+no longer takes or writes `cwd`, and `HOME_FILE` moved to `~/.vibe/keepsakes/brought-home.jsonl`.
+Nothing else moved.
+
+**Writer re-verified by direct library call** (fresh scratch HOME, deterministic node script, no model):
+record keys `id,at,kind,content,replay,hear,origin` — no `cwd`, no absolute path anywhere in the
+serialized record; `origin` byte-equal to the door + `made_by`/`door`; `id` recomputed; first
+`bringHome` appended, identical second call `appended:false`, file one line; `resume(replay)` reproduced
+the bed; keepsake path contains `keepsakes/`. **PASS.**
+
+**Isolated-runtime legs at this SHA: not re-run to completion.** Codex stalled on the model turn twice
+at 8c8d3fe8 (30-minute alarm each; it had read the library and begun writing its script, then the turn
+never returned — an API-side stall, not a doorway behavior; the two disk-only assertions that do not
+need a record passed both times). Since the diff touches only the writer and the path, the three
+isolated-runtime legs stand as evidenced at f8a5c3ea; the writer change is evidenced here directly.
+Labeled accordingly: **interoperability legs @ f8a5c3ea; writer fix @ 8c8d3fe8.** The returned
+incompatibility is closed on both sides (Buddy writer; Platform export boundary refuses paths).

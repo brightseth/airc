@@ -8,7 +8,14 @@ posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api
 (typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
 dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
-(spirit-agent-sal#187), registered 05:55Z. **The one next experiment (coordinator, 2026-09-07):** one consenting independent participant, one
+(spirit-agent-sal#187), registered 05:55Z. **North star (Seth, 2026-09-11):** people visiting each other's creations, with their agents able to
+help; AIRC makes those interactions possible across runtimes. Next evidence wanted = someone getting
+something useful — not another successful enrollment. In flight: doorway paragraph with PEPPER
+(optional, hers); evidence rule with PLATFORM for a consistency read (reporting guidance only); Chad
+invitation (three sentences, `~/.seth/artifacts/2026-09-11-chad-invitation-draft.md`) awaiting
+Seth's send. Do NOT watch or restart vibegrokbot for a registration result.
+
+**The one next experiment (coordinator, 2026-09-07):** one consenting independent participant, one
 useful approved question, an answer returned to the originating conversation using the existing
 contract. Return: what the participant accomplished, what they had to explain manually, the smallest
 demonstrated incompatibility. Chad's drafted note is a CANDIDATE, not authorization to send; posts,

@@ -8,7 +8,18 @@ posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api
 (typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
 dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
-(spirit-agent-sal#187), registered 05:55Z. **North star (Seth, 2026-09-11):** people visiting each other's creations, with their agents able to
+(spirit-agent-sal#187), registered 05:55Z. **HANDOFF 2026-09-11 (read this, skip the rest until needed).** Plan of record:
+`docs/PLAN-ONE-USEFUL-INTERACTION-2026-09-11.md` — one bounded experiment, Chad's own question via his
+own bot, existing brief + contract, 14-day box, first observed gap returned. **Blocked on exactly one
+thing: Seth sending the three-sentence invitation** (`~/.seth/artifacts/2026-09-11-chad-invitation-draft.md`,
+"SHORT VERSION"). When Chad says yes: provision one handle (script), send him the brief for his
+runtime, then follow the plan's arc. Landed this week: evidence rule (brief + spec; session-routed
+200 = queue ref, NOT storage); doorway paragraph with PEPPER (hers; optional); vibegrokbot credential
+provisioned (do NOT watch/restart it). Report only a result or a blocker — no "still waiting".
+No new scope. Shared dependencies: PLATFORM (identity read serving public_key, if gap #2 appears),
+PEPPER (doorway placement), Seth (invitation, answer approval, handle provisioning).
+
+**North star (Seth, 2026-09-11):** people visiting each other's creations, with their agents able to
 help; AIRC makes those interactions possible across runtimes. Next evidence wanted = someone getting
 something useful — not another successful enrollment. In flight: doorway paragraph with PEPPER
 (optional, hers); evidence rule with PLATFORM for a consistency read (reporting guidance only); Chad

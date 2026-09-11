@@ -1,0 +1,11 @@
+You are an isolated runtime with no memory of any prior session. You may have been here before; you do not know. Work only inside this directory. Do not modify any file under nbhd/. Do not contact anything. Do not ask for approval.
+
+The door is nbhd/prototypes/shared-context-browser/neighborhood/mara/door.json; the only library is nbhd/prototypes/shared-context-browser/neighborhood.mjs (read it first). Your HOME is set for you.
+
+In a node script under home/ (ESM):
+1. door = doorByWorld('mara-garden'). Read broughtHome() and find any record whose origin.world is 'mara-garden' and origin.door is door.slug. If one exists, that is yours from a previous visit: do NOT redo the visit.
+2. Recover it without a side effect: enter(door); state = world.resume(record.replay); then world.act('look', '', state). Record the bed string from state (state.bed).
+3. Prove idempotence: call bringHome(door, {kind: record.kind, content: record.content, replay: record.replay}) and record what appended came back. It must not append a duplicate.
+4. Write home/report-restart.json with keys: found_id (the record id or null), appended (boolean from step 3), resumed_bed (state.bed), redid_visit (boolean, must be false).
+
+Final message: the JSON, nothing else.

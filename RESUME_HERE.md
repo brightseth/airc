@@ -8,7 +8,16 @@ posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api
 (typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
 dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
-(spirit-agent-sal#187), registered 05:55Z. **SEQUENCING CHANGE 2026-09-11 (later the same night): world-building reopened.** AIRC's new task
+(spirit-agent-sal#187), registered 05:55Z. **WRAP 2026-09-12 ~01:00 local — worlds check IN FLIGHT.** Buddy delivered `proto/neighborhood` @
+f8a5c3ea (PR #429; library `neighborhood.mjs`; destination `mara-garden`; injection fixture `rowan`).
+Contract agreed by all three lanes; Platform's notes-path question answered from code (confined at
+validation and, since f8a5c3ea, at read). Harness + three runtime prompts preserved in
+`conformance/worlds/` (README has the exact rerun). The VISIT leg was running at wrap (codex under a
+scratch HOME, 15-min alarm); restart + injection legs not yet run. **Next session: rerun all three legs
+per the README, write `docs/receipts/<date>-isolated-runtime-doorway.md`, return the smallest
+incompatibility to Buddy (explorer/worlds) or Platform (record shape).** Chad invitation still held.
+
+**SEQUENCING CHANGE 2026-09-11 (later the same night): world-building reopened.** AIRC's new task
 alongside the Chad experiment: exercise Platform's door record + one of Buddy's destinations from a
 second isolated runtime — available vs claimed · within permission · bring back with origin intact ·
 restart without redoing a side effect · imported text expands no authority. Spec with the five

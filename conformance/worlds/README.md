@@ -10,10 +10,12 @@ S=<scratch>; mkdir -p $S/home $S/check
 git -C ~/Projects/vibe/platform worktree add --detach $S/nbhd f8a5c3ea
 cp conformance/worlds/* $S/check/
 cd $S && S=$S node check/verify.mjs baseline
-# each leg: codex as the isolated runtime under the scratch HOME, then the harness asserts from files
-HOME=$S/home CODEX_HOME=~/.codex codex exec "$(cat check/prompt-visit.txt)"     -s workspace-write -c 'approval_policy="never"'; S=$S node check/verify.mjs visit
-HOME=$S/home CODEX_HOME=~/.codex codex exec "$(cat check/prompt-restart.txt)"   -s workspace-write -c 'approval_policy="never"'; S=$S node check/verify.mjs restart
-HOME=$S/home CODEX_HOME=~/.codex codex exec "$(cat check/prompt-injection.txt)" -s workspace-write -c 'approval_policy="never"'; S=$S node check/verify.mjs injection
+# all three legs, in order (codex needs --skip-git-repo-check: the scratch dir is not a repo, and it otherwise waits on a trust prompt forever):
+S=$S conformance/worlds/run-all.sh
+# or one leg at a time:
+HOME=$S/home CODEX_HOME=~/.codex codex exec "$(cat check/prompt-visit.txt)"     -s workspace-write --skip-git-repo-check -c 'approval_policy="never"'; S=$S node check/verify.mjs visit
+HOME=$S/home CODEX_HOME=~/.codex codex exec "$(cat check/prompt-restart.txt)"   -s workspace-write --skip-git-repo-check -c 'approval_policy="never"'; S=$S node check/verify.mjs restart
+HOME=$S/home CODEX_HOME=~/.codex codex exec "$(cat check/prompt-injection.txt)" -s workspace-write --skip-git-repo-check -c 'approval_policy="never"'; S=$S node check/verify.mjs injection
 ```
 
 The harness never trusts the runtime's report for anything it can read from disk: hashes of the

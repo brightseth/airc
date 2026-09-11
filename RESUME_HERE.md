@@ -8,7 +8,17 @@ posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api
 (typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
 dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
-(spirit-agent-sal#187), registered 05:55Z. **HANDOFF 2026-09-11 (read this, skip the rest until needed).** Plan of record:
+(spirit-agent-sal#187), registered 05:55Z. **SEQUENCING CHANGE 2026-09-11 (later the same night): world-building reopened.** AIRC's new task
+alongside the Chad experiment: exercise Platform's door record + one of Buddy's destinations from a
+second isolated runtime — available vs claimed · within permission · bring back with origin intact ·
+restart without redoing a side effect · imported text expands no authority. Spec with the five
+assertions: `docs/CHECK-ISOLATED-RUNTIME-DOORWAY-2026-09-11.md`. Shared dependency = the door record
+shape (Platform sent it; I asked for two take-home rules + local-module restriction, and told Buddy
+what the check asserts). **Runner waits on:** Platform's pinned shape SHA + Buddy's branch/destination.
+Frozen demo for reference: vibe-platform `proto/browser-playable` @ 0d4fc05f (fixtures only; refuses
+production creds). No new schema/registry/format from this lane. Chad invitation still held.
+
+**HANDOFF 2026-09-11 (read this, skip the rest until needed).** Plan of record:
 `docs/PLAN-ONE-USEFUL-INTERACTION-2026-09-11.md` — one bounded experiment, Chad's own question via his
 own bot, existing brief + contract, 14-day box, first observed gap returned. **Blocked on exactly one
 thing: Seth sending the three-sentence invitation** (`~/.seth/artifacts/2026-09-11-chad-invitation-draft.md`,

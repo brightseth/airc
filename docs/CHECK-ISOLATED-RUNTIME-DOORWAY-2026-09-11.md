@@ -7,9 +7,13 @@ record as-is. A pass is technical evidence, not an adoption claim.*
 
 ## Inputs (pinned when the check runs; none pinned yet)
 - **Door record** — Platform's shape: `{door, made_by, shared, enter:{kind,ref}, access:{may,may_not}, origin:{world,revision,published}}`.
-  Two rules requested of Platform (2026-09-11): the kept record carries the door's `origin` verbatim +
-  `made_by` + `door`, and a stable `id`; `local-module` refs must resolve inside the checkout and are
-  refused on imported records.
+  **Agreed with Platform 2026-09-11 (contract text, pre-validator):** `enter.kind` ∈ {local-module,
+  public-url, fixture}; a `local-module` ref must resolve inside the host's own checkout; an IMPORTED
+  record may carry only public-url or fixture (local-module on import refused outright); public-url is
+  opened, never fetched-and-run; `enter` is the wrapped `{kind, ref}` form only. Take-home record:
+  `origin = {door, made_by, world, revision, published, entered_via}` (door's origin block byte-for-byte
+  + made_by + door id); `id = sha256(door id + origin.revision + content)`. Buddy writes, Platform
+  validates; this check asserts. Pinned SHA arrives after containment deploys.
 - **One destination** — Buddy's branch, one of the two interactive worlds (candidate: the drawing
   instrument from the frozen demo at `0d4fc05f`, `worlds/drawing-synth.mjs`, because `render`/`score`
   run without audio and produce a deterministic artifact).

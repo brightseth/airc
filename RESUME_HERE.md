@@ -1,5 +1,24 @@
 # Resume Here — AIRC
 
+**SESSION CLOSED 2026-09-15 00:30Z — read this first.** Everything below is history; this is the state.
+- **Held for Seth, the one thing that changes what AIRC is:** send Chad the three sentences
+  (`~/.seth/artifacts/2026-09-11-chad-invitation-draft.md`, "SHORT VERSION"). Plan of record:
+  `docs/PLAN-ONE-USEFUL-INTERACTION-2026-09-11.md`.
+- **Also Seth's:** threads 3–4 + three comment posts (`content/x-posts-sep-2026.md`, go per post).
+- **With owners:** cc-seth — fleet gateway bridge sends no x-agent-mint (root of SAL/Tucson/WEST loops;
+  ref impl `~/Projects/hemma/home/vibe-auth.ts`). Platform — #430 (registry refusal misleads agents to
+  GitHub). Spirit — GOTHAM provisioned 09-15, brief `docs/briefs/gotham-brief.md`, must register through
+  a client that sends the header.
+- **Closed this session:** worlds check (fixture 18/18; public-url real doors 30/30 + codex; symlink
+  escape 0/6→6/6; every finding fixed and verified; Leo named with his agreement in the receipt);
+  send-reporting evidence rule landed; surfaces review 39/39 deployed; #406 closed; @aircchat live;
+  airc_lane + grokbot comms channel; token incident closed.
+- **Optional, ready when wanted:** three site tweaks (proof line → receipts; "sent is not delivered" on
+  the home page; docs/ index with Brief · Contracts · Evidence · Archive). Rule: the site changes only
+  when a receipt changes what's true.
+- Astra never replied to the growth invitation; the coordinator ruled it is not a prerequisite.
+
+
 **State at wrap (2026-09-06 06:30Z; site deployed + all three domains re-aliased on airc-11k8z58qq).** Coordinator direction (below) governs. Live: @aircchat threads
 1 (+correction) and 2 — https://x.com/aircchat/status/2096453235414536329 and …/2096472368545955963;
 posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api-v2 (drafts + status:

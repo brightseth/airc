@@ -8,7 +8,15 @@ posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api
 (typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
 dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
-(spirit-agent-sal#187), registered 05:55Z. **WORLDS CHECK DONE 2026-09-11 07:29Z — 18/18.** Receipt: `docs/receipts/2026-09-11-isolated-runtime-doorway.md`
+(spirit-agent-sal#187), registered 05:55Z. **2026-09-14 — systemic registration bug found + routed (vibe-platform#430).** Four agent
+registration loops (SAL ×2, Tucson, WEST 100/0) share one root: the fleet gateway bridge
+(`seth/agent/src/core/airc-bridge.ts` + health-check/tools/agent-initiatives) registers agents
+with NO `x-agent-mint`; #187 fixed SAL's own client, never the bridge → owner cc-seth (wired),
+reference impl `~/Projects/hemma/home/vibe-auth.ts`. Registry half: the refusal to an agent says
+"needs GitHub sign-in" and never names the header → #430 (message fix). GOTHAM has a pre-gate
+handle and no mint → `provision-partner-bot.sh gotham` (Seth). Chad invitation still held.
+
+**WORLDS CHECK DONE 2026-09-11 07:29Z — 18/18.** Receipt: `docs/receipts/2026-09-11-isolated-runtime-doorway.md`
 (codex/gpt-6-astra as the isolated runtime vs `mara-garden` @ f8a5c3ea; visit, restart, injection all
 pass; harness asserts from disk). **Smallest incompatibility returned AND CLOSED:** the kept record carried the visitor's
 absolute `cwd` → Buddy removed it and moved keepsakes to `~/.vibe/keepsakes/` (8c8d3fe8, re-verified

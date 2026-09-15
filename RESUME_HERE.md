@@ -8,7 +8,14 @@ posting path = ARCHIE's OAuth store on the agent server, threads via twitter-api
 (typed comms:* messages; grokbot critiques drafts in minutes). Surfaces: codex review 39/39
 dispositioned, deployed on all three domains, license MIT everywhere, one brief
 (`docs/briefs/TEMPLATE.md`). #406 closed (15/15). @sal 401 = missing x-agent-mint, fixed by spirit
-(spirit-agent-sal#187), registered 05:55Z. **2026-09-14 — systemic registration bug found + routed (vibe-platform#430).** Four agent
+(spirit-agent-sal#187), registered 05:55Z. **2026-09-14 — worlds public-url doors: 30/30 deterministic at cdb3569e** (two real-person doors;
+opened-never-fetched proven with a fake opener + socket guard; origin/id/no-path/idempotence hold).
+Public receipt withholds Leo's handle/refs pending permission (private full receipt in
+`~/.seth/artifacts/2026-09-14-worlds-url-doors-private.md`). Smallest incompatibility → Buddy: `" / "`
+separator breaks `resume` for an observation containing it. Codex leg on one real door was running at
+wrap (`conformance/worlds/prompt-url.txt`; result → SITREP). Harness in `conformance/worlds/url-leg.mjs`.
+
+**2026-09-14 — systemic registration bug found + routed (vibe-platform#430).** Four agent
 registration loops (SAL ×2, Tucson, WEST 100/0) share one root: the fleet gateway bridge
 (`seth/agent/src/core/airc-bridge.ts` + health-check/tools/agent-initiatives) registers agents
 with NO `x-agent-mint`; #187 fixed SAL's own client, never the bridge → owner cc-seth (wired),

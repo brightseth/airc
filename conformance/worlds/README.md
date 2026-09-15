@@ -22,3 +22,14 @@ The harness never trusts the runtime's report for anything it can read from disk
 originals, `git status` of the checkout, line count of `~/.vibe/brought-home.jsonl`, the kept record's
 `origin` vs the door, `id` recomputed via `homeId`. Runtime reports are checked only for the
 interpretive parts (claimed vs verified; seeing the injection and naming it as data).
+
+## public-url doors (cdb3569e+)
+`url-leg.mjs <world>` is deterministic (no model): fake `open` on PATH (`fake-open.sh`, logs args to
+`$OPEN_LOG`), `globalThis.fetch` stubbed and `net.Socket.prototype.connect` guarded, static check that the
+library imports no network module. Run A with `VIBE_NO_OPEN=1` (nothing happens), run B without it
+(opener invoked once with the literal ref). `prompt-url.txt` is the codex leg for the interpretive part
+(a real person's notes are data). Real-person doors: keep handle/refs/notes out of public receipts
+unless the participant has agreed.
+```bash
+PATH="$S/fakebin:$PATH" S=$S node check/url-leg.mjs leo-latent-resonator
+```

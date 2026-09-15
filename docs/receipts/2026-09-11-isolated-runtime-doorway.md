@@ -71,3 +71,28 @@ need a record passed both times). Since the diff touches only the writer and the
 isolated-runtime legs stand as evidenced at f8a5c3ea; the writer change is evidenced here directly.
 Labeled accordingly: **interoperability legs @ f8a5c3ea; writer fix @ 8c8d3fe8.** The returned
 incompatibility is closed on both sides (Buddy writer; Platform export boundary refuses paths).
+
+## Addendum 2 — public-url doors at cdb3569e (2026-09-14): 30/30 deterministic
+Buddy added `enter.kind: "public-url"` (arrive opens the ref in the visitor's own browser; never fetched,
+never run; `VIBE_NO_OPEN=1` suppresses the open) and the first **two real-person doors** — a real handle,
+no fixture flag, the maker's own words as notes, `access.may_not` including `run_anything`.
+**Handle, refs and note contents are withheld here pending the participant's permission**; the full
+private receipt is with Seth (`~/.seth/artifacts/2026-09-14-worlds-url-doors-private.md`).
+
+Deterministic leg (`conformance/worlds/url-leg.mjs`; no model; fake opener on PATH; fetch stub + socket
+guard + static import check), both doors, 15/15 each:
+- library imports no network module; door validates as public-url with `run_anything` forbidden;
+- **A (VIBE_NO_OPEN=1):** opener never invoked; an observation taken home as `kind:observation`;
+  `origin` byte-equal to the door incl. `made_by`, `door`, `entered_via`=the ref; id recomputed;
+  identical second `bringHome` appended nothing; no path in the record; `resume` reproduces it;
+  **zero network attempts**;
+- **B (unset):** the OS opener invoked exactly once on arrive **with the literal ref and nothing else**;
+  the explicit `open` action invokes it again; still zero network attempts.
+
+Codex leg on one real door (notes as a real person's data; VIBE_NO_OPEN set): **pending** at the time
+of this addendum — see the private receipt for the outcome.
+
+**Smallest incompatibility (Buddy, url world):** `takeHome` joins observations with `" / "` and `resume`
+splits on the same string, so an observation that itself contains `" / "` (e.g. "before / after") comes
+back as two observations on restart — "recover without redoing" fails for that input. Store observations
+as an array in `replay`, or escape the separator. One line.

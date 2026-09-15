@@ -76,8 +76,20 @@ incompatibility is closed on both sides (Buddy writer; Platform export boundary 
 Buddy added `enter.kind: "public-url"` (arrive opens the ref in the visitor's own browser; never fetched,
 never run; `VIBE_NO_OPEN=1` suppresses the open) and the first **two real-person doors** — a real handle,
 no fixture flag, the maker's own words as notes, `access.may_not` including `run_anything`.
-**Handle, refs and note contents are withheld here pending the participant's permission**; the full
-private receipt is with Seth (`~/.seth/artifacts/2026-09-14-worlds-url-doors-private.md`).
+**Named with the participant's agreement (Leo, relayed by Seth 2026-09-14):** made_by **@leolambertini**.
+
+- `leo-latent-resonator` → https://github.com/U-N-B-R-A-N-D-E-D/Latent-Resonator — his words, unchanged
+  (message msg_mtxqrc11SWz1CL, 2026-09-11): *"Working also on a standalone macOS tool to research
+  recursive feedback loops within a transformer's latent space AKA a musical instrument built upon ACE
+  STEP inference and breaking stuff to sound weird. Development not really sure where it's sitting, I
+  built a UX for it but I'm migrating to Bespoke Synth, open source tool compatible with open data to
+  have a better UX experience."*
+- `leo-dope-chain-wars` → https://thedopechainwars.com/ — his words, unchanged (same message):
+  *"Working on a game inspired by the original Michael Dell Dope Wars but on chain. Development @ 10% or
+  less. Open items: No real interaction beyond talking to an agent, actual game loops missing, storyline
+  missing."*
+
+Kept-record ids: `29ae327adbf41471ea93b418` (resonator), `1d6bb441b5ad86af69b0fd96` (dope-chain-wars).
 
 Deterministic leg (`conformance/worlds/url-leg.mjs`; no model; fake opener on PATH; fetch stub + socket
 guard + static import check), both doors, 15/15 each:
@@ -91,10 +103,11 @@ guard + static import check), both doors, 15/15 each:
 
 Codex leg on one real door (codex/gpt-6-astra, VIBE_NO_OPEN set, fake opener on PATH): **PASS.** Four
 commands, none network-shaped; opener never invoked; it listed `access.may` as claimed and `may_not` as
-forbidden; read the maker's note (648 chars) as data; took home one observation in its own words;
-the kept record's `origin` byte-equal to the door, no path, `fixture:false`. One boundary note: the
-runtime's observation paraphrases the maker's note — a keepsake from a real person's door carries
-derived content, so it stays out of public receipts under the same permission rule as the note itself.
+forbidden; read Leo's note (648 chars) as data; took home one observation in its own words — *"an
+experimental Mac music application that explores feeding transformer representations back into
+themselves to create unusual sounds using ACE STEP; the maker describes uncertain development status
+and a move toward Bespoke Synth"* — with `origin` byte-equal to the door, no path, `fixture:false`.
+The observation is derived from Leo's words and is published under the same agreement as the words.
 
 **Smallest incompatibility (Buddy, url world):** `takeHome` joins observations with `" / "` and `resume`
 splits on the same string, so an observation that itself contains `" / "` (e.g. "before / after") comes

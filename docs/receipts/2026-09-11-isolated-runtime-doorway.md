@@ -106,3 +106,14 @@ observations as an array; `resume` accepts the array and the legacy string; `"be
 second note round-trip as exactly two observations. Closed. Buddy's rule, adopted here too: a keepsake
 taken from a real person's door inherits the note's permission — it stays on the visitor's machine unless
 the maker's material could go there too.
+
+## Addendum 3 — symlink escape (2026-09-14): fixed at 9ca70e92, and the hole was real
+Platform/codex found that lexical containment let a symlink inside a door folder resolve outside the
+checkout. `conformance/worlds/symlink-leg.mjs` plants a file symlink (→ /etc/hosts) and a directory symlink
+(→ /etc) as a note and as a local-module ref. **At 585dc8fd: 0/6** — the door validated and was listed,
+`notes()` returned the contents of /etc/hosts, and `enter()` imported the module from outside the checkout
+(it failed only because /etc/hosts is not JavaScript). **At 9ca70e92: 6/6** — refused at validation
+("is a symlink out of the door folder"), at read (`refused: 'escapes the door folder (symlink)'`), and at
+entry ("module resolves outside the door folder (symlink)"); nothing read; the door not listed. Record
+shape, writer, ids and worlds unchanged, so the 18/18 and 30/30 legs stand. Rule now in force three
+ways for both fields: **validate confines, reader re-confines, entry re-confines — by realpath.**

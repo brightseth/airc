@@ -37,3 +37,8 @@ PATH="$S/fakebin:$PATH" S=$S node check/url-leg.mjs leo-latent-resonator
 Always run against a **detached worktree at a pinned SHA** (as above), never Buddy's live checkout: another
 session shares that checkout and has moved it to `main` mid-run. A worktree is immune; if you ever see
 `neighborhood.mjs not found` in a live checkout, `git checkout proto/neighborhood` is the fix.
+
+## symlink escape (9ca70e92+)
+`node symlink-leg.mjs <worktree> <sha>` plants a door folder with a file symlink to /etc/hosts and a directory
+symlink to /etc, then asserts validation, read and entry all refuse and nothing is read. Discriminating:
+**0/6 at 585dc8fd** (door listed as valid, /etc/hosts read as a note, the outside module imported), **6/6 at 9ca70e92**.

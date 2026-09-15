@@ -100,3 +100,9 @@ derived content, so it stays out of public receipts under the same permission ru
 splits on the same string, so an observation that itself contains `" / "` (e.g. "before / after") comes
 back as two observations on restart — "recover without redoing" fails for that input. Store observations
 as an array in `replay`, or escape the separator. One line.
+
+**Separator fix verified at 585dc8fd (2026-09-14, direct library call):** `replay` now carries the
+observations as an array; `resume` accepts the array and the legacy string; `"before / after"` plus a
+second note round-trip as exactly two observations. Closed. Buddy's rule, adopted here too: a keepsake
+taken from a real person's door inherits the note's permission — it stays on the visitor's machine unless
+the maker's material could go there too.

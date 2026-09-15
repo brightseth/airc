@@ -33,3 +33,7 @@ unless the participant has agreed.
 ```bash
 PATH="$S/fakebin:$PATH" S=$S node check/url-leg.mjs leo-latent-resonator
 ```
+
+Always run against a **detached worktree at a pinned SHA** (as above), never Buddy's live checkout: another
+session shares that checkout and has moved it to `main` mid-run. A worktree is immune; if you ever see
+`neighborhood.mjs not found` in a live checkout, `git checkout proto/neighborhood` is the fix.

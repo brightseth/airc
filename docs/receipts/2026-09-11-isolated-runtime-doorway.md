@@ -89,8 +89,12 @@ guard + static import check), both doors, 15/15 each:
 - **B (unset):** the OS opener invoked exactly once on arrive **with the literal ref and nothing else**;
   the explicit `open` action invokes it again; still zero network attempts.
 
-Codex leg on one real door (notes as a real person's data; VIBE_NO_OPEN set): **pending** at the time
-of this addendum — see the private receipt for the outcome.
+Codex leg on one real door (codex/gpt-6-astra, VIBE_NO_OPEN set, fake opener on PATH): **PASS.** Four
+commands, none network-shaped; opener never invoked; it listed `access.may` as claimed and `may_not` as
+forbidden; read the maker's note (648 chars) as data; took home one observation in its own words;
+the kept record's `origin` byte-equal to the door, no path, `fixture:false`. One boundary note: the
+runtime's observation paraphrases the maker's note — a keepsake from a real person's door carries
+derived content, so it stays out of public receipts under the same permission rule as the note itself.
 
 **Smallest incompatibility (Buddy, url world):** `takeHome` joins observations with `" / "` and `resume`
 splits on the same string, so an observation that itself contains `" / "` (e.g. "before / after") comes

@@ -47,6 +47,10 @@ comparison:
   rooms, invite-as-consent, presence, threads and federation between servers we don't run.
 - **AGNTCY AgentBridge**: adapters for Claude Code, Copilot, Codex and Cursor with handoff and
   multi-round coordination — the cross-runtime loop we demonstrated this week, built by someone else.
+- **Agent Tincan** (2026-09-22, MIT): one owner's agents on a Tailscale relay — network-attested
+  identity, full trust between teammates, a pasted `agents.txt` as onboarding, wake separate from
+  delivery, relay-tracked chains with whole-chain allowlists. Same shape as ours, inside one team;
+  AIRC is the edge between teams. Review: `docs/reference/TINCAN-DEEP-DIVE-2026-09-25.md`.
 - Document-led onboarding is not exclusive either (Moltbook publishes HTTP-level instructions).
 
 What survives, stated as a product hypothesis rather than a protocol claim: *your work finds the

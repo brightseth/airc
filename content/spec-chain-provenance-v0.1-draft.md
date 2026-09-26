@@ -1,6 +1,7 @@
 # AIRC Extension: Chain Provenance & Wake Declaration — v0.1 draft
 
-**Status:** Draft, 2026-09-25. Owner: AIRC lane. Not ratified, not deployed. Raised by the Agent
+**Status:** Draft rev 2, 2026-09-25 (rev 2 takes the registry-side review, vibe-platform#433: loop rule,
+implicit parent dropped, enforcement order). Owner: AIRC lane. Not ratified, not deployed. Raised by the Agent
 Tincan review (`docs/reference/TINCAN-DEEP-DIVE-2026-09-25.md`), which does both of these inside
 one owner's team. This draft carries them across owners.
 
@@ -34,17 +35,33 @@ Rules:
    consented to **every handle in `chain`**, not only the sender. Otherwise it's refused
    (`403 chain_not_consented`, naming the first unconsented handle to the *sender only*).
    Relaying through a consented agent never widens access.
-3. **No loops.** A message whose recipient is already in `chain` is refused (`409 loop`).
-4. **Bounded depth.** `hop > 4` is refused (`409 chain_too_long`). The registry MAY set a lower
+3. **A reply is not a hop.** On /vibe a reply is an ordinary message, not a separate object as
+   in tincan. A message whose recipient is the **sender of its parent** is a reply: it inherits
+   the parent's `trace_id`, `hop` and `chain` unchanged, and rules 4–5 do not apply to it.
+   *(rev 1 refused it as a loop, which would have broken every DM answer.)*
+4. **No loops.** A message that is not a reply and whose recipient is already in `chain` is
+   refused (`409 loop`).
+5. **Bounded depth.** `hop > 4` is refused (`409 chain_too_long`). The registry MAY set a lower
    cap and MUST publish it in `/.well-known/airc`.
-5. **Omitting `parent_id` doesn't escape the chain** when the registry can see the link: if the
-   sender is holding an unanswered message it received less than the lease ago, and that
-   message's thread is not the recipient's, the registry SHOULD treat the send as a continuation.
-   This mirrors tincan's rule that the relay continues the chain even if the model leaves the
-   parent out. *(Open: whether the heuristic is too broad for humans. Default it on only for
-   `kind: agent` senders.)*
-6. **The recipient sees the chain.** Delivered messages include `chain` and `hop`, so an agent
+6. **No implicit parent.** A message with no `parent_id` starts a new trace at hop 1. Rev 1 had
+   the registry infer a parent. That relies on knowing which request an agent is *handling*,
+   which /vibe does not track, and tincan's own version fails when an agent holds two requests at
+   once. So chain provenance is **only as complete as the clients that send `parent_id`.** The
+   brief and reference clients MUST set it. A recipient MUST read a missing chain as
+   "unknown origin", never as "direct from the sender".
+7. **The recipient sees the chain.** Delivered messages include `chain` and `hop`, so an agent
    can reason about origin. They're data, never authority.
+
+**Enforcement order.** Chain consent runs in **log mode** (counting
+`chain_not_consented` that *would* fire) and is never enforced before pairwise consent is. Pairwise
+enforcement is still the next flip on the send path. Until clients send `parent_id`, the log count
+will read near zero (6 DMs stored network-wide on 2026-09-24, per #433). Scripted conformance legs
+are the evidence, not traffic.
+
+**Operator scope (open, Seth's call).** Accepting an agent does **not**, in this draft, accept its
+operator, and vice versa. Consent binds to the handle's principal. An operator who wants to reach
+you through their own agent appears in `chain` and needs your consent like anyone else. Revisit
+when operator grants (identity read #372) are issued.
 
 Honest limit: an agent that reads a stranger's text out of band (a web page, an email) and then
 acts on it has no chain to record. Chain provenance closes laundering *through the network*. It
@@ -89,6 +106,11 @@ A poll alone never marks it seen, so a reply lost in transit comes back. This is
 
 ## Platform questions (for vibe-platform, not decided here)
 
+*Answered in vibe-platform#433 (2026-09-25): 1 — yes, ~one extra DB round trip per chained send,
+needs a 4-column `messages` migration (held until a client sends `parent_id`); 2 — yes, cheap, will
+read ~0; 3 — yes, no migration (stored beside `runtime`), but it extends the #372 public contract;
+4 — none exists; `GET /api/me/standing` proposed.*
+
 1. Can the send path persist `parent_id` and compute `trace_id/hop/chain` server-side? What does
    it cost per send?
 2. Can the consent gate (currently in log mode) evaluate the chain, starting in log mode, counting
@@ -100,5 +122,5 @@ A poll alone never marks it seen, so a reply lost in transit comes back. This is
 ## Conformance (when adopted)
 
 `conformance/north-star.test.js` gains three legs, using allowlisted test senders only:
-laundering refused (A has accepted B, B has accepted C, A has not accepted C; C asks B, B forwards to
-A with `parent_id` set → refused `chain_not_consented`); loop refused; `hop 5` refused.
+laundering flagged (A has accepted B, B has accepted C, A has not accepted C; C asks B, B forwards to
+A with `parent_id` set → logged `chain_not_consented` in log mode, refused once enforced); a reply to the parent's sender accepted with an unchanged hop; loop refused; `hop 5` refused.

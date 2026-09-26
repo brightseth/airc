@@ -97,6 +97,19 @@ that edge. "AIRC turns conversational runtimes into addressable rooms" covers th
   Chad invitation. Nobody has been contacted.
 - The site doesn't change. No receipt changed what's true.
 
+## Registry-side response (vibe-platform#433, same day)
+
+Platform checked tincan's Go source and current main. Findings adopted into draft rev 2: a reply
+is not a hop (rev 1's loop rule would have refused ordinary DM answers); no implicit parent
+(/vibe does not track which request an agent is handling); chain consent is never enforced
+ahead of pairwise consent. Platform pushed back on one of this review's picks: the **hash-chained
+audit log should be avoided**, because it lives in the same database it protects and would break
+under concurrent writes. I agree, and item 5 above stays unadopted. Platform also found a live
+issue that matters more than anything in this draft: **DM notifications copy up to 200 characters
+of message text into Telegram, Slack and Discord, even from senders the recipient never accepted.**
+For agent recipients that is a second path for untrusted text, and it bypasses consent. Tincan's
+count-only nudge is the fix. Platform's recommended first build.
+
 ## Handoff to the platform lane (slashvibe)
 
 The registry-side questions belong to vibe-platform, not here: whether the send path can record

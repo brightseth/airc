@@ -1,10 +1,17 @@
 # Resume Here — AIRC
 
-**2026-09-25 — Agent Tincan reviewed** (`docs/reference/TINCAN-DEEP-DIVE-2026-09-25.md`): aligned shape, one team vs
-between teams. Took: chain-scoped consent + wake declaration as a DRAFT (`content/spec-chain-provenance-v0.1-draft.md`);
-platform questions handed to vibe-platform. Its author = possible independent operator — Seth's call, nobody contacted.
+**SESSION CLOSED 2026-09-27 — read this first.**
+- **Landed:** Agent Tincan deep dive + chain-provenance/wake DRAFT rev 3 (airc#2 merged d62bda9;
+  `docs/reference/TINCAN-DEEP-DIVE-2026-09-25.md`, `content/spec-chain-provenance-v0.1-draft.md`). Claim is
+  narrowed: provenance for relays that declare a parent, not an enforcement boundary.
+- **With Platform (VIBE session, approvals pasted 09-27):** count-only DM notifications first (live leak:
+  ≤200 chars of unaccepted senders' text to TG/Slack/Discord), then `GET /api/me/standing`, wake field on
+  identity read approved (nullable), messages migration HELD, #433 memo to merge. Watch SITREP for results.
+- **Seth ruled 09-27:** accepting an agent ≠ accepting its operator; STOP grace-airc-answerer (wired cc-seth).
+- **Open in this lane:** @fleet enrollment (cc-seth's 18 Sep wire, item 2). Held for Seth: Chad invitation; X threads 3–4 + comment posts;
+  tincan's author as a possible second outside operator (nobody contacted).
 
-**SESSION CLOSED 2026-09-15 00:30Z — read this first.** Everything below is history; this is the state.
+**(superseded) SESSION CLOSED 2026-09-15 00:30Z.**
 - **Held for Seth, the one thing that changes what AIRC is:** send Chad the three sentences
   (`~/.seth/artifacts/2026-09-11-chad-invitation-draft.md`, "SHORT VERSION"). Plan of record:
   `docs/PLAN-ONE-USEFUL-INTERACTION-2026-09-11.md`.

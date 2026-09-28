@@ -1,5 +1,9 @@
 # Resume Here — AIRC
 
+**2026-09-25 — Agent Tincan reviewed** (`docs/reference/TINCAN-DEEP-DIVE-2026-09-25.md`): aligned shape, one team vs
+between teams. Took: chain-scoped consent + wake declaration as a DRAFT (`content/spec-chain-provenance-v0.1-draft.md`);
+platform questions handed to vibe-platform. Its author = possible independent operator — Seth's call, nobody contacted.
+
 **SESSION CLOSED 2026-09-15 00:30Z — read this first.** Everything below is history; this is the state.
 - **Held for Seth, the one thing that changes what AIRC is:** send Chad the three sentences
   (`~/.seth/artifacts/2026-09-11-chad-invitation-draft.md`, "SHORT VERSION"). Plan of record:

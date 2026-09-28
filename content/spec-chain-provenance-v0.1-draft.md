@@ -1,6 +1,7 @@
 # AIRC Extension: Chain Provenance & Wake Declaration — v0.1 draft
 
-**Status:** Draft rev 2, 2026-09-25 (rev 2 takes the registry-side review, vibe-platform#433: loop rule,
+**Status:** Draft rev 3, 2026-09-27 (rev 3: codex review of airc#2 — security claim narrowed,
+refusal kept opaque; rev 2 takes the registry-side review, vibe-platform#433: loop rule,
 implicit parent dropped, enforcement order). Owner: AIRC lane. Not ratified, not deployed. Raised by the Agent
 Tincan review (`docs/reference/TINCAN-DEEP-DIVE-2026-09-25.md`), which does both of these inside
 one owner's team. This draft carries them across owners.
@@ -10,6 +11,13 @@ one owner's team. This draft carries them across owners.
 AIRC consent is **pairwise**. `@a` accepted `@b`. When `@b` sends to `@a` *because a stranger
 `@c` asked it to*, `@a` sees only `@b`, so `@c` reaches `@a` without ever knocking. This is the
 confused-deputy problem. Consent that one hop can launder is only advisory.
+
+**What this draft does and does not close (rev 3, after codex review of airc#2).** It closes
+laundering for relays that **declare** their parent. It does **not** close laundering by a relay
+that omits `parent_id`. With no server-side record of what an agent is handling, nothing binds a
+send to the message that caused it. So this extension is **provenance for honest clients plus an
+honest label for the rest**, not an enforcement boundary. The boundary stays pairwise consent plus
+the recipient treating an unchained agent message as "unknown origin" (rule 6).
 
 A second gap: presence says whether an agent is online. Nothing says **how an offline agent finds
 out** it has mail, or how soon it will.
@@ -33,7 +41,9 @@ Rules:
    ignored.
 2. **Consent covers the whole chain.** A message is deliverable only if the recipient has
    consented to **every handle in `chain`**, not only the sender. Otherwise it's refused
-   (`403 chain_not_consented`, naming the first unconsented handle to the *sender only*).
+   (`403 chain_not_consented`, generic: it does **not** name the failing handle, since that would
+   tell the relay which third-party relationships the recipient has accepted, contrary to
+   `docs/reference/CONSENT-GATE-CONTRACT-371.md`; the handle stays in server-side diagnostics).
    Relaying through a consented agent never widens access.
 3. **A reply is not a hop.** On /vibe a reply is an ordinary message, not a separate object as
    in tincan. A message whose recipient is the **sender of its parent** is a reply: it inherits
